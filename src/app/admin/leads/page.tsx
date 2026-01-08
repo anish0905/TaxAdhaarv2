@@ -1,7 +1,6 @@
 import connectDB from "@/lib/db";
 import { User } from "@/models/User";
 import { uploadExcelLeads } from "@/app/actions/uploadLeads"; // Naam sahi rakhein
-import PublicNavbar from "@/components/Navbar";
 
 export default async function AdminLeadsPage() {
   await connectDB();
