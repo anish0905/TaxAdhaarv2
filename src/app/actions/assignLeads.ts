@@ -5,17 +5,18 @@ import { revalidatePath } from "next/cache";
 
 export async function assignLeadsAction(formData: FormData) {
   await connectDB();
-  
   const salesStaffId = formData.get("salesStaffId") as string;
-  const leadIds = formData.getAll("leadIds") as string[]; // Multiple IDs select honge
+  const leadIds = formData.getAll("leadIds") as string[];
 
-  if (!salesStaffId || leadIds.length === 0) return { error: "Please select staff and leads" };
+  if (!salesStaffId || leadIds.length === 0) {
+    return { error: "Kripya leads aur staff dono select karein." };
+  }
 
   await Order.updateMany(
     { _id: { $in: leadIds } },
-    { $set: { assignedSalesId: salesStaffId, leadStatus: 'pending' } }
+    { $set: { assignedSalesId: salesStaffId } }
   );
 
-  revalidatePath("/admin/leads/manage");
-  return { success: "Leads Assigned Successfully" };
+  revalidatePath("/admin/manage-leads");
+  return { success: "Leads successfully assign ho gayi hain!" };
 }
