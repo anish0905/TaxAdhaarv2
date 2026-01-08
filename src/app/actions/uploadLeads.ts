@@ -5,7 +5,7 @@ import { Order } from "@/models/Order";
 import * as XLSX from "xlsx";
 import { revalidatePath } from "next/cache";
 
-export async function uploadAndAssignLeads(formData: FormData) {
+export async function uploadExcelLeads(formData: FormData) {
   try {
     await connectDB();
     
