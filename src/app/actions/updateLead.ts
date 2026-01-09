@@ -1,41 +1,37 @@
-"use server"
+// /app/actions/updateLead.ts
+"use server";
+
 import connectDB from "@/lib/db";
 import { Order } from "@/models/Order";
 import { revalidatePath } from "next/cache";
 
-export async function updateLeadDetails(formData: FormData) {
+export type UpdateLeadState = {
+  success?: string;
+  error?: string;
+};
+
+export async function updateLeadDetails(formData: FormData): Promise<UpdateLeadState> {
   try {
     await connectDB();
-    
-    const id = formData.get("id") as string;
-    const name = formData.get("name") as string;
-    const phone = formData.get("phone") as string; // Check modal name="phone"
-    const service = formData.get("service") as string;
-    const comment = formData.get("comment") as string;
-    const status = formData.get("status") as string;
 
-    console.log("Saving Data:", { id, name, phone, status });
+    const leadId = formData.get("leadId") as string;
+    const clientName = formData.get("clientName") as string;
+    const clientPhone = formData.get("clientPhone") as string;
+    const serviceType = formData.get("serviceType") as string;
 
-    if (!id || !phone) {
-      // Agar phone missing hai toh update mat hone do, varna Required validation fail hoga
-      return { error: "ID or Phone Number is missing" };
-    }
+    if (!leadId) return { error: "Lead ID is required" };
 
-    const updated = await Order.findByIdAndUpdate(id, {
-      clientName: name,
-      clientPhone: phone,
-      serviceType: service,
-      salesRemarks: comment,
-      leadStatus: status,
-      status: status === 'confirmed' ? 'docs_pending' : 'new_lead'
-    }, { new: true }); // updated document return karega
+    await Order.updateOne(
+      { _id: leadId },
+      {
+        $set: { clientName, clientPhone, serviceType },
+      }
+    );
 
-    if (!updated) throw new Error("Database mein record nahi mila");
+    revalidatePath("/sales"); // Update page cache
 
-    revalidatePath("/sales");
-    return { success: true };
-  } catch (error: any) {
-    console.error("Mongoose Update Error:", error.message);
-    return { error: error.message };
+    return { success: "Lead updated successfully!" };
+  } catch (err: any) {
+    return { error: err.message || "Failed to update lead." };
   }
 }

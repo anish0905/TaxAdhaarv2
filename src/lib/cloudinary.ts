@@ -1,4 +1,4 @@
-import { v2 as cloudinary } from 'cloudinary';
+import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -10,8 +10,8 @@ export const uploadToCloudinary = async (fileUri: string, fileName: string) => {
   try {
     const res = await cloudinary.uploader.upload(fileUri, {
       public_id: fileName,
-      resource_type: 'auto',
-      folder: 'tax_portal_docs', // Saare docs is folder mein jayenge
+      resource_type: "auto",
+      folder: "tax_portal_docs",
     });
     return res;
   } catch (error) {
