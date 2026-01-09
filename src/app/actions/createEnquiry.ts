@@ -15,14 +15,13 @@ export async function createEnquiry(formData: FormData) {
       return { error: "Name and Phone are required!" };
     }
 
-    // Nayi lead banayein
     await Order.create({
       clientName: name,
       clientPhone: phone,
       serviceType: service,
-      leadStatus: 'pending', // Shuruat mein pending rahegi
-      status: 'new_lead',
-      salesRemarks: "Website Enquiry", // Pata chale ki website se aayi hai
+      leadStatus: "pending",
+      status: "new_lead",
+      salesRemarks: "Website Enquiry",
     });
 
     revalidatePath("/admin/all-leads");

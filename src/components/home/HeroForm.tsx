@@ -1,23 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { createEnquiry } from "@/app/actions/createEnquiry";
 
 export default function HeroForm() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
+  const formRef = useRef<HTMLFormElement | null>(null);
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     setMessage(null);
 
-    const formData = new FormData(e.currentTarget);
+    const form = formRef.current;
+    if (!form) return; // Safety check
+
+    const formData = new FormData(form);
 
     try {
-      await createEnquiry(formData); // Server action, returns void
-      setMessage({ type: "success", text: "Your request has been submitted successfully!" });
-      e.currentTarget.reset(); // Reset the form
+      const res = await createEnquiry(formData);
+
+      if (res.error) {
+        setMessage({ type: "error", text: res.error });
+      } else if (res.success) {
+        setMessage({ type: "success", text: res.success });
+        form.reset(); // ✅ Now safe
+      }
     } catch (err: any) {
       console.error(err);
       setMessage({ type: "error", text: err.message || "Failed to submit your request." });
@@ -28,7 +38,6 @@ export default function HeroForm() {
 
   return (
     <div className="bg-white p-10 rounded-[3rem] shadow-[0_30px_100px_rgba(0,0,0,0.12)] border border-slate-100 relative overflow-hidden group">
-      {/* Decorative accent */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16 group-hover:bg-blue-500/10 transition-colors"></div>
 
       <div className="relative z-10">
@@ -37,7 +46,6 @@ export default function HeroForm() {
           Get a Callback in 5 Minutes
         </p>
 
-        {/* Success/Error Message */}
         {message && (
           <div className={`p-4 mb-4 rounded-xl text-sm font-bold border ${
             message.type === "success"
@@ -48,7 +56,7 @@ export default function HeroForm() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
           <input
             name="name"
             type="text"
