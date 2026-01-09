@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import EnquiryModal from "./EnquiryModal";
+import EnquiryModal from "../home/EnquiryModal"; // Ensure karein ye file bani hui hai
 
 const services = [
   { 
@@ -34,20 +34,23 @@ const services = [
 ];
 
 export default function ServiceGrid() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedService, setSelectedService] = useState("");
+  // --- Modal States ---
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeService, setActiveService] = useState("");
 
-  const openPopup = (title: string) => {
-    setSelectedService(title);
-    setIsModalOpen(true);
+  const openModal = (serviceTitle: string) => {
+    setActiveService(serviceTitle);
+    setIsOpen(true);
   };
 
   return (
     <section id="services" className="px-6 py-28 max-w-7xl mx-auto">
+      
+      {/* Enquiry Modal Component */}
       <EnquiryModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        serviceName={selectedService}
+        isOpen={isOpen} 
+        onClose={() => setIsOpen(false)} 
+        serviceName={activeService} 
       />
 
       <div className="text-center mb-20 space-y-4">
@@ -78,8 +81,9 @@ export default function ServiceGrid() {
             </p>
 
             <div className="space-y-3">
+              {/* Modal trigger button */}
               <button 
-                onClick={() => openPopup(s.title)}
+                onClick={() => openModal(s.title)}
                 className={`w-full py-4 rounded-2xl text-white font-black text-xs uppercase tracking-widest shadow-xl transition-all active:scale-95 ${s.btnColor}`}
               >
                 Instant Enquiry

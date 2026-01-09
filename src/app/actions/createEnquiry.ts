@@ -2,6 +2,11 @@
 import connectDB from "@/lib/db";
 import { Order } from "@/models/Order";
 import { revalidatePath } from "next/cache";
+// --- YEH TYPE ADD KAREIN AUR EXPORT KAREIN ---
+export type UploadLeadsState = {
+  success?: string;
+  error?: string;
+};
 
 export async function createEnquiry(formData: FormData) {
   try {
