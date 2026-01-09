@@ -37,7 +37,7 @@ export default function HeroForm() {
   }
 
   return (
-    <div className="bg-white p-10 rounded-[3rem] shadow-[0_30px_100px_rgba(0,0,0,0.12)] border border-slate-100 relative overflow-hidden group">
+    <div className=" bg-white p-10 rounded-[3rem] shadow-[0_30px_100px_rgba(0,0,0,0.12)] border border-slate-100 relative overflow-hidden group">
       <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16 group-hover:bg-blue-500/10 transition-colors"></div>
 
       <div className="relative z-10">
