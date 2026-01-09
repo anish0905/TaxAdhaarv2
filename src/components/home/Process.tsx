@@ -7,7 +7,7 @@ export default function Process() {
   ];
 
   return (
-    <section className="py-28 bg-[#020617] text-white overflow-hidden relative">
+    <section id="process" className="py-28 bg-[#020617] text-white overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <h2 className="text-5xl font-black mb-20 text-center tracking-tighter italic">Simple. Fast. <span className="text-blue-500">Secure.</span></h2>
         

@@ -1,8 +1,10 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { useSession, signOut } from "next-auth/react"; // 1. NextAuth hooks import karein
 
 export default function PublicNavbar() {
+  const { data: session } = useSession(); // 2. Session check karein
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -51,22 +53,37 @@ export default function PublicNavbar() {
 
           {/* --- MOBILE & DESKTOP ACTIONS --- */}
           <div className="flex items-center gap-2 md:gap-4">
-            {/* Desktop Only Login */}
-            <Link 
-              href="/login" 
-              className="hidden lg:block text-[11px] font-black uppercase tracking-[0.2em] text-[#020617] hover:bg-slate-100 px-5 py-3 rounded-2xl transition-all"
-            >
-              Log In
-            </Link>
+            
+            {/* Conditional Login/Logout (Desktop) */}
+            {!session ? (
+              <Link 
+                href="/login" 
+                className="hidden lg:block text-[11px] font-black uppercase tracking-[0.2em] text-[#020617] hover:bg-slate-100 px-5 py-3 rounded-2xl transition-all"
+              >
+                Log In
+              </Link>
+            ) : (
+              <button 
+                onClick={() => signOut()}
+                className="hidden lg:block text-[11px] font-black uppercase tracking-[0.2em] text-red-600 hover:bg-red-50 px-5 py-3 rounded-2xl transition-all"
+              >
+                Logout
+              </button>
+            )}
 
-            {/* Compact "Get Started" for all screens but smaller on mobile */}
+            {/* CTA Button: Login hai to Dashboard, nahi hai to Join Now */}
             <Link 
-              href="/login" 
+              href={session ? "/dashboard-redirect" : "/login"} 
               className="bg-[#020617] text-white px-4 py-2.5 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs uppercase tracking-widest hover:bg-blue-600 transition-all active:scale-95 shadow-md"
             >
-              {/* Mobile par chhota text, Desktop par bada */}
-              <span className="md:hidden">Join Now</span>
-              <span className="hidden md:inline">Get Started</span>
+              {session ? (
+                <span>Dashboard</span>
+              ) : (
+                <>
+                  <span className="md:hidden">Join Now</span>
+                  <span className="hidden md:inline">Get Started</span>
+                </>
+              )}
             </Link>
 
             {/* Mobile Menu Toggle Button */}
@@ -100,13 +117,27 @@ export default function PublicNavbar() {
           
           <div className="mt-auto space-y-4">
             <hr className="border-slate-100 mb-6" />
-            <Link 
-              href="/login" 
-              className="block w-full bg-blue-600 text-white text-center py-5 rounded-2xl font-black uppercase tracking-widest text-sm shadow-xl shadow-blue-200"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Sign In to Account
-            </Link>
+            
+            {/* Conditional Button for Mobile Menu */}
+            {!session ? (
+              <Link 
+                href="/login" 
+                className="block w-full bg-blue-600 text-white text-center py-5 rounded-2xl font-black uppercase tracking-widest text-sm shadow-xl shadow-blue-200"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Sign In to Account
+              </Link>
+            ) : (
+              <button 
+                onClick={() => {
+                   setIsMenuOpen(false);
+                   signOut();
+                }}
+                className="block w-full bg-red-600 text-white text-center py-5 rounded-2xl font-black uppercase tracking-widest text-sm shadow-xl shadow-red-200"
+              >
+                Logout Account
+              </button>
+            )}
           </div>
         </div>
       </div>
