@@ -4,15 +4,15 @@ import Link from "next/link";
 import EnquiryModal from "../home/EnquiryModal"; // Ensure karein ye file bani hui hai
 
 const services = [
-  { 
-    slug: "income-tax",
-    title: "Income Tax", 
-    desc: "Expert assisted ITR filing with maximum deductions and accurate tax planning.", 
-    icon: "💎", 
-    color: "from-blue-50 to-white", 
-    border: "border-blue-100",
-    btnColor: "bg-blue-600 shadow-blue-100"
-  },
+ { 
+    slug: "income-tax-filing",
+    title: "ITR Filing", 
+    desc: "Ensure accurate income tax returns and maximize your tax savings effortlessly.", 
+    icon: "📑", 
+    color: "from-orange-50 to-white", 
+    border: "border-orange-100",
+    btnColor: "bg-orange-600 shadow-orange-100"
+},
   { 
     slug: "gst-filing",
     title: "GST Filing", 
@@ -21,6 +21,53 @@ const services = [
     color: "from-emerald-50 to-white", 
     border: "border-emerald-100",
     btnColor: "bg-emerald-600 shadow-emerald-100"
+  },
+   { 
+    slug: "company-incorporation",
+    title: "Company Registration", 
+    desc: "Register your Private Limited or LLP company with expert legal guidance and filing.", 
+    icon: "🏢", 
+    color: "from-blue-50 to-white", 
+    border: "border-blue-100",
+    btnColor: "bg-blue-600 shadow-blue-100"
+},
+{ 
+    slug: "trademark-registration",
+    title: "Trademark (IPR)", 
+    desc: "Protect your brand identity and logo with a secure trademark application.", 
+    icon: "🛡️", 
+    color: "from-purple-50 to-white", 
+    border: "border-purple-100",
+    btnColor: "bg-purple-600 shadow-purple-100"
+},
+
+  { 
+    slug: "gst-registration",
+    title: "GST Registration", 
+    desc: "Complete GST registration for your business with all necessary documentation.", 
+    icon: "⚡", 
+    color: "from-emerald-50 to-white", 
+    border: "border-emerald-100",
+    btnColor: "bg-emerald-600 shadow-emerald-100"
+  },
+  { 
+    slug: "gst-returns",
+    title: "Monthly Returns", 
+    desc: "Hassle-free filing of GSTR-1, GSTR-3B, and annual returns to stay compliant.", 
+    icon: "📅", 
+    color: "from-sky-50 to-white", 
+    border: "border-sky-100",
+    btnColor: "bg-sky-600 shadow-sky-100"
+  },
+  
+  { 
+    slug: "lut-filing",
+    title: "LUT Filing", 
+    desc: "File Letter of Undertaking (LUT) to export goods or services without paying IGST.", 
+    icon: "✈️", 
+    color: "from-indigo-50 to-white", 
+    border: "border-indigo-100",
+    btnColor: "bg-indigo-600 shadow-indigo-100"
   },
   { 
     slug: "business-setup",
