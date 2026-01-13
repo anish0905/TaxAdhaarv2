@@ -1,122 +1,153 @@
 "use client";
-import { registerUser } from "@/app/actions/register";
-import { useState } from "react";
+import { registerUser, verifyOTP } from "@/app/actions/register";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import PublicNavbar from "@/components/Navbar"; // Navbar import karein
+import PublicNavbar from "@/components/Navbar";
 
 export default function RegisterPage() {
+  const [step, setStep] = useState<'register' | 'otp'>('register');
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
   const [msg, setMsg] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const [loading, setLoading] = useState(false);
+  const [timer, setTimer] = useState(60);
   const router = useRouter();
 
-  async function handleSubmit(formData: FormData) {
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (step === 'otp' && timer > 0) {
+      interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
+    }
+    return () => clearInterval(interval);
+  }, [step, timer]);
+
+  async function handleRegister(formData: FormData) {
     setLoading(true);
     setMsg(null);
     const res = await registerUser(formData);
-    
     if (res.error) {
       setMsg({ type: 'error', text: res.error });
       setLoading(false);
     } else {
-      setMsg({ type: 'success', text: "Account created! Redirecting..." });
+      setEmail(formData.get("email") as string);
+      setMsg({ type: 'success', text: "OTP sent to your email!" });
+      setStep('otp');
+      setLoading(false);
+    }
+  }
+
+  async function handleVerifyOtp(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    const res = await verifyOTP(email, otp);
+    if (res.error) {
+      setMsg({ type: 'error', text: res.error });
+      setLoading(false);
+    } else {
+      setMsg({ type: 'success', text: "Verified! Redirecting..." });
       setTimeout(() => router.push("/login"), 2000);
     }
   }
 
   return (
-    <div className="bg-white min-h-screen">
-      <PublicNavbar />
-      
-      {/* pt-20: Navbar ki space chhodne ke liye
-          lg:h-[calc(100vh-80px)]: Desktop par screen ke hisaab se height fit karne ke liye
-      */}
-      <div className="pt-20 flex flex-col lg:flex-row min-h-screen lg:h-[calc(100vh-5px)] overflow-hidden selection:bg-blue-100">
+    <div className="flex flex-col h-screen overflow-hidden bg-white">
+      {/* --- NAVBAR: 20% HEIGHT ON DESKTOP --- */}
+      <header className="h-[10vh] lg:h-[10vh] flex items-center border-b border-slate-50">
+        <PublicNavbar />
+      </header>
+
+      {/* --- MAIN CONTENT: 80% HEIGHT ON DESKTOP --- */}
+      <main className="h-[90vh] lg:h-[90vh] flex flex-col lg:flex-row overflow-hidden">
         
-        {/* --- LEFT SIDE: BRANDING --- */}
-        <div className="hidden lg:flex lg:w-1/2 bg-[#020617] p-16 flex-col justify-center text-white relative overflow-hidden">
-          <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-600 rounded-full blur-[120px] opacity-20 animate-pulse"></div>
-          <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-indigo-500 rounded-full blur-[100px] opacity-10 animate-bounce transition-all duration-1000"></div>
-
-          <div className="relative z-10 space-y-8">
-            <div className="inline-block px-4 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-[10px] font-black uppercase tracking-widest">
-              ★ The Future of Tax Filing
-            </div>
-            <h2 className="text-7xl font-black leading-[0.95] tracking-tighter">
-              Start Your <br/> 
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Journey.</span>
+        {/* LEFT SIDE: BRANDING (Desktop only) */}
+        <div className="hidden lg:flex lg:w-1/2 bg-[#020617] p-12 flex-col justify-center text-white relative overflow-hidden">
+          <div className="absolute top-[-10%] right-[-10%] w-[400px] h-[400px] bg-blue-600 rounded-full blur-[100px] opacity-20"></div>
+          
+          <div className="relative z-10 space-y-6">
+            <h2 className="text-6xl font-black leading-[1] tracking-tighter">
+              {step === 'register' ? "Start Your" : "Check Your"} <br/> 
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">
+                {step === 'register' ? "Journey." : "Inbox."}
+              </span>
             </h2>
-            <p className="text-slate-400 text-xl max-w-md font-medium leading-relaxed">
-              Create your account in seconds and get expert-assisted tax filing today.
+            <p className="text-slate-400 text-lg max-w-sm font-medium">
+              {step === 'register' ? "Fast, Secure, and Professional Tax Filing." : "We've sent a code to verify your identity."}
             </p>
-          </div>
-
-          <div className="absolute bottom-10 left-16 z-10 flex items-center gap-6 opacity-40">
-            <p className="text-[10px] font-black uppercase tracking-[0.3em]">© 2026 TaxPortal India</p>
-            <div className="h-[1px] w-12 bg-slate-700"></div>
-            <p className="text-[10px] font-black uppercase tracking-widest italic">Encrypted</p>
           </div>
         </div>
 
-        {/* --- RIGHT SIDE: REGISTER FORM --- */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white overflow-y-auto custom-scrollbar">
-          <div className="max-w-md w-full py-10">
-            
-            <div className="mb-8 text-center lg:text-left">
-              <h1 className="text-5xl font-black text-[#020617] tracking-tight mb-3">Register.</h1>
-              <p className="text-slate-400 font-bold text-xs uppercase tracking-[0.2em]">
-                Create your secure portal account
-              </p>
+        {/* RIGHT SIDE: FORM (Scrollable for Mobile) */}
+        <div className="w-full lg:w-1/2 flex items-start lg:items-center justify-center p-6 lg:p-12 overflow-y-auto bg-white">
+          <div className="max-w-md w-full py-6">
+            <div className="mb-6 text-center lg:text-left">
+              <h1 className="text-4xl font-black text-[#020617] tracking-tight">
+                {step === 'register' ? "Register." : "Verify."}
+              </h1>
             </div>
 
             {msg && (
-              <div className={`p-4 mb-6 rounded-[1.5rem] text-xs font-black border flex items-center gap-3 animate-in fade-in slide-in-from-top-2 ${
+              <div className={`p-3 mb-4 rounded-2xl text-[11px] font-bold border flex items-center gap-2 ${
                 msg.type === 'success' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-red-50 text-red-700 border-red-100'
               }`}>
-                <div className={`w-5 h-5 rounded-full flex items-center justify-center text-white ${msg.type === 'success' ? 'bg-green-600' : 'bg-red-600'}`}>
-                  {msg.type === 'success' ? '✓' : '!'}
-                </div>
+                <span className="flex-shrink-0 w-4 h-4 rounded-full bg-current opacity-20" />
                 {msg.text}
               </div>
             )}
 
-            <form action={handleSubmit} className="grid grid-cols-1 gap-4">
-              <div className="space-y-1">
-                <label className="text-[10px] font-black text-slate-400 uppercase ml-4 tracking-widest">Full Name</label>
-                <input name="name" className="w-full px-7 py-4 rounded-[1.5rem] border border-slate-100 bg-slate-50/50 focus:bg-white focus:border-blue-500 focus:ring-[8px] focus:ring-blue-50 outline-none transition-all duration-500 font-bold text-slate-900 shadow-sm" placeholder="Rahul Kumar" required />
-              </div>
+            {step === 'register' ? (
+              <form action={handleRegister} className="grid grid-cols-1 gap-3">
+                <InputField label="Full Name" name="name" type="text" placeholder="Rahul Kumar" />
+                <InputField label="Email" name="email" type="email" placeholder="name@company.com" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <InputField label="Phone" name="phone" type="text" placeholder="+91..." />
+                    <InputField label="Password" name="password" type="password" placeholder="••••" />
+                </div>
+                <button type="submit" disabled={loading} className="w-full bg-[#020617] text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-600 transition-all mt-2">
+                  {loading ? "Creating..." : "Create Account"}
+                </button>
+              </form>
+            ) : (
+              <form onSubmit={handleVerifyOtp} className="space-y-4">
+                <input 
+                  type="text" maxLength={6} value={otp} onChange={(e) => setOtp(e.target.value)}
+                  className="text-black w-full px-6 py-4 rounded-2xl border-2 border-blue-100 bg-blue-50/30 text-center text-2xl font-black tracking-[0.5em] focus:border-blue-500 outline-none transition-all"
+                  placeholder="000000" required 
+                />
+                <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-[#020617] transition-all">
+                  {loading ? "Verifying..." : "Confirm Code"}
+                </button>
+                <div className="text-center">
+                   {timer > 0 ? (
+                     <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Resend in {timer}s</p>
+                   ) : (
+                     <button type="button" onClick={() => setTimer(60)} className="text-blue-600 text-[10px] font-black uppercase tracking-widest border-b border-blue-200">Resend OTP</button>
+                   )}
+                </div>
+              </form>
+            )}
 
-              <div className="space-y-1">
-                <label className="text-[10px] font-black text-slate-400 uppercase ml-4 tracking-widest">Email Address</label>
-                <input name="email" type="email" className="w-full px-7 py-4 rounded-[1.5rem] border border-slate-100 bg-slate-50/50 focus:bg-white focus:border-blue-500 focus:ring-[8px] focus:ring-blue-50 outline-none transition-all duration-500 font-bold text-slate-900 shadow-sm" placeholder="name@company.com" required />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-[10px] font-black text-slate-400 uppercase ml-4 tracking-widest">Phone Number</label>
-                <input name="phone" className="w-full px-7 py-4 rounded-[1.5rem] border border-slate-100 bg-slate-50/50 focus:bg-white focus:border-blue-500 focus:ring-[8px] focus:ring-blue-50 outline-none transition-all duration-500 font-bold text-slate-900 shadow-sm" placeholder="+91 98XXX XXXXX" required />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-[10px] font-black text-slate-400 uppercase ml-4 tracking-widest">Secure Password</label>
-                <input name="password" type="password" className="w-full px-7 py-4 rounded-[1.5rem] border border-slate-100 bg-slate-50/50 focus:bg-white focus:border-blue-500 focus:ring-[8px] focus:ring-blue-50 outline-none transition-all duration-500 font-bold text-slate-900 shadow-sm" placeholder="••••••••" required />
-              </div>
-
-              <button type="submit" disabled={loading} className="w-full bg-[#020617] text-white py-5 rounded-[1.5rem] font-black text-sm uppercase tracking-[0.2em] hover:bg-blue-600 shadow-xl shadow-slate-200 hover:shadow-blue-300 transition-all duration-500 active:scale-[0.98] mt-4">
-                {loading ? "Establishing..." : "Create Account"}
-              </button>
-            </form>
-
-            <div className="mt-4 text-center border-t border-slate-50 pt-4">
-              <p className="text-slate-400 font-bold text-sm">
-                Already have an account?{" "}
-                <Link href="/login" className="text-blue-600 hover:text-blue-700 transition-all uppercase tracking-widest text-[10px] border-b-2 border-blue-50 ml-2">
-                  Sign In Now
-                </Link>
-              </p>
-            </div>
+            <p className="mt-6 text-center text-slate-400 font-bold text-xs">
+              Already have an account? 
+              <Link href="/login" className="text-blue-600 ml-2 uppercase tracking-tighter border-b border-blue-100">Sign In</Link>
+            </p>
           </div>
         </div>
-      </div>
+      </main>
+    </div>
+  );
+}
+
+// Small Helper Component for Inputs
+function InputField({ label, name, type, placeholder }: any) {
+  return (
+    <div className="space-y-1">
+      <label className="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">{label}</label>
+      <input 
+        name={name} type={type} required 
+        className="w-full px-5 py-3.5 rounded-2xl border border-slate-100 bg-slate-50/50 focus:bg-white focus:border-blue-500 outline-none transition-all font-bold text-sm" 
+        placeholder={placeholder} 
+      />
     </div>
   );
 }

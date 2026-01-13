@@ -76,13 +76,13 @@ export default function EnquiryModal({
         >
           <button
             onClick={onClose}
-            className="absolute top-6 right-6 text-xl font-bold text-slate-400 hover:text-black"
+            className="absolute top-6 right-6 text-xl font-bold text-slate-800 hover:text-black"
           >
             ✕
           </button>
 
           <div className="text-center mb-6">
-            <h3 className="text-3xl font-black">Quick Enquiry</h3>
+            <h3 className="text-3xl font-black text-black">Quick Enquiry</h3>
             <p className="text-blue-600 text-xs font-bold uppercase tracking-widest mt-2">
               Service: {serviceName}
             </p>
@@ -105,14 +105,14 @@ export default function EnquiryModal({
               name="name"
               placeholder="Full Name"
               required
-              className="w-full px-6 py-4 rounded-2xl border bg-slate-50 font-bold"
+              className="w-full px-6 py-4 rounded-2xl border bg-slate-50 font-bold text-black"
             />
 
             <input
               name="phone"
               placeholder="Phone Number"
               required
-              className="w-full px-6 py-4 rounded-2xl border bg-slate-50 font-bold"
+              className="w-full px-6 py-4 rounded-2xl border bg-slate-50 font-bold text-black"
             />
 
             <button

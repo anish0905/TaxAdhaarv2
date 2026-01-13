@@ -33,7 +33,7 @@ export default function LoginPage() {
     <div className="bg-white min-h-screen">
       <PublicNavbar />
       
-      <div className="flex min-h-screen lg:h-screen pt-20 lg:pt-0 selection:bg-blue-100 overflow-hidden">
+      <div className="flex min-h-screen lg:h-screen pt-20 lg:pt-0 selection:bg-blue-100 overflow-hidden mt-10">
         
         {/* --- LEFT SIDE: BRANDING (Visible only on Large Screens) --- */}
         <div className="hidden lg:flex lg:w-1/2 bg-[#020617] p-16 flex-col justify-between text-white relative overflow-hidden">
