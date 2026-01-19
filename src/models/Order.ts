@@ -3,48 +3,52 @@ import mongoose from "mongoose";
 const DocumentSchema = new mongoose.Schema({
   fileName: String,
   fileUrl: String,
-  publicId: String,
-  uploadedBy: { type: String, enum: ['client', 'admin', 'sales'] },
+  docType: String,
+  uploadedBy: { type: String, default: 'client' },
   uploadedAt: { type: Date, default: Date.now }
 });
 
 const OrderSchema = new mongoose.Schema({
-  // Client Details
   clientId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-serviceType: { 
-    type: String, 
-    // enum hata diya taaki koi bhi string accept ho jaye
-    default: 'OTHER' 
+
+  // Nayi fields jo aap use kar rahe hain:
+  assignedSalesId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User', // Ye 'User' model se link hoga
+    default: null 
   },
-  clientName: { type: String, required: true },
-  clientPhone: { type: String, required: true },
-  // 1. Sales Phase (Excel Leads)
   leadStatus: { 
     type: String, 
-    enum: ['pending', 'called', 'interested', 'not_interested', 'confirmed'], 
+    enum: ['pending', 'called', 'confirmed', 'rejected'], 
     default: 'pending' 
   },
-  assignedSalesId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Call Center Staff
-  salesRemarks: String,
-
-  // 2. Verification & Pricing Phase
-  isVerified: { type: Boolean, default: false },
   quotedAmount: { type: Number, default: 0 },
-  paymentStatus: { type: String, enum: ['pending', 'paid'], default: 'pending' },
-
-  // 3. Document Management (Hybrid)
-  documents: [DocumentSchema],
-
-  // 4. Execution Phase
-  assignedStaffId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // CA Staff
-status: { 
-    type: String, 
-    // Yahan 'new_lead' aur 'docs_pending' add karna zaroori hai
-    enum: ['new_lead', 'docs_pending', 'submitted', 'verified', 'assigned', 'in-progress', 'completed'], 
-    default: 'new_lead' 
+  paymentStatus: { type: String, default: 'unpaid' },
+  paymentDate: { type: Date },
+  // Yahan tak nayi fields khatam
+  serviceType: String,
+  clientName: String,
+  clientPhone: String,
+  billing: {
+    taxAmount: { type: Number, default: 0 },
+    serviceCharge: { type: Number, default: 0 },
+    gstAmount: { type: Number, default: 0 },
+    discount: { type: Number, default: 0 },
+    totalAmount: { type: Number, default: 0 }
   },
-
-  finalReceiptUrl: String, // Filing ke baad acknowledgment PDF
+  documents: [DocumentSchema],
+status: { 
+  type: String, 
+  enum: [
+    'new_lead', 
+    'under_review', 
+    'payment_pending', 
+    'processing', // <--- Payment ke baad Staff yahan kaam karega
+    'completed', 
+    'rejected'
+  ], 
+  default: 'new_lead' 
+},
   createdAt: { type: Date, default: Date.now }
 });
 

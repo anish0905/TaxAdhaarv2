@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { assignLeadsAction } from "@/app/actions/assignLeads";
+import { assignLeadsAction } from "@/app/actions/assignLeadsAction";
 
 export default function AssignLeadsForm({ unassignedLeads, salesStaff }: any) {
   const [loading, setLoading] = useState(false);

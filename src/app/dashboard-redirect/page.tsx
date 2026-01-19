@@ -13,7 +13,7 @@ export default function DashboardRedirect() {
       if (role === "admin") router.push("/admin");
       else if (role === "sales") router.push("/sales");
       else if (role === "staff") router.push("/staff");
-      else router.push("/client");
+      else router.push("/dashboard");
     }
   }, [status, session, router]);
 

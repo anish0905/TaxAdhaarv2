@@ -1,7 +1,10 @@
 import connectDB from "@/lib/db";
 import { Order } from "@/models/Order";
 import { User } from "@/models/User";
-import { assignLeadsAction } from "@/app/actions/assignLeads";
+import { assignLeadsAction } from "@/app/actions/assignLeadsAction";
+export const dynamic = "force-dynamic"; 
+
+
 
 export default async function AdminManageLeads() {
   await connectDB();
@@ -24,7 +27,12 @@ export default async function AdminManageLeads() {
         </p>
       </div>
 
-      <form action={assignLeadsAction}>
+        <form 
+  action={async (formData: FormData) => {
+    "use server"; // Agar action file bahar hai toh iski zaroorat nahi, par safe hai
+    await assignLeadsAction(formData);
+  }}
+>
         {/* Action Bar */}
         <div className="bg-white p-4 rounded-xl shadow-sm border mb-6 flex items-center justify-between sticky top-0 z-10">
           <div className="flex items-center gap-4">

@@ -1,10 +1,9 @@
 import connectDB from "@/lib/db";
 import { Order } from "@/models/Order";
 import { User } from "@/models/User";
-import { assignLeadsAction } from "@/app/actions/assignLeads";
+import { assignLeadsAction } from "@/app/actions/assignLeadsAction"; // Check your path
+import { UserPlus, ShieldCheck, CheckSquare, Users } from "lucide-react";
 
-// --- DEPLOYMENT FIX 1: Force Dynamic Rendering ---
-// Isse Next.js purana cached data nahi dikhayega balki har request pe DB check karega.
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
@@ -12,122 +11,116 @@ export default async function AdminManageLeads() {
   try {
     await connectDB();
 
-    // --- OPTIMIZATION: Lean Queries ---
-    // .lean() use karne se performance fast hoti hai aur POJO data milta hai
     const leadsRaw = await Order.find({
       assignedSalesId: { $exists: false },
-    })
-    .sort({ createdAt: -1 })
-    .lean();
+    }).sort({ createdAt: -1 }).lean();
 
     const staffRaw = await User.find({ role: "sales" }).lean();
 
-    // --- DEPLOYMENT FIX 2: Serialization ---
-    // MongoDB ke _id object ko stringify karna zaroori hai deployment ke liye
     const unassignedLeads = JSON.parse(JSON.stringify(leadsRaw));
     const salesStaff = JSON.parse(JSON.stringify(staffRaw));
 
     return (
-      <div className="max-w-6xl mx-auto p-4 md:p-10 min-h-screen">
+      <div className="max-w-6xl mx-auto p-4 md:p-10 min-h-screen space-y-8">
         {/* Header Section */}
-        <div className="mb-10">
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight italic">
-            Lead Distribution.
-          </h1>
-          <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.2em] mt-2">
-            Assign {unassignedLeads.length} pending enquiries to your sales team
-          </p>
+        <div className="flex flex-col md:flex-row justify-between items-end gap-6">
+          <div>
+            <h1 className="text-5xl font-black italic uppercase tracking-tighter text-slate-900 leading-none">
+              Lead <span className="text-blue-600">Allocation</span>
+            </h1>
+            <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-3 flex items-center gap-2">
+              <ShieldCheck size={14} className="text-emerald-500" /> 
+              Distribute pending enquiries to sales team
+            </p>
+          </div>
+          <div className="bg-white px-8 py-4 rounded-3xl shadow-sm border border-slate-100 text-center">
+             <p className="text-[10px] font-black text-slate-400 uppercase">Unassigned</p>
+             <p className="text-2xl font-black text-blue-600 italic">{unassignedLeads.length}</p>
+          </div>
         </div>
 
-        <form action={assignLeadsAction}>
-          {/* Sticky Action Bar */}
-          <div className="bg-white/80 backdrop-blur-md p-4 rounded-[2rem] border border-slate-100 shadow-xl mb-8 flex flex-col md:flex-row items-center justify-between sticky top-24 z-50 gap-4">
+        {/* Form Wrapper with TS Fix */}
+        <form action={async (formData) => {
+          "use server";
+          const res = await assignLeadsAction(formData);
+          // Optional: Handle response with a toast/alert in a client component
+        }}>
+          
+          {/* STICKY ACTION BAR */}
+          <div className="bg-[#020617] p-6 rounded-[2.5rem] shadow-2xl mb-8 sticky top-24 z-30 border border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-4 w-full md:w-auto">
-              <div className="bg-blue-600 text-white p-2 rounded-xl">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a7 7 0 017 7v1H1v-1a7 7 0 017-7z" />
-                </svg>
+              <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+                <Users size={22} />
               </div>
-              <select
-                name="salesStaffId"
-                required
-                className="w-full md:w-64 border-none bg-slate-100/50 px-4 py-3 rounded-xl text-sm font-black text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none"
-              >
-                <option value="">Select Sales Executive</option>
-                {salesStaff.map((staff: any) => (
-                  <option key={staff._id} value={staff._id}>
-                    {staff.name.toUpperCase()}
-                  </option>
-                ))}
-              </select>
+              <div className="flex-1">
+                <label className="text-[9px] font-black text-blue-400 uppercase tracking-widest block mb-1">Target Executive</label>
+                <select
+                  name="salesStaffId"
+                  required
+                  className="bg-transparent text-white font-black uppercase text-xs focus:outline-none cursor-pointer w-full"
+                >
+                  <option value="" className="text-slate-900">-- Choose Executive --</option>
+                  {salesStaff.map((staff: any) => (
+                    <option key={staff._id} value={staff._id} className="text-slate-900">
+                      {staff.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             <button
               type="submit"
-              className="w-full md:w-auto bg-[#020617] text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-blue-600 hover:shadow-2xl hover:shadow-blue-200 transition-all active:scale-95"
+              className="w-full md:w-auto bg-white text-slate-900 px-10 py-5 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-blue-600 hover:text-white transition-all shadow-xl active:scale-95"
             >
               Confirm Assignment
             </button>
           </div>
 
-          {/* Optimized Table UI */}
-          <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-2xl shadow-slate-200/50 overflow-hidden">
+          {/* TABLE UI */}
+          <div className="bg-white rounded-[3.5rem] shadow-xl shadow-slate-200/60 border border-slate-100 overflow-hidden">
             <table className="w-full text-left">
-              <thead>
-                <tr className="bg-slate-50/50 border-b border-slate-100">
-                  <th className="p-6 w-12 text-center">
-                    <div className="w-4 h-4 rounded border-2 border-slate-300 mx-auto" />
-                  </th>
-                  <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Client Info</th>
-                  <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Target Service</th>
-                  <th className="p-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Enquiry Date</th>
+              <thead className="bg-slate-50/50 text-slate-400 text-[9px] font-black uppercase tracking-widest border-b">
+                <tr>
+                  <th className="px-10 py-7 w-12 text-center"><CheckSquare size={16} /></th>
+                  <th className="px-8 py-7">Client Identity</th>
+                  <th className="px-8 py-7">Service Requested</th>
+                  <th className="px-8 py-7">Enquiry Date</th>
                 </tr>
               </thead>
-
               <tbody className="divide-y divide-slate-50">
                 {unassignedLeads.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="p-20 text-center">
-                      <div className="flex flex-col items-center opacity-30">
-                        <span className="text-6xl mb-4">✨</span>
-                        <p className="font-black uppercase tracking-widest text-xs">Inbox is Clean</p>
+                    <td colSpan={4} className="px-8 py-32 text-center">
+                      <div className="flex flex-col items-center gap-4 opacity-20">
+                         <ShieldCheck size={64} />
+                         <p className="font-black uppercase text-sm tracking-widest">Everything is Assigned</p>
                       </div>
                     </td>
                   </tr>
                 ) : (
                   unassignedLeads.map((lead: any) => (
-                    <tr key={lead._id} className="hover:bg-blue-50/30 transition-all group">
-                      <td className="p-6 text-center">
+                    <tr key={lead._id} className="hover:bg-blue-50/40 transition-all group">
+                      <td className="px-10 py-7 text-center">
                         <input
                           type="checkbox"
                           name="leadIds"
                           value={lead._id}
-                          className="w-5 h-5 accent-blue-600 cursor-pointer rounded-lg"
+                          className="w-5 h-5 rounded-lg border-slate-300 text-blue-600 focus:ring-blue-600 cursor-pointer"
                         />
                       </td>
-
-                      <td className="p-6">
-                        <p className="font-black text-slate-900 text-lg group-hover:text-blue-600 transition-colors">
-                          {lead.clientName}
-                        </p>
-                        <p className="text-xs font-bold text-slate-400 tracking-tighter">
-                          +91 {lead.clientPhone}
-                        </p>
+                      <td className="px-8 py-7">
+                        <p className="font-black text-slate-900 text-sm uppercase leading-none mb-1.5">{lead.clientName}</p>
+                        <p className="text-[10px] text-slate-400 font-bold tracking-tight">{lead.clientPhone}</p>
                       </td>
-
-                      <td className="p-6">
-                        <span className="text-[10px] font-black uppercase px-4 py-2 bg-white border border-slate-100 text-slate-600 rounded-full shadow-sm group-hover:border-blue-200 group-hover:text-blue-600">
+                      <td className="px-8 py-7">
+                        <span className="text-[9px] font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-lg uppercase w-fit border border-blue-100">
                           {lead.serviceType}
                         </span>
                       </td>
-
-                      <td className="p-6">
-                        <p className="text-xs font-bold text-slate-500">
-                          {new Date(lead.createdAt).toLocaleDateString('en-IN', {
-                            day: '2-digit',
-                            month: 'short',
-                            year: 'numeric'
-                          })}
+                      <td className="px-8 py-7">
+                        <p className="text-[10px] font-bold text-slate-500 uppercase">
+                          {new Date(lead.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
                         </p>
                       </td>
                     </tr>
@@ -141,9 +134,8 @@ export default async function AdminManageLeads() {
     );
   } catch (error) {
     return (
-      <div className="p-20 text-center">
-        <h2 className="text-red-500 font-bold">Database Connection Error</h2>
-        <p className="text-slate-400 text-sm">Please check MongoDB IP Whitelisting.</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="font-black text-red-500 uppercase tracking-widest">Critical: Database Link Failed</p>
       </div>
     );
   }
