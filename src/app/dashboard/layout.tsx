@@ -12,10 +12,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { name: "Overview", href: "/dashboard", icon: "🏠" },
     { name: "Services", href: "/dashboard/#services-section", icon: "🛠️" },
     { name: "My Orders", href: "/dashboard/orders", icon: "🛒" },
-    { name: "My Profile", href: "/dashboard/profile", icon: "👤" },
-    { name: "My Documents", href: "/dashboard/documents", icon: "📁" },
-    { name: "Payments", href: "/dashboard/payments", icon: "💳" },
-    { name: "Support", href: "/dashboard/support", icon: "💬" },
+    { name: "My Profile", href: "/dashboard/client/profile", icon: "👤" },
+    { name: "My Documents", href: "/dashboard/client/documents", icon: "📁" },
+    { name: "Payments", href: "/dashboard/client/payments", icon: "💳" },
+    { name: "Support", href: "/dashboard/client/support", icon: "💬" },
   ];
 
   return (

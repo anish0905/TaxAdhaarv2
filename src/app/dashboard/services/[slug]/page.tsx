@@ -43,7 +43,7 @@ export default function DocumentProcessPage({ params }: { params: Promise<{ slug
     }
     setIsSubmitting(true);
     const res = await createFinalOrder(slug.toUpperCase(), filesList);
-    if (res.success) router.push("/dashboard?msg=success");
+    if (res.success) router.push("/dashboard/orders?msg=success");
     else alert(res.error);
     setIsSubmitting(false);
   };
