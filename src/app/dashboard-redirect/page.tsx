@@ -12,7 +12,7 @@ export default function DashboardRedirect() {
       const role = (session?.user as any).role;
       if (role === "admin") router.push("/admin");
       else if (role === "sales") router.push("/sales");
-      else if (role === "staff") router.push("/staff");
+      else if (role === "staff") router.push("/staff/dashboard");
       else router.push("/dashboard");
     }
   }, [status, session, router]);
