@@ -2,7 +2,7 @@
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import Link from "next/link";
-import PublicNavbar from "@/components/Navbar"; // Ensure aapne Navbar import kiya hai
+import PublicNavbar from "@/components/Navbar";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -15,17 +15,22 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    try {
+      const res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
 
-    if (res?.error) {
-      setError("Aapka Email ya Password sahi nahi hai.");
+      if (res?.error) {
+        setError("Aapka Email ya Password sahi nahi hai.");
+        setLoading(false);
+      } else {
+        window.location.href = "/dashboard-redirect";
+      }
+    } catch (err) {
+      setError("System error. Please try again later.");
       setLoading(false);
-    } else {
-      window.location.href = "/dashboard-redirect";
     }
   };
 
@@ -33,16 +38,13 @@ export default function LoginPage() {
     <div className="bg-white min-h-screen">
       <PublicNavbar />
       
-      <div className="flex min-h-screen lg:h-screen pt-20 lg:pt-0 selection:bg-blue-100 overflow-hidden mt-10">
+      <div className="flex min-h-screen lg:h-screen pt-20 lg:pt-0 selection:bg-blue-100 overflow-hidden">
         
-        {/* --- LEFT SIDE: BRANDING (Visible only on Large Screens) --- */}
+        {/* --- LEFT SIDE: BRANDING --- */}
         <div className="hidden lg:flex lg:w-1/2 bg-[#020617] p-16 flex-col justify-between text-white relative overflow-hidden">
           <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-600 rounded-full blur-[120px] opacity-20 animate-pulse"></div>
-          <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-indigo-500 rounded-full blur-[100px] opacity-10 animate-bounce transition-all duration-1000"></div>
-
+          
           <div className="relative z-10">
-           
-            
             <div className="mt-32 space-y-8">
               <div className="inline-block px-4 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-[10px] font-black uppercase tracking-widest">
                 ★ The Future of Tax Filing
@@ -52,7 +54,7 @@ export default function LoginPage() {
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Connected.</span>
               </h2>
               <p className="text-slate-400 text-xl max-w-md font-medium leading-relaxed">
-                Login to access India's most advanced AI-powered tax dashboard. 
+                Login to access India&apos;s most advanced AI-powered tax dashboard. 
               </p>
             </div>
           </div>
@@ -66,13 +68,9 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* --- RIGHT SIDE: LOGIN FORM (Mobile Optimized) --- */}
-        <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-6 md:p-12 bg-white relative overflow-y-auto">
+        {/* --- RIGHT SIDE: LOGIN FORM --- */}
+        <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-6 md:p-12 bg-white relative">
           
-          {/* Logo for Mobile (Hidden on Desktop) */}
-        
-            
-
           <div className="max-w-md w-full relative">
             <div className="mb-10 text-center lg:text-left">
               <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">Welcome back.</h1>
@@ -83,7 +81,7 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit} className="space-y-5">
               {error && (
-                <div className="bg-red-50 text-red-600 p-5 rounded-[1.5rem] text-xs font-black border border-red-100 flex items-center gap-3 animate-shake">
+                <div className="bg-red-50 text-red-600 p-5 rounded-[1.5rem] text-xs font-black border border-red-100 flex items-center gap-3">
                   <div className="w-5 h-5 bg-red-600 text-white rounded-full flex items-center justify-center flex-shrink-0 text-[10px]">!</div>
                   {error}
                 </div>
@@ -93,6 +91,7 @@ export default function LoginPage() {
                 <label className="text-[10px] font-black text-slate-800 uppercase ml-4 tracking-[0.2em]">Email Account</label>
                 <input 
                   type="email" 
+                  autoComplete="email"
                   className="w-full px-6 md:px-8 py-4 md:py-5 rounded-[1.5rem] md:rounded-[2rem] border border-slate-100 bg-slate-50/50 focus:bg-white focus:border-blue-500 focus:ring-[8px] focus:ring-blue-50 outline-none transition-all duration-500 font-bold text-slate-900 placeholder:text-slate-500 shadow-sm"
                   placeholder="name@company.com"
                   value={email}
@@ -108,6 +107,7 @@ export default function LoginPage() {
                 </div>
                 <input 
                   type="password" 
+                  autoComplete="current-password"
                   className="w-full px-6 md:px-8 py-4 md:py-5 rounded-[1.5rem] md:rounded-[2rem] border border-slate-100 bg-slate-50/50 focus:bg-white focus:border-blue-500 focus:ring-[8px] focus:ring-blue-50 outline-none transition-all duration-500 font-bold text-slate-900 placeholder:text-slate-500 shadow-sm"
                   placeholder="••••••••"
                   value={password}
@@ -127,7 +127,7 @@ export default function LoginPage() {
 
             <div className="mt-10 md:mt-12 text-center">
               <p className="text-slate-800 font-bold text-sm">
-                Don't have a secure account? <br/>
+                Don&apos;t have a secure account? <br/>
                 <Link href="/register" className="text-blue-600 hover:text-blue-700 transition-all uppercase tracking-[0.2em] text-[10px] mt-4 inline-block border-b-2 border-blue-50 pb-1">
                   Establish New Account
                 </Link>

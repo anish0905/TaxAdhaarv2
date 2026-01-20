@@ -13,6 +13,14 @@ const UserSchema = new mongoose.Schema({
   isVerified: { type: Boolean, default: false },
   otp: { type: String },
   otpExpires: { type: Date },
+
+//referral system fields
+  referralCode: { type: String, unique: true },
+referredBy: { type: String }, // Jisne invite kiya uska code
+referralEarnings: {
+  balance: { type: Number, default: 0 }, // Active balance
+  pending: { type: Number, default: 0 }  // Unactive balance (pending first order)
+},
   createdAt: { type: Date, default: Date.now }
 });
 
