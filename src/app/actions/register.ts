@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import { sendOTPEmail } from "@/lib/mail";
 
 export async function registerUser(formData: FormData) {
+ 
   try {
     await connectDB();
 

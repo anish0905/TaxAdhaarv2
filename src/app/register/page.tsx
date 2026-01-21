@@ -1,5 +1,5 @@
 "use client";
-import { registerUser, verifyOTP } from "@/app/actions/register";
+import { registerUser, verifyOTP } from "../actions/register";
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
