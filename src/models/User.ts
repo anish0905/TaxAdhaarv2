@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema({
   password: { type: String, required: true },
   role: { 
     type: String, 
-    enum: ['admin', 'sales', 'staff', 'client'], 
+    enum: ['admin', 'sales', 'staff', 'client','field_marketing'], 
     default: 'client' 
   },
   isVerified: { type: Boolean, default: false },
@@ -19,7 +19,9 @@ const UserSchema = new mongoose.Schema({
 referredBy: { type: String }, // Jisne invite kiya uska code
 referralEarnings: {
   balance: { type: Number, default: 0 }, // Active balance
-  pending: { type: Number, default: 0 }  // Unactive balance (pending first order)
+  pending: { type: Number, default: 0 },  // Unactive balance (pending first order)
+// Naya field: Lifetime kitna kamaya marketing se
+    totalCommissionEarned: { type: Number, default: 0 }
 },
   createdAt: { type: Date, default: Date.now }
 });

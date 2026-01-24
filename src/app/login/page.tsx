@@ -73,7 +73,7 @@ export default function LoginPage() {
           
           <div className="max-w-md w-full relative">
             <div className="mb-10 text-center lg:text-left">
-              <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">Welcome back.</h1>
+              <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4 lg:mt-8">Welcome back.</h1>
               <p className="text-slate-800 font-bold text-[10px] md:text-xs uppercase tracking-[0.2em]">
                 Enter your secure credentials to continue
               </p>

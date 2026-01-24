@@ -10,7 +10,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const navLinks = [
     { name: "Overview", href: "/dashboard", icon: "🏠" },
-    { name: "Services", href: "/dashboard/#services-section", icon: "🛠️" },
+    { name: "Services", href: "/dashboard/services", icon: "🛠️" },
     { name: "My Orders", href: "/dashboard/orders", icon: "🛒" },
     { name: "My Profile", href: "/dashboard/client/profile", icon: "👤" },
     { name: "My Documents", href: "/dashboard/client/documents", icon: "📁" },

@@ -7,7 +7,11 @@ import { activateReferralBonus } from "../actions/activateReferral"; // Purana b
 
 import { revalidatePath } from "next/cache";
 
-export async function createFinalOrder(serviceType: string, uploadedDocs: any[]) {
+export async function createFinalOrder(
+  serviceType: string, 
+  uploadedDocs: any[], 
+  additionalInfo: Record<string, any> // Naya parameter: Question answers ke liye
+) {
   try {
     await connectDB();
     
@@ -17,24 +21,25 @@ export async function createFinalOrder(serviceType: string, uploadedDocs: any[])
       return { success: false, error: "Authentication failed. Please login again." };
     }
 
-    // 2. Data Transformation (Sabse Zaroori Step)
-    // Frontend se aane wale array ko Model ke format mein badalna
+    // 2. Documents Transformation
     const formattedDocuments = uploadedDocs.map((doc) => ({
-      fileName: doc.name,     // e.g., "PAN Card"
-      fileUrl: doc.url,       // e.g., "https://res.cloudinary.com/..."
-      docType: doc.name,      // Type ko bhi abhi name hi rakh rahe hain
+      fileName: doc.name,
+      fileUrl: doc.url,
+      docType: doc.name,
       uploadedBy: 'client',
       uploadedAt: new Date()
     }));
 
-    // 3. New Order Object
+    // 3. New Order Object with Metadata
     const newOrder = new Order({
-      clientId: session.user.id,
-      clientName: session.user.name,
-      clientPhone: session.user.email, // Aapke schema ke hisaab se email/phone identifier
-      serviceType: serviceType,
-      status: 'under_review',
-      documents: formattedDocuments, // Ab mapped array bhej rahe hain
+     clientId: session.user.id,
+  clientName: session.user.name,
+  clientPhone: additionalInfo.mobile || session.user.email, // Agar metadata mein mobile hai toh wo uthao
+  serviceType: serviceType,
+  status: 'under_review',
+  documents: formattedDocuments,
+  metadata: additionalInfo,
+
       billing: {
         taxAmount: 0,
         serviceCharge: 0,
@@ -47,7 +52,7 @@ export async function createFinalOrder(serviceType: string, uploadedDocs: any[])
     // 4. Save to Database
     const savedOrder = await newOrder.save();
 
-    // 5. Cache Revalidation
+    // 5. Cache Revalidation (Dashboard update ke liye)
     revalidatePath("/dashboard/orders");
     
     return { 
@@ -66,7 +71,6 @@ export async function createFinalOrder(serviceType: string, uploadedDocs: any[])
 
 
 
-
 export async function generateFinalBill(data: { 
   orderId: string, 
   taxAmount: number, 
@@ -78,26 +82,30 @@ export async function generateFinalBill(data: {
 
     const { orderId, taxAmount, serviceCharge, remarks } = data;
 
-    // 1. Pehle "Tax + Service Charge" ka base total nikaalein
-    const baseAmount = taxAmount + serviceCharge;
+    // 1. Base Amount (Govt Tax + AimGrit Service Fee)
+    const baseAmount = Number(taxAmount) + Number(serviceCharge);
 
-    // 2. Pure "Base Amount" par 18% GST calculate karein
-    const gstAmount = (baseAmount * 18) / 100;
+    // 2. GST Calculation (Standard 18% on the entire professional service)
+    const gstRate = 18;
+    const gstAmount = (baseAmount * gstRate) / 100;
 
-    // 3. Final Total = Base Amount + GST
+    // 3. Grand Total Calculation
     const totalAmount = baseAmount + gstAmount;
 
+    // 4. Update Database
     const updatedOrder = await Order.findByIdAndUpdate(
       orderId,
       {
         $set: {
           "billing.taxAmount": taxAmount,
           "billing.serviceCharge": serviceCharge,
-          "billing.gstAmount": gstAmount, // Ab ye (Tax+Service) ka 18% hai
-          "billing.totalAmount": Math.round(totalAmount), // Round figure for professional look
-          "billing.billingDate": new Date(),
+          "billing.gstAmount": Number(gstAmount.toFixed(2)), // Store with 2 decimal precision
+          "billing.totalAmount": Math.round(totalAmount),    // Client ko round figure dikhana professional hota hai
           "billing.isInvoiceGenerated": true,
-          status: "payment_pending",
+          "billing.billingDate": new Date(),
+          
+          // Workflow Update
+          status: "payment_pending", // Iske baad user ko "Pay Now" button dikhega
           isVerified: true,
           reviewRemarks: remarks
         }
@@ -105,21 +113,65 @@ export async function generateFinalBill(data: {
       { new: true }
     );
 
-    if (!updatedOrder) throw new Error("Order not found");
+    if (!updatedOrder) throw new Error("CRITICAL_ERROR: Order not found for billing");
 
-    // Cache clear karein taaki client ko naya bill turant dikhe
+    // 5. Cache Revalidation
     revalidatePath(`/dashboard/orders`);
-    revalidatePath(`/dashboard/admin/review/${orderId}`);
+    revalidatePath(`/dashboard/admin/orders/${orderId}`); // Admin view refresh
 
     return { 
       success: true, 
-      message: "Bill generated on total amount successfully",
-      total: totalAmount 
+      message: `Invoice generated for ₹${Math.round(totalAmount)}`,
+      data: {
+        total: Math.round(totalAmount),
+        gst: gstAmount
+      }
     };
+
   } catch (error: any) {
-    console.error("Billing Error:", error);
-    return { success: false, error: error.message };
+    console.error("BILLING_GENERATION_FAILED:", error);
+    return { success: false, error: error.message || "Failed to generate invoice" };
   }
 }
 
+
+export async function addOrderDocument(orderId: string, docData: {
+  fileName: string,
+  fileUrl: string,
+  docType: string,
+  uploadedBy: 'staff' | 'admin' | 'client'
+}) {
+  try {
+    await connectDB();
+
+    // Database mein Order ke documents array mein naya document push karein
+    const updatedOrder = await Order.findByIdAndUpdate(
+      orderId,
+      {
+        $push: {
+          documents: {
+            ...docData,
+            uploadedAt: new Date()
+          }
+        },
+        // Jab staff slip upload kare, toh status ko 'processing' se aage badha sakte hain
+        status: docData.uploadedBy === 'staff' ? 'processing' : undefined 
+      },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      throw new Error("Order not found");
+    }
+
+    // Dono side ke views refresh karein
+    revalidatePath(`/dashboard/orders/${orderId}`); // Client side
+    revalidatePath(`/staff/orders/${orderId}`);     // Staff side
+    
+    return { success: true, data: JSON.parse(JSON.stringify(updatedOrder)) };
+  } catch (error: any) {
+    console.error("Add Document Error:", error);
+    return { success: false, error: error.message };
+  }
+}
 

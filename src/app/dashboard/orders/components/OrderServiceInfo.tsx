@@ -14,7 +14,7 @@ export function OrderServiceInfo({ order }: { order: any }) {
             {order.serviceType.replace(/-/g, " ")}
           </h2>
         </div>
-        <Link href={`/dashboard/client/orders/${order._id}`} className="inline-flex items-center gap-2 text-[10px] font-black uppercase text-slate-400 hover:text-blue-600 transition-colors">
+        <Link href={`/dashboard/orders/${order._id}`} className="inline-flex items-center gap-2 text-[10px] font-black uppercase text-slate-400 hover:text-blue-600 transition-colors">
           View Dossier <ArrowRight size={14} />
         </Link>
       </div>

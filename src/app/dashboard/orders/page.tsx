@@ -5,10 +5,6 @@ import { Order } from "@/models/Order";
 import { redirect } from "next/navigation";
 import { 
   Package, 
-  Clock, 
-  CheckCircle2, 
-  AlertCircle, 
-  LayoutGrid,
   ShieldCheck
 } from "lucide-react";
 import ClientOrdersList from "./components/ClientOrdersList";
@@ -17,11 +13,11 @@ export const dynamic = "force-dynamic";
 
 export default async function ClientOrdersPage() {
   const session = await getServerSession(authOptions);
-  if (!session) redirect("/login");
+  if (!session || !session.user) redirect("/login");
 
   await connectDB();
   
-  // Client ke orders fetch karein
+  // Client ke orders fetch karein using their email/phone
   const orders = await Order.find({ clientPhone: session.user.email })
     .sort({ createdAt: -1 })
     .lean();
@@ -31,7 +27,6 @@ export default async function ClientOrdersPage() {
   // Stats for the client
   const totalOrders = serializedOrders.length;
   const activeOrders = serializedOrders.filter((o: any) => o.status !== 'completed' && o.status !== 'rejected').length;
-  const completedOrders = serializedOrders.filter((o: any) => o.status === 'completed').length;
 
   return (
     <div className="min-h-screen bg-[#f8fafc] pb-20 pt-10">
@@ -62,10 +57,10 @@ export default async function ClientOrdersPage() {
           </div>
         </div>
 
-        {/* ORDERS LIST COMPONENT */}
+        {/* ORDERS LIST LOGIC */}
         <div className="space-y-6">
           {serializedOrders.length > 0 ? (
-            <ClientOrdersList initialOrders={serializedOrders} />
+            <ClientOrdersList initialOrders={serializedOrders} user={session.user} />
           ) : (
             <div className="bg-white rounded-[3rem] p-20 text-center border border-slate-100 shadow-sm">
                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">

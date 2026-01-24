@@ -2,12 +2,13 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { servicesData } from "@/data/services";
+
 import { Rocket, Zap, Clock, CheckCircle2 } from "lucide-react";
 import ReferralBox from "./components/ReferralBox"; 
 import connectDB from "@/lib/db";
 import { User } from "@/models/User";
 import { Order } from "@/models/Order";
+import ServiceGrid from "@/components/home/ServiceGrid";
 
 export default async function DashboardHome() {
   const session = await getServerSession(authOptions);
@@ -34,7 +35,7 @@ export default async function DashboardHome() {
   const referralCode = user?.referralCode || (session.user.name?.split(' ')[0].toUpperCase() + session.user.id.slice(-4));
 
   return (
-    <div className="pb-20 animate-in fade-in duration-700">
+   <div className="min-h-screen overflow-y-auto touch-pan-y pb-20 animate-in fade-in duration-700">
       {/* HEADER WITH REAL-TIME BALANCE */}
       <div className="bg-[#020617] text-white pt-16 pb-40 px-6 md:px-10 relative overflow-hidden rounded-b-[3rem] lg:rounded-br-[4rem]">
         <div className="max-w-7xl mx-auto relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
@@ -61,21 +62,56 @@ export default async function DashboardHome() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8 space-y-8">
             {/* SERVICES SECTION */}
-            <div className="bg-white rounded-[3.5rem] p-8 md:p-10 shadow-xl border border-slate-100">
-              <div className="flex items-center justify-between mb-10">
-                <h2 className="text-2xl font-black text-slate-900 italic uppercase tracking-tighter">Services</h2>
-                <Zap size={20} className="text-blue-600" fill="currentColor" />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {Object.keys(servicesData).map((key) => (
-                  <Link key={key} href={`/dashboard/services/${key}`} className="group p-8 bg-slate-50 rounded-[2.5rem] border-2 border-transparent hover:border-blue-600 hover:bg-white transition-all">
-                     <div className="text-4xl mb-4">{servicesData[key].icon}</div>
-                     <h3 className="font-black text-slate-900 uppercase text-lg">{servicesData[key].title}</h3>
-                     <p className="text-slate-400 text-xs font-bold mt-2">Start Application <Rocket size={12} className="inline ml-1" /></p>
-                  </Link>
-                ))}
-              </div>
-            </div>
+        {/* SERVICES HUB SECTION */}
+<div className="bg-white rounded-[3.5rem] p-8 md:p-12 shadow-xl border border-slate-100 overflow-hidden relative group">
+  {/* Background Decoration */}
+  <div className="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full -mr-20 -mt-20 blur-3xl group-hover:bg-blue-100 transition-colors duration-700"></div>
+  
+  <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+    <div className="space-y-4 text-center md:text-left">
+      <div className="inline-flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-full">
+        <Zap size={16} className="text-blue-600" fill="currentColor" />
+        <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Expert Solutions</span>
+      </div>
+      <h2 className="text-4xl font-black text-slate-900 tracking-tighter leading-none">
+        Ready to file your <br/> <span className="text-blue-600 italic">Business Compliance?</span>
+      </h2>
+      <p className="text-slate-500 font-medium text-sm max-w-md">
+        GST Registration, ITR Filing, and Company Incorporation — managed by experts for your business growth.
+      </p>
+    </div>
+
+    {/* The Main Action Button */}
+    <Link 
+      href="/dashboard/services" 
+      className="group/btn relative bg-slate-900 text-white px-10 py-8 rounded-[2rem] flex flex-col items-center justify-center gap-2 hover:bg-blue-600 transition-all duration-500 shadow-2xl hover:scale-105 active:scale-95 min-w-[240px]"
+    >
+      <Rocket size={32} className="mb-2 group-hover/btn:-translate-y-2 group-hover/btn:translate-x-2 transition-transform duration-500" />
+      <span className="text-xs font-black uppercase tracking-[0.2em]">Explore All Services</span>
+      <div className="flex gap-1 mt-1 opacity-50">
+        <span className="w-1.5 h-1.5 bg-white rounded-full"></span>
+        <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
+        <span className="w-1.5 h-1.5 bg-white rounded-full"></span>
+      </div>
+    </Link>
+  </div>
+
+  {/* Quick Shortcuts (User ki clarity ke liye) */}
+  <div className="mt-12 pt-8 border-t border-slate-50 flex flex-wrap justify-center md:justify-start gap-8 opacity-60">
+    <div className="flex items-center gap-2">
+      <span className="text-xl">⚡</span>
+      <span className="text-[10px] font-black uppercase text-slate-400">GST Solutions</span>
+    </div>
+    <div className="flex items-center gap-2">
+      <span className="text-xl">💎</span>
+      <span className="text-[10px] font-black uppercase text-slate-400">Income Tax</span>
+    </div>
+    <div className="flex items-center gap-2">
+      <span className="text-xl">🏢</span>
+      <span className="text-[10px] font-black uppercase text-slate-400">Business Setup</span>
+    </div>
+  </div>
+</div>
 
             {/* REFERRAL LIST WITH STATUS BADGES */}
             <div className="bg-white rounded-[3rem] p-8 border border-slate-100 shadow-sm">

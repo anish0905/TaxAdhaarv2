@@ -2,171 +2,210 @@ import connectDB from "@/lib/db";
 import { Order } from "@/models/Order";
 import { 
   FileText, User, Phone, Download, 
-  Briefcase, ArrowLeft,
-  AlertCircle, ShieldCheck
+  Briefcase, ArrowLeft, AlertCircle, 
+  ShieldCheck, CloudUpload, LayoutGrid,
+  History, Info
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import CompleteOrderButton from "../../components/CompleteOrderButton";
+import StaffFileUpload from "../../components/StaffFileUpload";
 
-// Next.js 15 dynamic params handling
 export default async function StaffOrderDetail({ params }: { params: Promise<{ id: string }> }) {
-  
-  // 1. Params ko unwrap karein
   const { id } = await params;
-
   await connectDB();
   
-  // 2. Database se client data fetch karein
-  const order = await Order.findById(id).lean();
+  // Fetch data and ensure it's plain JSON for Client Components
+  const orderRaw = await Order.findById(id).lean();
+  if (!orderRaw) return notFound();
+  
+  const order = JSON.parse(JSON.stringify(orderRaw));
 
-  if (!order) return notFound();
+  // Helper for Status UI
+  const isCompleted = order.status === 'completed';
+  const statusColor = isCompleted ? 'text-emerald-400' : 'text-blue-400';
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] pb-20 pt-6">
-      <div className="max-w-6xl mx-auto px-4 lg:px-0">
+    <div className="min-h-screen bg-[#f8fafc] pb-20 pt-6 font-sans">
+      <div className="max-w-7xl mx-auto px-6">
         
-        {/* TOP NAVIGATION BAR */}
-        <div className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        {/* --- TOP NAVIGATION --- */}
+        <div className="mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <Link 
             href="/staff/dashboard" 
-            className="flex items-center gap-2 text-slate-500 font-black text-[10px] uppercase tracking-widest hover:text-blue-600 transition-all bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-100"
+            className="group flex items-center gap-2 text-slate-500 font-black text-[10px] uppercase tracking-widest hover:text-blue-600 transition-all bg-white px-5 py-3 rounded-2xl shadow-sm border border-slate-100"
           >
-            <ArrowLeft size={14} /> Back to My Queue
+            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> 
+            Back to Queue
           </Link>
-          <div className="flex items-center gap-2 bg-emerald-50 text-emerald-700 px-5 py-2 rounded-full text-[9px] font-black uppercase tracking-widest border border-emerald-100 shadow-sm shadow-emerald-100/50">
-            <ShieldCheck size={14} className="animate-pulse" /> Payment Verified & Paid
+          
+          <div className={`flex items-center gap-2 px-6 py-3 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-sm transition-colors ${
+            isCompleted ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-blue-50 text-blue-700 border-blue-100'
+          }`}>
+            <ShieldCheck size={14} className={isCompleted ? "" : "animate-pulse"} /> 
+            {isCompleted ? "Filing Successfully Completed" : "Payment Verified & Processing"}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* LEFT SECTION: CLIENT IDENTITY & DOCUMENTS */}
-          <div className="lg:col-span-2 space-y-8">
+          {/* --- LEFT COLUMN: CORE DATA --- */}
+          <div className="lg:col-span-8 space-y-8">
             
-            {/* Client Profile Header */}
-            <div className="bg-white rounded-[3rem] p-8 md:p-10 shadow-sm border border-slate-100 relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-40 h-40 bg-blue-50 rounded-full -mr-20 -mt-20 opacity-50"></div>
+            {/* 1. Client Identity Card */}
+            <div className="bg-white rounded-[3.5rem] p-10 shadow-sm border border-slate-100 relative overflow-hidden group">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
                <div className="relative z-10">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center font-black text-xl italic shadow-xl">
+                  <div className="flex items-center gap-6 mb-10">
+                    <div className="w-20 h-20 bg-slate-900 text-white rounded-[2rem] flex items-center justify-center font-black text-3xl italic shadow-2xl rotate-3">
                       {order.clientName?.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em]">Processing Active Client</p>
-                      <h1 className="text-4xl font-black text-slate-900 uppercase italic tracking-tighter">
+                      <p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-1">Assigned Client</p>
+                      <h1 className="text-4xl font-black text-slate-900 uppercase italic tracking-tighter leading-none">
                         {order.clientName}
                       </h1>
                     </div>
                   </div>
                   
-                  <div className="flex flex-wrap gap-3 mt-6">
-                    <div className="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100">
-                       <Briefcase size={14} className="text-blue-500" />
-                       <span className="text-[10px] font-black text-slate-700 uppercase">{order.serviceType}</span>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="bg-slate-50/50 p-5 rounded-3xl border border-slate-100 hover:bg-white hover:shadow-md transition-all">
+                      <p className="text-[8px] font-black text-slate-400 uppercase mb-2">Service Type</p>
+                      <p className="text-[11px] font-black text-slate-800 uppercase flex items-center gap-2 italic">
+                        <Briefcase size={14} className="text-blue-600"/> {order.serviceType}
+                      </p>
                     </div>
-                    <div className="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100">
-                       <Phone size={14} className="text-blue-500" />
-                       <span className="text-[10px] font-black text-slate-700">{order.clientPhone}</span>
+                    <div className="bg-slate-50/50 p-5 rounded-3xl border border-slate-100 hover:bg-white hover:shadow-md transition-all">
+                      <p className="text-[8px] font-black text-slate-400 uppercase mb-2">Primary Contact</p>
+                      <p className="text-[11px] font-black text-slate-800 flex items-center gap-2 italic">
+                        <Phone size={14} className="text-blue-600"/> {order.clientPhone}
+                      </p>
+                    </div>
+                    <div className="bg-slate-50/50 p-5 rounded-3xl border border-slate-100 hover:bg-white hover:shadow-md transition-all">
+                      <p className="text-[8px] font-black text-slate-400 uppercase mb-2">Filing Reference</p>
+                      <p className="text-[11px] font-black text-slate-800 uppercase italic">
+                        #{String(order._id).slice(-8).toUpperCase()}
+                      </p>
                     </div>
                   </div>
                </div>
             </div>
 
-            {/* Client Submitted Documents */}
-            <div className="bg-white rounded-[3rem] p-8 md:p-10 shadow-sm border border-slate-100">
-               <div className="flex items-center justify-between mb-10">
-                <div>
-                  <h3 className="text-sm font-black uppercase tracking-widest text-slate-900 flex items-center gap-2">
-                    <FileText className="text-blue-600" size={18} /> Client Documents
-                  </h3>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase mt-1">Review files for filing compliance</p>
-                </div>
-                <span className="bg-slate-100 px-4 py-2 rounded-xl text-[10px] font-black text-slate-600 uppercase border border-slate-200">
-                  {order.documents?.length || 0} Total Files
+          
+            {/* Client Original Assets List */}
+            <div className="bg-white rounded-[3.5rem] p-8 shadow-sm border border-slate-100">
+              <div className="flex items-center justify-between mb-8 px-2">
+                <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-900 flex items-center gap-2">
+                  <FileText className="text-blue-600" size={16} /> User Assets
+                </h3>
+                <span className="text-[8px] font-black bg-slate-100 px-3 py-1 rounded-full text-slate-500">
+                  {order.documents?.filter((d:any) => d.uploadedBy === 'client').length || 0} FILES
                 </span>
               </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
-                {order.documents && order.documents.length > 0 ? (
-                  order.documents.map((doc: any) => (
-                    <div 
-                      key={doc._id?.toString() || doc.fileUrl} 
-                      className="group p-5 bg-slate-50 rounded-[2rem] border border-slate-100 hover:border-blue-400 hover:bg-white transition-all duration-300 shadow-sm hover:shadow-xl hover:-translate-y-1"
-                    >
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="w-10 h-10 bg-white rounded-2xl flex items-center justify-center text-blue-600 shadow-md group-hover:bg-blue-600 group-hover:text-white transition-all border border-slate-50">
-                          <FileText size={20} />
-                        </div>
-                        <a 
-                          href={doc.fileUrl} 
-                          target="_blank" 
-                          className="p-3 bg-white text-slate-400 hover:text-blue-600 rounded-xl shadow-sm border border-slate-100 transition-all hover:rotate-12 active:scale-90"
-                          title="Open/Download File"
-                        >
-                          <Download size={18} />
-                        </a>
-                      </div>
-                      <p className="text-[10px] font-black text-slate-900 uppercase truncate leading-none mb-1 group-hover:text-blue-600 transition-colors">
-                        {doc.docType}
-                      </p>
-                      <p className="text-[8px] font-bold text-slate-400 uppercase truncate">
-                        {doc.fileName}
-                      </p>
+              
+              <div className="space-y-3">
+                {order.documents?.filter((d:any) => d.uploadedBy === 'client').map((doc: any) => (
+                  <div key={doc.fileUrl} className="flex items-center justify-between p-5 bg-slate-50 rounded-[1.8rem] border border-slate-100 group hover:border-blue-400 hover:bg-white transition-all">
+                    <div className="overflow-hidden">
+                      <p className="text-[10px] font-black text-slate-900 uppercase truncate mb-0.5">{doc.docType}</p>
+                      <p className="text-[7px] font-bold text-slate-400 uppercase truncate">Source Document</p>
                     </div>
-                  ))
-                ) : (
-                  <div className="col-span-full py-16 text-center bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200">
-                    <AlertCircle className="mx-auto text-slate-300 mb-4" size={40} />
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      No documents found for this client
-                    </p>
+                    <a 
+                      href={doc.fileUrl} 
+                      target="_blank" 
+                      className="p-3 bg-white rounded-xl text-blue-600 shadow-sm hover:bg-blue-600 hover:text-white transition-all transform group-hover:rotate-12"
+                      title="Download Asset"
+                    >
+                      <Download size={16} />
+                    </a>
                   </div>
-                )}
+                ))}
               </div>
+            </div>
+
+            {/* 3. Dynamic Form Data (Metadata) */}
+            <div className="bg-white rounded-[3.5rem] p-10 shadow-sm border border-slate-100">
+               <h3 className="text-xl font-black uppercase italic tracking-tighter text-slate-900 mb-10 flex items-center gap-3">
+                 <LayoutGrid size={26} className="text-blue-600" /> Form Submission Details
+               </h3>
+               
+               {order.metadata && Object.keys(order.metadata).length > 0 ? (
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                   {Object.entries(order.metadata).map(([key, val]: any) => (
+                     <div key={key} className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100 group hover:bg-white hover:shadow-lg transition-all">
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 group-hover:text-blue-600 transition-colors">
+                          {key.replace(/_/g, ' ')}
+                        </p>
+                        <p className="text-xs font-bold text-slate-800 italic uppercase">
+                          {typeof val === 'boolean' ? (val ? 'Yes' : 'No') : String(val)}
+                        </p>
+                     </div>
+                   ))}
+                 </div>
+               ) : (
+                 <div className="py-10 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">No additional form data provided</p>
+                 </div>
+               )}
             </div>
           </div>
 
-          {/* RIGHT SECTION: TASK MANAGEMENT */}
-          <div className="lg:col-span-1 space-y-8">
-            <div className="bg-[#020617] rounded-[3.5rem] p-8 md:p-10 text-white shadow-2xl lg:sticky lg:top-24 border border-white/5">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-400 mb-10 text-center">Processing Actions</h3>
+          {/* --- RIGHT COLUMN: ACTIONS & ASSETS --- */}
+          <div className="lg:col-span-4 space-y-8">
+              {/* 2. Upload Proof Section (The Staff's Main Task) */}
+            <div className="bg-white rounded-[3.5rem] p-10 shadow-sm border-2 border-blue-50 relative overflow-hidden">
+               <div className="absolute -right-4 top-10 opacity-5 -rotate-12">
+                  <CloudUpload size={160} />
+               </div>
+               <div className="relative z-10">
+                  <div className="mb-10">
+                    <h3 className="text-2xl font-black uppercase italic tracking-tighter text-slate-900 flex items-center gap-3">
+                      <CloudUpload size={28} className="text-blue-600" /> Share Filing Proof
+                    </h3>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase mt-2 tracking-widest italic flex items-center gap-2">
+                      <Info size={12} /> Upload the Govt Acknowledgement Slip or Certificate below
+                    </p>
+                  </div>
+
+                  <StaffFileUpload orderId={id} existingDocs={order.documents} />
+               </div>
+            </div>
+            
+            {/* Filing Control Center */}
+            <div className="bg-[#020617] rounded-[3.5rem] p-10 text-white shadow-2xl sticky top-6 border border-white/5">
+              <div className="w-12 h-1 bg-blue-600 mx-auto mb-8 rounded-full opacity-50"></div>
+              <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-blue-400 mb-12 text-center">Filing Control Panel</h3>
               
               <div className="space-y-8">
-                {/* Status Indicator */}
-                <div className="p-6 bg-white/5 rounded-3xl border border-white/10 shadow-inner">
-                  <p className="text-[9px] font-bold text-slate-500 uppercase mb-2 tracking-widest">Workflow Status</p>
-                  <p className="text-sm font-black italic uppercase text-emerald-400 flex items-center gap-2">
-                    <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                    Paid & Ready to File
+                <div className="p-8 bg-white/5 rounded-[2.5rem] border border-white/10 text-center backdrop-blur-sm">
+                  <p className="text-[9px] font-bold text-slate-500 uppercase mb-3 tracking-[0.2em]">Current Workflow Stage</p>
+                  <p className={`text-sm font-black italic uppercase flex items-center justify-center gap-2 ${statusColor}`}>
+                    <span className={`w-2 h-2 rounded-full ${isCompleted ? 'bg-emerald-500' : 'bg-blue-500 animate-pulse'}`}></span>
+                    {order.status.replace(/_/g, ' ')}
                   </p>
                 </div>
 
-                {/* Main Action Area */}
                 <div className="space-y-4">
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-2">Update Filing Progress</p>
-                  
-                  {/* Interactive Button Component */}
                   <CompleteOrderButton 
                     orderId={id} 
                     currentStatus={order.status} 
                   />
-
-                  <button className="w-full bg-white/5 hover:bg-white/10 text-white py-5 rounded-[1.5rem] font-black uppercase text-[10px] tracking-widest transition-all border border-white/10 flex items-center justify-center gap-2">
-                    <AlertCircle size={16} /> Report Missing Info
+                  
+                  <button className="w-full bg-white/5 hover:bg-rose-600/10 hover:text-rose-400 hover:border-rose-600/20 text-white py-6 rounded-[1.8rem] font-black uppercase text-[10px] tracking-widest border border-white/10 flex items-center justify-center gap-2 transition-all">
+                    <AlertCircle size={14} /> Mark as Discrepancy
                   </button>
                 </div>
-
-                {/* Help Box */}
-                <div className="mt-8 p-6 bg-blue-900/20 rounded-3xl border border-blue-500/20">
-                  <p className="text-[9px] font-bold text-blue-300 leading-relaxed uppercase italic">
-                    Note: Clicking "Mark as Completed" will notify the client and move this to your history.
-                  </p>
+                
+                <div className="pt-6 border-t border-white/5">
+                   <p className="text-[8px] font-bold text-slate-500 text-center uppercase leading-relaxed italic">
+                     Closing this order will notify the client and <br/> lock the document editing.
+                   </p>
                 </div>
               </div>
             </div>
-          </div>
 
+
+          </div>
         </div>
       </div>
     </div>
