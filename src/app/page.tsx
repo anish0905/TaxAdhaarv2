@@ -1,3 +1,4 @@
+
 import Footer from "@/components/Footer";
 import FAQ from "@/components/home/FAQ";
 import HeroForm from "@/components/home/HeroForm";
@@ -67,6 +68,7 @@ export default function HomePage() {
      <Stats/>
      <Process/>
      <Footer/>
+ 
 
     
     </div>

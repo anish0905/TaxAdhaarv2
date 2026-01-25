@@ -1,26 +1,38 @@
-"use client"; // Hook use karne ke liye ise client component banana hoga
+"use client";
 
 import { usePathname } from "next/navigation";
 import AuthProvider from "@/components/AuthProvider";
 import "./globals.css";
 import PublicNavbar from "@/components/Navbar";
 import Script from "next/script";
+import WhatsAppTopBar from "@/components/WhatsAppTopBar"; 
+import FloatingChatbot from "@/components/FloatingChatbot"; 
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-
-  // Sirf Home page ka path '/' hota hai. 
-  // Agar user '/' par hai, tabhi navbar dikhega.
+  
+  // Navbar sirf home page pe dikhega
   const showNavbar = pathname === "/";
-  // Component ke andar return se pehle add karein:
-<Script src="https://checkout.razorpay.com/v1/checkout.js" />
 
   return (
     <html lang="en">
-      <body>
+      <body className="antialiased">
+        <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
+        
         <AuthProvider>
+          {/* 1. WhatsApp Top Bar: Sabse upar dikhega */}
+          <WhatsAppTopBar />
+
+          {/* 2. Navbar: Top bar ke niche condition ke hisaab se */}
           {showNavbar && <PublicNavbar />}
-          {children}
+          
+          {/* 3. Main Content: Page ka saara data yahan load hoga */}
+          <main className="min-h-screen">
+            {children}
+          </main>
+
+          {/* 4. Floating AI Chatbot: Ye screen par fixed rahega (Right Side) */}
+          <FloatingChatbot />
         </AuthProvider>
       </body>
     </html>
