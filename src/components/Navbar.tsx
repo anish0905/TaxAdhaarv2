@@ -1,10 +1,10 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useSession, signOut } from "next-auth/react"; // 1. NextAuth hooks import karein
+import { useSession, signOut } from "next-auth/react";
 
 export default function PublicNavbar() {
-  const { data: session } = useSession(); // 2. Session check karein
+  const { data: session } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -18,6 +18,15 @@ export default function PublicNavbar() {
     if (isMenuOpen) document.body.style.overflow = "hidden";
     else document.body.style.overflow = "unset";
   }, [isMenuOpen]);
+
+  // Navigation Data - Direct links for About and Contact
+  const navLinks = [
+    { name: "Home", href: "/" },
+    { name: "Services", href: "/services" },
+    { name: "Process", href: "/#process" },
+    { name: "About", href: "/about" },
+    { name: "Contact", href: "/contact" },
+  ];
 
   return (
     <>
@@ -34,27 +43,25 @@ export default function PublicNavbar() {
               <span className="text-white font-black text-lg">T</span>
             </div>
             <span className="text-xl font-black text-[#020617] tracking-tighter uppercase italic">
-              Tax<span className="text-blue-600">Clear</span>
+              Tax<span className="text-blue-600">Adhaar</span>
             </span>
           </Link>
 
           {/* --- DESKTOP NAVIGATION --- */}
           <div className="hidden lg:flex items-center gap-8">
-            {["Services", "Process", "Pricing", "Support"].map((item) => (
+            {navLinks.map((item) => (
               <Link 
-                key={item} 
-                href={`/#${item.toLowerCase()}`} 
+                key={item.name} 
+                href={item.href} 
                 className="text-[11px] font-black uppercase tracking-[0.2em] text-[#020617] hover:text-blue-600 transition-all"
               >
-                {item}
+                {item.name}
               </Link>
             ))}
           </div>
 
           {/* --- MOBILE & DESKTOP ACTIONS --- */}
           <div className="flex items-center gap-2 md:gap-4">
-            
-            {/* Conditional Login/Logout (Desktop) */}
             {!session ? (
               <Link 
                 href="/login" 
@@ -71,24 +78,15 @@ export default function PublicNavbar() {
               </button>
             )}
 
-            {/* CTA Button: Login hai to Dashboard, nahi hai to Join Now */}
             <Link 
               href={session ? "/dashboard-redirect" : "/login"} 
               className="bg-[#020617] text-white px-4 py-2.5 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs uppercase tracking-widest hover:bg-blue-600 transition-all active:scale-95 shadow-md"
             >
-              {session ? (
-                <span>Dashboard</span>
-              ) : (
-                <>
-                  <span className="md:hidden">Join Now</span>
-                  <span className="hidden md:inline">Get Started</span>
-                </>
-              )}
+              {session ? <span>Dashboard</span> : <span>Get Started</span>}
             </Link>
 
-            {/* Mobile Menu Toggle Button */}
             <button 
-              className="lg:hidden w-10 h-10 flex items-center justify-center bg-slate-50 border border-slate-100 rounded-xl text-[#020617] transition-transform active:scale-90" 
+              className="lg:hidden w-10 h-10 flex items-center justify-center bg-slate-50 border border-slate-100 rounded-xl text-[#020617]" 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
                <span className="text-xl leading-none">{isMenuOpen ? "✕" : "☰"}</span>
@@ -103,22 +101,19 @@ export default function PublicNavbar() {
       }`}>
         <div className="flex flex-col h-full pt-28 px-8 pb-10">
           <div className="flex flex-col gap-6">
-            {["Services", "Process", "Pricing", "About Us"].map((item) => (
+            {navLinks.map((item) => (
               <Link 
-                key={item}
-                href={`/#${item.toLowerCase()}`} 
-                className="text-4xl font-black text-[#020617] active:text-blue-600"
+                key={item.name}
+                href={item.href} 
+                className="text-3xl font-black text-[#020617] active:text-blue-600 tracking-tighter"
                 onClick={() => setIsMenuOpen(false)}
               >
-                {item}
+                {item.name}
               </Link>
             ))}
           </div>
           
           <div className="mt-auto space-y-4">
-            <hr className="border-slate-100 mb-6" />
-            
-            {/* Conditional Button for Mobile Menu */}
             {!session ? (
               <Link 
                 href="/login" 
@@ -133,7 +128,7 @@ export default function PublicNavbar() {
                    setIsMenuOpen(false);
                    signOut();
                 }}
-                className="block w-full bg-red-600 text-white text-center py-5 rounded-2xl font-black uppercase tracking-widest text-sm shadow-xl shadow-red-200"
+                className="block w-full bg-red-600 text-white text-center py-5 rounded-2xl font-black uppercase tracking-widest text-sm"
               >
                 Logout Account
               </button>

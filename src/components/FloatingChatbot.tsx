@@ -42,7 +42,7 @@ export default function FloatingChatbot() {
     const messageText = textToSend || input;
     if (!messageText.trim()) return;
 
-    setMessages((prev) => [...prev, { role: 'user', text: messageText }]);
+    setMessages((prev) => [...prev, { role: 'client', text: messageText }]);
     setInput("");
     setShowMainCategories(false);
     setIsTyping(true); // Typing start
@@ -86,13 +86,13 @@ export default function FloatingChatbot() {
           </div>
 
           {/* Chat Messages */}
-          <div className="flex-1 p-4 overflow-y-auto space-y-5 bg-[#fcfdfe]">
+          <div className="flex-1 p-4 overflow-y-auto space-y-5 bg-[#fcfdfe] text-black">
             {messages.map((m, i) => (
-              <div key={i} className={`${m.role === 'user' ? 'text-right' : 'text-left'}`}>
+              <div key={i} className={`${m.role === 'client' ? 'text-right' : 'text-left'}`}>
                 <div className={`inline-block p-4 rounded-2xl text-[13px] shadow-sm max-w-[88%] ${
-                  m.role === 'user' ? 'bg-[#1e3a8a] text-white' : 'bg-white text-gray-800 border'
+                  m.role === 'client' ? 'bg-[#1e3a8a] text-white' : 'bg-white text-gray-800 border'
                 }`}>
-                  <div className="prose prose-sm prose-blue max-w-none">
+                  <div className="prose prose-sm prose-blue max-w-none ">
                     <ReactMarkdown>{m.text}</ReactMarkdown>
                   </div>
 
@@ -122,7 +122,7 @@ export default function FloatingChatbot() {
             )}
             
             {showMainCategories && (
-              <div className="grid grid-cols-1 gap-2 mt-2">
+              <div className="grid grid-cols-1 gap-2 mt-2 ">
                 {Object.keys(servicesData).map((key) => (
                   <button key={key} onClick={() => sendMessage(servicesData[key].title)} className="flex items-center justify-between bg-white border p-3 rounded-xl text-[13px] hover:bg-blue-50 transition-all group">
                     <div className="flex items-center gap-2"><span>{servicesData[key].icon}</span> {servicesData[key].title}</div>
