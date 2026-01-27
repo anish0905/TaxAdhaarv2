@@ -185,14 +185,15 @@ const handleFinalSubmit = async () => {
             
             <div className="space-y-4 mb-8 bg-slate-50 p-6 rounded-3xl">
               <div className="flex justify-between items-center text-slate-900">
-                <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">Documents</span>
-                <span className="text-xs font-black">{filesList.length} / {activeVariant.docs.length}</span>
-              </div>
-              <div className="flex justify-between items-center text-slate-900">
-                <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">Information</span>
+                  <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">Information</span>
                 <span className="text-xs font-black">
                   {Object.keys(formData).length} / {activeVariant.questions?.length || 0}
                 </span>
+                
+              </div>
+              <div className="flex justify-between items-center text-slate-900">
+              <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">Documents</span>
+                <span className="text-xs font-black">{filesList.length} / {activeVariant.docs.length}</span>
               </div>
             </div>
 

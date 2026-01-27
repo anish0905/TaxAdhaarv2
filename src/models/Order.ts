@@ -58,8 +58,12 @@ paymentStatus: {
     gstAmount: { type: Number, default: 0 },
     discount: { type: Number, default: 0 },
     totalAmount: { type: Number, default: 0 },
-    isInvoiceGenerated: { type: Boolean, default: false } // Server action support
+    isInvoiceGenerated: { type: Boolean, default: false }, // Server action support
+    walletDiscountApplied: { type: Number, default: 0 },
   },
+
+  // Add this to OrderSchema
+razorpayOrderId: { type: String, default: null },
 // Nayi field payment proof ke liye
  manualPaymentScreenshot: { type: String, default: null },
   // --- ASSETS ---
