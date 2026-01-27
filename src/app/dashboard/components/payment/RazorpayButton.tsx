@@ -6,9 +6,10 @@ import { useState } from "react";
 interface RazorpayButtonProps {
   orderId: string;
   useWallet: boolean; // Amount ki jagah useWallet pass karenge security ke liye
+  amount?: number;
 }
 
-export function RazorpayButton({ orderId, useWallet }: RazorpayButtonProps) {
+export function RazorpayButton({ orderId, useWallet, amount }: RazorpayButtonProps) {
   console.log("RazorpayButton Rendered with:", { orderId, useWallet });
   const [isProcessing, setIsProcessing] = useState(false);
 

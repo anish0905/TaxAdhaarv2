@@ -145,7 +145,13 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
 
               {order.paymentStatus !== 'paid' ? (
                 <div className="space-y-4">
-                  <RazorpayButton amount={order.billing.totalAmount} orderId={order._id.toString()} />
+             
+
+<RazorpayButton 
+  amount={order.billing.totalAmount} 
+  orderId={order._id.toString()} 
+  useWallet={false} // <--- Ye prop add karna zaroori hai
+/>
                   
                   <div className="relative flex items-center justify-center py-2">
                     <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/10"></div></div>
