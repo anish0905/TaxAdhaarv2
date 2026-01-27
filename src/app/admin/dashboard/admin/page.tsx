@@ -2,6 +2,7 @@ import connectDB from "@/lib/db";
 import { Order } from "@/models/Order";
 import Link from "next/link";
 import { Clock, Eye, FileText, User } from "lucide-react";
+export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
   await connectDB();
@@ -10,6 +11,7 @@ export default async function AdminDashboard() {
   const pendingOrders = await Order.find({ status: "under_review" })
     .sort({ createdAt: -1 })
     .lean();
+    
 
   return (
     <div className="min-h-screen bg-slate-50 pb-20 pt-24 px-6">
