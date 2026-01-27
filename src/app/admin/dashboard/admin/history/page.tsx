@@ -3,6 +3,8 @@ import { Order } from "@/models/Order";
 import Link from "next/link";
 import { CheckCircle, Clock, IndianRupee, Eye, ArrowLeft } from "lucide-react";
 
+export const dynamic = 'force-dynamic';
+
 export default async function CAReviewedHistory() {
   await connectDB();
 

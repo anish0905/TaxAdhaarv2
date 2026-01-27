@@ -2,6 +2,7 @@ import connectDB from "@/lib/db";
 import { Order } from "@/models/Order";
 import { CheckCircle, XCircle, ExternalLink, IndianRupee, User, Calendar, AlertCircle } from "lucide-react";
 import { verifyPaymentAction, rejectPaymentAction } from "@/app/actions/paymentActions";
+export const dynamic = 'force-dynamic';
 
 export default async function AdminPaymentVerification() {
   await connectDB();
