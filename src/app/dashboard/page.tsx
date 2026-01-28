@@ -9,6 +9,14 @@ import connectDB from "@/lib/db";
 import { User } from "@/models/User";
 import { Order } from "@/models/Order";
 import ServiceGrid from "@/components/home/ServiceGrid";
+// Imports के ठीक बाद और Component के पहले
+export async function generateMetadata() {
+  return {
+    title: "Dashboard | Taxadhaar - Expert Business Solutions",
+    description: "Manage your GST, ITR, and Business compliance. Check your referral earnings and active services on Taxadhaar.",
+    robots: { index: false, follow: false }, // डैशबोर्ड को गूगल पर इंडेक्स नहीं करना चाहिए (Privacy)
+  };
+}
 
 export default async function DashboardHome() {
   const session = await getServerSession(authOptions);
@@ -100,15 +108,15 @@ export default async function DashboardHome() {
   <div className="mt-12 pt-8 border-t border-slate-50 flex flex-wrap justify-center md:justify-start gap-8 opacity-60">
     <div className="flex items-center gap-2">
       <span className="text-xl">⚡</span>
-      <span className="text-[10px] font-black uppercase text-slate-400">GST Solutions</span>
+      <span className="text-[10px] font-black uppercase text-slate-800">GST Solutions</span>
     </div>
     <div className="flex items-center gap-2">
       <span className="text-xl">💎</span>
-      <span className="text-[10px] font-black uppercase text-slate-400">Income Tax</span>
+      <span className="text-[10px] font-black uppercase text-slate-800">Income Tax</span>
     </div>
     <div className="flex items-center gap-2">
       <span className="text-xl">🏢</span>
-      <span className="text-[10px] font-black uppercase text-slate-400">Business Setup</span>
+      <span className="text-[10px] font-black uppercase text-slate-800">Business Setup</span>
     </div>
   </div>
 </div>

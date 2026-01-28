@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function Contact() {
   const contactMethods = [
-    { title: "Email Us", detail: "support@taxadhaar.in", icon: "📧", sub: "Response within 4 hours" },
+    { title: "Email Us", detail: "contact@taxadhaar.com", icon: "📧", sub: "Response within 4 hours" },
     { title: "WhatsApp", detail: "+91 7557721426", icon: "💬", sub: "Instant chat support" },
     { title: "Office", detail: "Sasaram, Bihar | Mumbai", icon: "📍", sub: "Mon-Sat, 10am-7pm" }
   ];

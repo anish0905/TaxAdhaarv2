@@ -23,10 +23,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       
       {/* --- SIDEBAR (Desktop) --- */}
       <aside className="hidden lg:flex w-72 bg-white border-r border-slate-200 flex-col fixed h-full z-50">
-        <div className="p-8">
+        <div className="p-8 mt-8">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center font-black text-white italic text-xl shadow-lg shadow-blue-200">T</div>
-            <span className="text-2xl font-black text-slate-900 tracking-tighter italic">Tax<span className="text-blue-600">Portal</span></span>
+            <div className=" w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center font-black text-white italic text-xl shadow-lg shadow-blue-200">T</div>
+            <span className="text-2xl font-black text-slate-900 tracking-tighter italic">Tax<span className="text-blue-600">Adhaar</span></span>
           </Link>
         </div>
 

@@ -42,18 +42,22 @@ function RegisterForm() {
     }
   }
 
-  async function handleVerifyOtp(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    const res = await verifyOTP(email, otp);
-    if (res.error) {
-      setMsg({ type: 'error', text: res.error });
-      setLoading(false);
-    } else {
-      setMsg({ type: 'success', text: "Verified! Redirecting..." });
-      setTimeout(() => router.push("/login"), 2000);
-    }
+async function handleVerifyOtp(e: React.FormEvent) {
+  e.preventDefault();
+  setLoading(true);
+  setMsg(null); // पिछला मैसेज क्लियर करें
+  
+  const res = await verifyOTP(email, otp);
+  
+  if (res?.error) {
+    // यहाँ अगर OTP मैच नहीं हुआ, तो लाल रंग का एरर दिखेगा
+    setMsg({ type: 'error', text: res.error }); 
+    setLoading(false);
+  } else {
+    setMsg({ type: 'success', text: "Verified! Redirecting..." });
+    setTimeout(() => router.push("/login"), 2000);
   }
+}
 
   return (
     <div className="w-full lg:w-1/2 flex items-start lg:items-center justify-center p-6 lg:p-12 overflow-y-auto bg-white">
@@ -97,7 +101,14 @@ function RegisterForm() {
           </form>
         ) : (
           <form onSubmit={handleVerifyOtp} className="space-y-4">
-            <h1 className="text-4xl font-black text-[#020617] tracking-tight mb-4 text-center italic">Verify.</h1>
+    <h1 className="text-4xl font-black text-[#020617] tracking-tight mb-4 text-center italic">Verify.</h1>
+    {msg && (
+      <div className={`p-4 rounded-2xl text-[11px] font-bold border flex items-center gap-2 animate-shake ${
+        msg.type === 'success' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-red-50 text-red-700 border-red-100'
+      }`}>
+        {msg.text}
+      </div>
+    )}
             <input 
               type="text" maxLength={6} value={otp} onChange={(e) => setOtp(e.target.value)}
               className="text-black w-full px-6 py-4 rounded-2xl border-2 border-blue-100 bg-blue-50/30 text-center text-2xl font-black tracking-[0.5em] focus:border-blue-500 outline-none transition-all"

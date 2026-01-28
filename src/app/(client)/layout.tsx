@@ -7,7 +7,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       <nav className="flex items-center justify-between px-6 py-4 border-b bg-white sticky top-0 z-50">
         <div className="flex items-center gap-8">
           <Link href="/" className="text-2xl font-bold text-blue-600 tracking-tight">
-            TAX<span className="text-slate-800">PORTAL</span>
+            TAX<span className="text-slate-800">Adhaar</span>
           </Link>
           <div className="hidden md:flex gap-6 text-sm font-medium text-slate-600">
             <Link href="#services" className="hover:text-blue-600">Income Tax</Link>
