@@ -30,3 +30,5 @@ export const calculateTaxData = (salary: number, investments: number) => {
     recommended: newTax <= oldTax ? "New Regime" : "Old Regime"
   };
 };
+
+
