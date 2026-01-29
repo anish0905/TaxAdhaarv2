@@ -10,6 +10,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const navLinks = [
     { name: "Overview", href: "/dashboard", icon: "🏠" },
+    { name: "Tax Planner", href: "/calculator", icon: "📈" },
     { name: "Services", href: "/dashboard/services", icon: "🛠️" },
     { name: "My Orders", href: "/dashboard/orders", icon: "🛒" },
     { name: "My Profile", href: "/dashboard/client/profile", icon: "👤" },
@@ -22,7 +23,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="flex min-h-screen bg-[#F8FAFC]">
       
       {/* --- SIDEBAR (Desktop) --- */}
-      <aside className="hidden lg:flex w-72 bg-white border-r border-slate-200 flex-col fixed h-full z-50">
+<aside className="hidden lg:flex w-72 bg-white border-r border-slate-200 flex-col fixed h-screen z-50 overflow-y-auto custom-scrollbar">
         <div className="p-8 mt-8">
           <Link href="/" className="flex items-center gap-2">
             <div className=" w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center font-black text-white italic text-xl shadow-lg shadow-blue-200">T</div>
