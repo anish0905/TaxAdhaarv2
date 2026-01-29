@@ -26,6 +26,7 @@ export default function PublicNavbar() {
     { name: "Process", href: "/#process" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
+    {name:"Tax Planner" , href:"/calculator"}
   ];
 
   return (
