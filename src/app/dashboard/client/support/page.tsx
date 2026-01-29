@@ -3,9 +3,24 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   LifeBuoy, MessageCircle, Mail, Phone, Send, 
-  ChevronRight, FileQuestion, Loader2, CheckCircle 
+  ChevronRight, FileQuestion, Loader2, CheckCircle,
+  LucideIcon 
 } from "lucide-react";
 
+// --- INTERFACES ---
+interface ContactCardProps {
+  Icon: LucideIcon; // Component pass karenge, element nahi
+  title: string;
+  detail: string;
+  color: 'emerald' | 'blue' | 'indigo';
+  link: string;
+}
+
+interface FAQLinkProps {
+  title: string;
+}
+
+// --- ANIMATIONS ---
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -23,7 +38,7 @@ export default function SupportPage() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleTicketSubmit = (e) => {
+  const handleTicketSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setTimeout(() => {
@@ -39,8 +54,7 @@ export default function SupportPage() {
       animate="visible"
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16 space-y-8 md:space-y-12 font-sans selection:bg-blue-100"
     >
-      
-      {/* 1. HEADER */}
+      {/* HEADER */}
       <motion.div variants={itemVariants} className="text-center lg:text-left">
         <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black italic uppercase tracking-tighter text-slate-900 leading-[0.9]">
           Help <span className="text-blue-600">Center</span>
@@ -48,32 +62,32 @@ export default function SupportPage() {
         <div className="flex items-center justify-center lg:justify-start gap-2 mt-6">
            <LifeBuoy size={18} className="text-blue-600 animate-spin" style={{ animationDuration: '4s' }} />
            <p className="text-slate-500 font-bold text-[10px] sm:text-xs uppercase tracking-[0.2em]">
-             Aimgrit Digital Solutions Support
+             TaxAadhaar Digital Solutions Support
            </p>
         </div>
       </motion.div>
 
-      {/* 2. CONTACT CARDS - 1 col on mobile, 3 cols on desktop */}
+      {/* CONTACT CARDS */}
       <motion.div 
         variants={itemVariants} 
         className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6"
       >
         <ContactCard 
-          icon={<MessageCircle className="text-emerald-500" />} 
+          Icon={MessageCircle} 
           title="WhatsApp" 
           detail="Direct Chat" 
           color="emerald"
           link="https://wa.me/917557721426"
         />
         <ContactCard 
-          icon={<Mail className="text-blue-500" />} 
+          Icon={Mail} 
           title="Email" 
-          detail="contact@aimgrit.in" 
+          detail="contact@taxaadhaar.in" 
           color="blue"
-          link="mailto:contact@aimgrit.in"
+          link="mailto:contact@taxaadhaar.in"
         />
         <ContactCard 
-          icon={<Phone className="text-indigo-500" />} 
+          Icon={Phone} 
           title="Call" 
           detail="+91 75577 21426" 
           color="indigo"
@@ -81,91 +95,60 @@ export default function SupportPage() {
         />
       </motion.div>
 
-      {/* 3. MAIN CONTENT GRID */}
+      {/* MAIN CONTENT GRID */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-        
         {/* TICKET FORM */}
-   <motion.div variants={itemVariants} className="lg:col-span-3 order-2 lg:order-1">
-  <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-2xl overflow-hidden">
-    <div className="p-8 bg-slate-50/50 border-b border-slate-100">
-      <h2 className="text-xl font-black text-slate-900 uppercase italic tracking-tight">Raise a Ticket</h2>
-      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Resolution Time: 2-4 Hours</p>
-    </div>
+        <motion.div variants={itemVariants} className="lg:col-span-3 order-2 lg:order-1">
+          <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-2xl overflow-hidden">
+            <div className="p-8 bg-slate-50/50 border-b border-slate-100">
+              <h2 className="text-xl font-black text-slate-900 uppercase italic tracking-tight">Raise a Ticket</h2>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Resolution Time: 2-4 Hours</p>
+            </div>
 
-    <form onSubmit={handleTicketSubmit} className="p-6 md:p-10 space-y-6">
-      
-      {/* Name & Aadhaar Row - Responsive Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Full Name</label>
-          <input 
-            type="text"
-            required
-            className="w-full px-5 py-4 text-black bg-slate-50 rounded-2xl text-sm font-bold border-2 border-transparent focus:border-blue-500 outline-none transition-all"
-            placeholder="As per Aadhaar"
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Aadhaar Number (Last 4 digits)</label>
-          <input 
-            type="text"
-            maxLength={4}
-            className="w-full px-5 py-4 text-black bg-slate-50 rounded-2xl text-sm font-bold border-2 border-transparent focus:border-blue-500 outline-none transition-all"
-            placeholder="XXXX"
-          />
-        </div>
-      </div>
+            <form onSubmit={handleTicketSubmit} className="p-6 md:p-10 space-y-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Select Service Type</label>
+                <div className="relative group">
+                  <select 
+                    required
+                    defaultValue=""
+                    className="w-full px-5 py-4 text-slate-900 bg-slate-50 rounded-2xl text-sm font-bold border-2 border-transparent focus:border-blue-500 focus:bg-white outline-none appearance-none transition-all cursor-pointer"
+                  >
+                    <option value="" disabled>Choose Tax Service</option>
+                    <option value="itr">Income Tax (ITR) Filing</option>
+                    <option value="gst">GST Registration & Returns</option>
+                    <option value="pan">PAN Card Services</option>
+                    <option value="other">Other Tax Queries</option>
+                  </select>
+                  <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-focus-within:text-blue-500 transition-colors">
+                    <ChevronRight size={18} className="rotate-90" />
+                  </div>
+                </div>
+              </div>
 
-      {/* Service Selection */}
-  <div className="space-y-2">
-  <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Select Service Type</label>
-  <div className="relative group">
-    <select 
-      className="w-full px-5 py-4 text-slate-900 bg-slate-50 rounded-2xl text-sm font-bold border-2 border-transparent focus:border-blue-500 focus:bg-white outline-none appearance-none transition-all cursor-pointer"
-      required
-      defaultValue="" // 'selected' attribute ki jagah yahan defaultValue use karein
-    >
-      <option value="" disabled>Choose Tax Service</option>
-      <option>Income Tax (ITR) Filing</option>
-      <option>GST Registration & Returns</option>
-      <option>TDS & Compliance</option>
-      <option>PAN Card Services</option>
-      <option>Digital Signature (DSC)</option>
-      <option>Other Tax Queries</option>
-    </select>
-    
-    {/* Custom Arrow Icon */}
-    <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-focus-within:text-blue-500 transition-colors">
-      <ChevronRight size={18} className="rotate-90" />
-    </div>
-  </div>
-</div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Your Message</label>
+                <textarea 
+                  rows={4}
+                  required
+                  className="w-full px-5 py-4 text-black bg-slate-50 rounded-2xl text-sm font-bold border-2 border-transparent focus:border-blue-500 outline-none transition-all resize-none"
+                  placeholder="How can we help?"
+                />
+              </div>
 
-      {/* Message Area */}
-      <div className="space-y-2">
-        <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Your Message</label>
-        <textarea 
-          rows={4}
-          required
-          className="text-black w-full px-5 py-4 bg-slate-50 rounded-2xl text-sm font-bold border-2 border-transparent focus:border-blue-500 outline-none transition-all resize-none"
-          placeholder="Briefly describe your tax issue..."
-        />
-      </div>
+              <button 
+                type="submit"
+                disabled={loading || submitted}
+                className={`w-full py-5 rounded-2xl text-[10px] md:text-xs font-black uppercase tracking-[0.2em] transition-all shadow-xl
+                  ${submitted ? "bg-emerald-500 shadow-emerald-100" : "bg-slate-950 hover:bg-blue-600 shadow-blue-100"} text-white flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50`}
+              >
+                {loading ? <Loader2 className="animate-spin" /> : submitted ? <CheckCircle /> : <Send size={18} />}
+                {loading ? "SENDING..." : submitted ? "TICKET RAISED" : "SUBMIT REQUEST"}
+              </button>
+            </form>
+          </div>
+        </motion.div>
 
-      {/* Submit Button */}
-      <button 
-        type="submit"
-        disabled={loading || submitted}
-        className={`w-full py-5 rounded-2xl text-[10px] md:text-xs font-black uppercase tracking-[0.2em] transition-all shadow-xl
-          ${submitted ? "bg-emerald-500 shadow-emerald-100" : "bg-slate-950 hover:bg-blue-600 shadow-blue-100"} text-white flex items-center justify-center gap-3 active:scale-95`}
-      >
-        {loading ? <Loader2 className="animate-spin" /> : submitted ? <CheckCircle /> : <Send size={18} />}
-        {loading ? "SENDING..." : submitted ? "TICKET RAISED" : "SUBMIT REQUEST"}
-      </button>
-
-    </form>
-  </div>
-</motion.div>
         {/* SIDEBAR */}
         <motion.div variants={itemVariants} className="lg:col-span-2 space-y-6 order-1 lg:order-2">
           <div className="bg-[#020617] p-8 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden group">
@@ -185,7 +168,7 @@ export default function SupportPage() {
           <div className="bg-blue-600 p-8 rounded-[2.5rem] text-white shadow-xl shadow-blue-100">
              <p className="text-[10px] font-black uppercase opacity-70 mb-1 tracking-widest">Support Active</p>
              <h4 className="text-xl font-black italic uppercase">Mon - Sat: 10AM - 7PM</h4>
-             <p className="text-[9px] mt-4 opacity-60 font-bold uppercase tracking-widest">Sasaram & Mumbai Offices.</p>
+             <p className="text-[9px] mt-4 opacity-60 font-bold uppercase tracking-widest leading-relaxed">Sasaram & Mumbai Offices.</p>
           </div>
         </motion.div>
       </div>
@@ -193,9 +176,9 @@ export default function SupportPage() {
   );
 }
 
-// --- SUB-COMPONENTS (Fixed) ---
+// --- SUB-COMPONENTS ---
 
-function ContactCard({ icon, title, detail, color, link }) {
+function ContactCard({ Icon, title, detail, color, link }: ContactCardProps) {
   const colors = {
     emerald: "hover:border-emerald-200 hover:bg-emerald-50/50",
     blue: "hover:border-blue-200 hover:bg-blue-50/50",
@@ -210,7 +193,7 @@ function ContactCard({ icon, title, detail, color, link }) {
       className={`block w-full bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm transition-all duration-500 group active:scale-[0.98] ${colors[color]}`}
     >
       <div className="w-14 h-14 rounded-[1.25rem] bg-slate-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-500 group-hover:rotate-3 shadow-sm">
-        {React.cloneElement(icon, { size: 24 })}
+        <Icon size={24} /> 
       </div>
       <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">{title}</p>
       <h3 className="text-base font-black text-slate-900 mt-2 mb-4 tracking-tight">{detail}</h3>
@@ -221,7 +204,7 @@ function ContactCard({ icon, title, detail, color, link }) {
   );
 }
 
-function FAQLink({ title }) {
+function FAQLink({ title }: FAQLinkProps) {
   return (
     <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 cursor-pointer transition-all group active:bg-white/20">
       <span className="text-[11px] font-bold text-slate-300 group-hover:text-white transition-colors uppercase">{title}</span>
