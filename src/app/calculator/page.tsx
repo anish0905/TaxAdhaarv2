@@ -5,6 +5,7 @@ import { Download, ShieldCheck, TrendingUp, X, Phone, User as UserIcon } from "l
 import Link from "next/link";
 import PublicNavbar from "@/components/Navbar";
 import { generatePDF } from "@/app/utils/generateReport";
+import Footer from "@/components/Footer";
 
 export default function TaxCalculatorPage() {
   const [salary, setSalary] = useState(1300000);
@@ -34,6 +35,7 @@ export default function TaxCalculatorPage() {
   };
 
   return (
+    <>
     <div className="min-h-screen bg-[#F8FAFC] font-sans pb-20">
       <PublicNavbar />
       
@@ -88,10 +90,16 @@ export default function TaxCalculatorPage() {
             </div>
           </div>
         </div>
+<div className="pt-10 text-center space-y-2">
 
-        <p className="text-center text-[9px] font-black text-slate-300 uppercase tracking-[0.5em] pt-10">
-          Powered by Aimgrit Digital Solutions
-        </p>
+  <Link 
+    href="https://www.aimgrit.in" 
+    target="_blank" 
+    className="text-[10px] font-bold text-blue-500 hover:text-blue-700 transition-all uppercase tracking-widest underline-offset-4 hover:underline"
+  >
+   Powered by Aimgrit Digital Solutions
+  </Link>
+</div>
       </div>
 
       {/* LEAD MODAL */}
@@ -131,6 +139,8 @@ export default function TaxCalculatorPage() {
         </div>
       )}
     </div>
+    <Footer/>
+</>
   );
 }
 
@@ -171,5 +181,9 @@ function ResultCard({ title, amount, isBest, color, formatCurr }: any) {
       </div>
       {isBest && <p className={`mt-4 text-[10px] font-bold uppercase ${color === 'blue' ? 'text-blue-600' : 'text-emerald-600'}`}>Highly Recommended</p>}
     </div>
+
+
+   
+
   );
 }
