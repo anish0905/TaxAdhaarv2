@@ -23,7 +23,7 @@ export default function LoginPage() {
       });
 
       if (res?.error) {
-        setError("Aapka Email ya Password sahi nahi hai.");
+     setError("Your email or password is incorrect.");
         setLoading(false);
       } else {
         window.location.href = "/dashboard-redirect";
