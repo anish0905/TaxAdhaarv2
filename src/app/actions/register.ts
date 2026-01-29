@@ -2,7 +2,11 @@
 import connectDB from "@/lib/db";
 import { User } from "@/models/User";
 import bcrypt from "bcryptjs";
-import { sendOTPEmail } from "@/lib/mail";
+import { sendOTPEmail, sendResetPasswordEmail } from "@/lib/mail";
+import crypto from "crypto";
+
+
+
 
 export async function registerUser(formData: FormData) {
   try {
@@ -124,5 +128,79 @@ export async function verifyOTP(email: string, otp: string) {
   } catch (e) { 
     console.error("OTP Error:", e);
     return { error: "Verification Failed" }; 
+  }
+}
+
+
+
+
+
+
+// --- 1. FORGOT PASSWORD ACTION ---
+export async function forgotPassword(email: string) {
+  try {
+    await connectDB();
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+
+    if (!user) {
+      return { error: "Is email se koi account nahi mila." };
+    }
+
+    // 32-character random token generate karein
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 Hour valid
+
+    // DB mein token save karein
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpiry = resetTokenExpiry;
+    await user.save();
+
+    // Reset Link banayein
+    const resetUrl = `${process.env.NEXTAUTH_URL}/login/reset-password?token=${resetToken}`;
+
+    // Email bhejein
+    const emailRes = await sendResetPasswordEmail(user.email, resetUrl);
+
+    if (emailRes.error) {
+      return { error: "Email bhejne mein technical dikkat hui." };
+    }
+
+    return { success: "Password reset link aapke email par bhej diya gaya hai!" };
+  } catch (error) {
+    console.error("Forgot Password Action Error:", error);
+    return { error: "Server error. Please try again." };
+  }
+}
+
+// --- 2. RESET PASSWORD ACTION ---
+export async function resetPassword(token: string, newPassword: string) {
+  try {
+    if (!token) return { error: "Invalid request (Missing Token)." };
+
+    await connectDB();
+
+    // Token match karein aur check karein ki expire to nahi hua
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpiry: { $gt: new Date() }, // Expiry current time se badi honi chahiye
+    });
+
+    if (!user) {
+      return { error: "Link invalid hai ya expire ho chuka hai." };
+    }
+
+    // Naya Password Hash karein
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // User update karein aur token clear karein
+    user.password = hashedPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpiry = undefined;
+    await user.save();
+
+    return { success: "Password successfully updated! Ab aap login kar sakte hain." };
+  } catch (error) {
+    console.error("Reset Password Action Error:", error);
+    return { error: "Password reset fail ho gaya. Try again." };
   }
 }
