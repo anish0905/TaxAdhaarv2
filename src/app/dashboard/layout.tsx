@@ -52,12 +52,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </nav>
 
         <div className="p-6 border-t border-slate-100">
-          <button 
-            onClick={() => signOut()}
-            className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-sm font-bold text-red-600 hover:bg-red-50 transition-all border border-transparent hover:border-red-100"
-          >
-            <span className="text-lg">🚪</span> Logout
-          </button>
+        
+<button 
+  onClick={async () => {
+    await signOut({ 
+      callbackUrl: "/login", // Ya "/" jahan aap bhejnah chahte hain
+      redirect: true 
+    });
+  }}
+  className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-sm font-bold text-red-600 hover:bg-red-50 transition-all border border-transparent hover:border-red-100"
+>
+  <span className="text-lg">🚪</span> Logout
+</button>
         </div>
       </aside>
 
@@ -94,12 +100,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <span className="text-2xl">{link.icon}</span> {link.name}
               </Link>
            ))}
-           <button 
-              onClick={() => signOut()}
-              className="mt-auto mb-10 bg-red-600 text-white py-5 rounded-2xl font-black uppercase tracking-widest text-sm shadow-lg shadow-red-100"
-            >
-              Sign Out Account
-            </button>
+        <button 
+  onClick={async () => {
+    setIsMobileMenuOpen(false); // Menu close karein
+    await signOut({ callbackUrl: "/login" });
+  }}
+  className="mt-auto mb-10 bg-red-600 text-white py-5 rounded-2xl font-black uppercase tracking-widest text-sm shadow-lg shadow-red-100"
+>
+  Sign Out Account
+</button>
         </div>
       )}
 

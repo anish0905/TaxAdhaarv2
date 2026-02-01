@@ -8,6 +8,7 @@ import {
   ShieldCheck
 } from "lucide-react";
 import ClientOrdersList from "./components/ClientOrdersList";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -70,9 +71,11 @@ export default async function ClientOrdersPage() {
                <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-2">
                  You haven't applied for any services yet.
                </p>
-               <button className="mt-8 bg-[#020617] text-white px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 transition-all">
-                 Apply for New Service
-               </button>
+             <Link href="/dashboard/services">
+  <button className="mt-8 bg-[#020617] text-white px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 transition-all active:scale-95">
+    Apply for New Service
+  </button>
+</Link>
             </div>
           )}
         </div>

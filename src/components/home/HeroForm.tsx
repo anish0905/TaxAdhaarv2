@@ -73,16 +73,18 @@ export default function HeroForm() {
             className="w-full px-6 py-4 rounded-2xl border border-slate-100 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-50/50 outline-none transition-all text-black font-semibold placeholder:text-slate-500"
           />
 
-          <select
-            name="service"
-            required
-            className="w-full px-6 py-4 rounded-2xl border border-slate-100 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-50/50 outline-none transition-all text-black font-semibold appearance-none cursor-pointer"
-          >
-            <option value="">-- Select Service --</option>
-            <option value="ITR">Income Tax Filing</option>
-            <option value="GST">GST Services</option>
-            <option value="COMPANY">Company Registration</option>
-          </select>
+<select
+  name="service"
+  required
+  className="w-full px-6 py-4 rounded-2xl border border-slate-100 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-50/50 outline-none transition-all text-black font-semibold appearance-none cursor-pointer"
+>
+  <option value="">-- Select Service --</option>
+  {/* Yahan value bilkul schema ke enum jaisi honi chahiye */}
+  <option value="Income Tax (ITR) Filing">Income Tax Filing</option>
+  <option value="GST Registration & Returns">GST Services</option>
+  <option value="PAN Card Services">PAN Card Services</option>
+  <option value="Other Tax Queries">Other Enquiries</option>
+</select>
 
           <button
             type="submit"
