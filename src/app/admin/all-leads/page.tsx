@@ -1,6 +1,8 @@
 import connectDB from "@/lib/db";
 import { Order } from "@/models/Order";
 import { User } from "@/models/User";
+export const dynamic = "force-dynamic";
+
 
 export default async function AdminMasterLeads() {
   await connectDB();
