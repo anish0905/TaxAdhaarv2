@@ -2,6 +2,8 @@ import Footer from "@/components/Footer";
 import ServiceGrid from "@/components/home/ServiceGrid";
 import PublicNavbar from "@/components/Navbar";
 import Link from "next/link";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 // 1. ADVANCED SEO METADATA
 // Using your full service range to capture long-tail search traffic

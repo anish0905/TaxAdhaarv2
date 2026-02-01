@@ -4,7 +4,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Link from "next/link";
 import { FileText, ChevronRight, User, CheckCircle2 } from "lucide-react";
-
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 export default async function StaffActiveOrders() {
   const session = await getServerSession(authOptions);
   await connectDB();
