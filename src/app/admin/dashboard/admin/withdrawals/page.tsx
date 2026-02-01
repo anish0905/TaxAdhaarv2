@@ -6,6 +6,8 @@ import {
   ExternalLink, IndianRupee, Clock 
 } from "lucide-react";
 import { approvePayoutAction, rejectPayoutAction } from "@/app/actions/adminActions";
+export const dynamic = "force-dynamic";
+
 
 export default async function AdminWithdrawals() {
   await connectDB();
