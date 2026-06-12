@@ -1,0 +1,59 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_URI")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+// 1. CATEGORY MODEL
+model Category {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  slug        String   @unique
+  description String?          
+  blogs       Blog[]   
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// 2. BLOG MODEL
+model Blog {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  slug          String   @unique
+  content       String   
+  excerpt       String   
+  mainImage     String   
+  
+  // Relations
+  categoryId    String   @db.ObjectId
+  category      Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  // SEO Fields
+  metaTitle     String?  
+  metaDesc      String?  
+  keywords      String?  
+  tags          String   
+
+  // System & Ads Control
+  isPublished   Boolean  @default(true) 
+  showAds       Boolean  @default(true) 
+  views         Int      @default(0) 
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([slug])
+}
+
+// 3. ADS CONTROL MODEL
+model AdPlacement {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  location    String   @unique
+  adCode      String   
+  isActive    Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
+}

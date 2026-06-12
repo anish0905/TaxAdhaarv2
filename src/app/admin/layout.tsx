@@ -17,6 +17,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: "Work Allocation", href: "/admin/dashboard/admin/WorkAllocation", icon: <ShieldCheck size={18} /> },
     {name:"withdrawals", href:"/admin/dashboard/admin/withdrawals", icon:<History size={18} />},
     { name: "Client Directory", href: "/admin/dashboard/admin/clients", icon: <Users size={18} /> },
+    {name:"Blogs", href:"/admin/blogs", icon:<History size={18} />},
     { name: "Upload Leads", href: "/admin/leads", icon: <FolderPlus size={18} /> },
     { name: "Manage & Assign", href: "/admin/manage-leads", icon: <ShieldCheck size={18} /> },
     { name: "Verify & Pricing", href: "/admin/verify", icon: <CheckCircle size={18} /> },

@@ -21,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         
         <AuthProvider>
           {/* 1. WhatsApp Top Bar: Sabse upar dikhega */}
-          <WhatsAppTopBar />
+          {/* <WhatsAppTopBar /> */}
 
           {/* 2. Navbar: Top bar ke niche condition ke hisaab se */}
           {showNavbar && <PublicNavbar />}

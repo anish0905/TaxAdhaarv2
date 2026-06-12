@@ -1,26 +1,71 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Premium News Portal Color Palette */
+  --background: #f8fafc; /* Light Grayish Blue (Premium Subtle Background) */
+  --foreground: #0f172a; /* Slate 900 (Deep Executive Black for crisp reading) */
+  
+  /* Brand Colors for Tax Portal */
+  --news-red: #dc2626;      /* Breaking News Crimson Red */
+  --news-dark: #090d16;     /* Deep Slate/Black for headers */
+  --news-accent: #f59e0b;   /* Alert/Urgent Yellow for Flash notifications */
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  
+  /* Custom Tailwind Classes for your Premium Theme */
+  --color-brand-red: var(--news-red);
+  --color-brand-dark: var(--news-dark);
+  --color-brand-accent: var(--news-accent);
+  
+  --font-sans: Arial, Helvetica, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* --- LIVE BREAKING NEWS TICKER ANIMATION (Tailwind v4 Native CSS) --- */
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
   }
 }
 
+.animate-marquee {
+  display: inline-block;
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused; /* जब CA/व्यापारी माउस ले जाएंगे तो सर्कुलर रुक जाएगा */
+}
+
+/* --- CUSTOM UTILITIES FOR PREMIUM UI --- */
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* Smooth Scroll for reading long tax bare acts/articles */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar for Recent Notifications Sidebar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--news-red);
 }
