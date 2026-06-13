@@ -17,6 +17,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="antialiased">
+        {/* 🚀 Google AdSense Auto Ads - क्रिटिकल फिक्स (अब बॉट्स को तुरंत मिलेगा) */}
+        <Script 
+          async 
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2178056672186074"
+          strategy="afterInteractive"
+          crossOrigin="anonymous"
+        />
+
+        {/* Razorpay Script */}
         <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
         
         <AuthProvider>
