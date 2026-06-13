@@ -60,7 +60,7 @@ export default function PrivacyPolicy() {
           <div className="mt-12 text-center border-t border-slate-100 pt-12">
             <p className="text-slate-400 text-sm font-medium">
               Privacy se juda koi sawal hai? Hamein mail karein: 
-              <span className="text-blue-600 font-black ml-1 cursor-pointer">privacy@taxadhaar.in</span>
+              <span className="text-blue-600 font-black ml-1 cursor-pointer">privacy@taxadhaar.com </span>
             </p>
           </div>
         </div>

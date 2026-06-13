@@ -74,7 +74,7 @@ export default function TermsOfService() {
             <p className="text-slate-400 text-sm font-medium italic">
               Agar aapko in terms se koi problem hai, toh humein contact karein:
               <br />
-              <span className="text-blue-600 font-black not-italic">legal@taxadhaar.in</span>
+              <span className="text-blue-600 font-black not-italic">legal@taxadhaar.com</span>
             </p>
           </div>
         </div>

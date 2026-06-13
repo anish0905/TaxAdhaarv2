@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: "Contact TaxAdhaar | Get Expert Tax & Business Consultation",
   description: "Have questions about ITR, GST, or Company Registration? Contact TaxAdhaar for professional CA-assisted support. Reach us via WhatsApp, Email, or visit our Sasaram and Mumbai offices.",
   keywords: ["TaxAdhaar contact", "Tax consultant WhatsApp", "GST registration help", "ITR filing support India", "Sasaram tax office"],
-  alternates: { canonical: "https://www.taxadhaar.in/contact" },
+  alternates: { canonical: "https://www.taxadhaar.com/contact" },   
 };
 
 export default function Contact() {

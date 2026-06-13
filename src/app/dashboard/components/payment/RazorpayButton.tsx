@@ -39,7 +39,7 @@ export function RazorpayButton({ orderId, useWallet, amount }: RazorpayButtonPro
         currency: orderData.currency,
         name: "TaxAdhaar",
         description: "Professional Compliance Services",
-        image: "https://www.taxadhaar.in/logo.png",
+        image: "https://www.taxadhaar.com/logo.png",
         order_id: orderData.id,
         handler: async function (response: any) {
           // 3. Payment Verification (Verify Signature)
@@ -70,7 +70,7 @@ export function RazorpayButton({ orderId, useWallet, amount }: RazorpayButtonPro
         },
         prefill: {
           name: "TaxAdhaar Client",
-          email: "support@taxadhaar.in",
+          email: "support@taxadhaar.com",
         },
         theme: {
           color: "#2563eb",

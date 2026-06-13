@@ -14,13 +14,13 @@ export const metadata = {
     "ITR Filing India", "GST Registration Sasaram", "Trademark Application", 
     "Pvt Ltd Incorporation", "IEC Code Online", "LUT Filing GST", "MSME Registration"
   ],
-  alternates: { canonical: "https://www.taxadhaar.in/services" },
+  alternates: { canonical: "https://www.taxadhaar.com/services" },
   openGraph: {
     title: "TaxAdhaar | Full-Stack Compliance for Businesses & Individuals",
     description: "Expert Tax Architecture for Bharat. Fast, Secure, and 100% Digital.",
-    url: "https://www.taxadhaar.in/services",
+    url: "https://www.taxadhaar.com/services",
     type: "website",
-    images: [{ url: "https://www.taxadhaar.in/og-services.jpg" }],
+    images: [{ url: "https://www.taxadhaar.com/og-services.jpg" }],
   },
 };
 
@@ -32,7 +32,7 @@ export default function ServicesPage() {
     "@type": "FinancialService",
     "name": "TaxAdhaar",
     "description": "Premium Digital Tax and Business Compliance Firm in India.",
-    "url": "https://www.taxadhaar.in",
+    "url": "https://www.taxadhaar.com",
     "telephone": "+91-7557721426",
     "address": {
       "@type": "PostalAddress",

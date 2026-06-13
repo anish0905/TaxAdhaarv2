@@ -21,12 +21,12 @@ export const metadata = {
     "Startup India Registration"
   ],
   alternates: {
-    canonical: "https://www.taxadhaar.in",
+    canonical: "https://www.taxadhaar.com",
   },
   openGraph: {
     title: "TaxAdhaar - Empowering Bharat's Taxpayers Digitally",
     description: "Join millions across India filing with the smartest CA-assisted platform.",
-    url: "https://www.taxadhaar.in",
+    url: "https://www.taxadhaar.com",
     siteName: "TaxAdhaar",
     locale: "en_IN",
     type: "website",
@@ -41,8 +41,8 @@ export default function HomePage() {
     "name": "TaxAdhaar",
     "alternateName": "TaxAdhaar Digital Solutions",
     "description": "A leading Pan-India digital platform providing Tax, GST, and Business Registration services.",
-    "url": "https://www.taxadhaar.in",
-    "logo": "https://www.taxadhaar.in/logo.png",
+    "url": "https://www.taxadhaar.com",
+    "logo": "https://www.taxadhaar.com/logo.png",
     "address": {
       "@type": "PostalAddress",
       "addressCountry": "IN" // Focus on Country level
