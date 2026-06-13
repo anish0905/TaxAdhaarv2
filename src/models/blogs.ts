@@ -23,6 +23,9 @@ export interface IBlog extends Document {
   isPublished: boolean;
   showAds: boolean;
   views: number;
+  // ⏰ AI AUTO-PILOT NEW INTERFACES
+  isScheduled: boolean;
+  scheduledTime?: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -50,7 +53,7 @@ const CategorySchema = new Schema<ICategory>(
 export const Category = models.Category || model<ICategory>("Category", CategorySchema);
 
 // ==========================================
-// 2. BLOG SCHEMA (टैक्स पोर्टल न्यूज़ और SEO बूस्टर)
+// 2. BLOG SCHEMA (टैक्स पोर्टल न्यूज़, SEO बूस्टर + ऑटो-पायलट)
 // ==========================================
 const BlogSchema = new Schema<IBlog>(
   {
@@ -71,17 +74,22 @@ const BlogSchema = new Schema<IBlog>(
     isPublished: { type: Boolean, default: true },
     showAds: { type: Boolean, default: true }, // Ads control panel
     views: { type: Number, default: 0 }, // Viral Traffic Tracker
+
+    // ⏰ AI Auto-Pilot Engine Fields
+    isScheduled: { type: Boolean, default: false }, // क्या ब्लॉग भविष्य के लिए शेड्यूल्ड है?
+    scheduledTime: { type: Date, default: null }, // किस समय लाइव करना है?
   },
   { timestamps: true }
 );
 
 // Search Optimization for fast indexing
 BlogSchema.index({ slug: 1 });
+BlogSchema.index({ isScheduled: 1, isPublished: 1, scheduledTime: 1 }); // क्रॉन जॉब की परफॉरमेंस के लिए इंडेक्सिंग
 
 export const Blog = models.Blog || model<IBlog>("Blog", BlogSchema);
 
 // ==========================================
-// 3. LIVE NOTIFICATION SCHEMA (New Feature 🚀)
+// 3. LIVE NOTIFICATION SCHEMA
 // ==========================================
 const NotificationSchema = new Schema<INotification>(
   {
