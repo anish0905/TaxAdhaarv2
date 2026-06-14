@@ -13,11 +13,11 @@ export default function Footer() {
           <p className="text-slate-500 text-sm mt-4 leading-relaxed font-medium">
             India's most trusted digital tax filing platform. Simplifying taxes for individuals and startups.
           </p>
-          {/* Social Links - Viral hone ke liye zaroori hain */}
+          {/* Social Links */}
           <div className="flex gap-4 mt-6">
-            <div className="w-8 h-8 rounded-full text-black bg-slate-100 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all cursor-pointer">𝕏</div>
-            <div className="w-8 h-8 rounded-full text-black bg-slate-100 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all cursor-pointer">in</div>
-            <div className="w-8 h-8 rounded-full text-black bg-slate-100 flex items-center justify-center hover:bg-pink-600 hover:text-white transition-all cursor-pointer">ig</div>
+            <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full text-black bg-slate-100 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all cursor-pointer text-xs font-bold">𝕏</a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full text-black bg-slate-100 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all cursor-pointer text-xs font-bold">in</a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full text-black bg-slate-100 flex items-center justify-center hover:bg-pink-600 hover:text-white transition-all cursor-pointer text-xs font-bold">ig</a>
           </div>
         </div>
         
@@ -32,21 +32,22 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Links */}
+        {/* Company & Compliance Links (AdSense & Razorpay Core Requirement) */}
         <div>
-          <h4 className="font-black text-slate-900 uppercase text-xs tracking-[0.2em] mb-6">Company</h4>
+          <h4 className="font-black text-slate-900 uppercase text-xs tracking-[0.2em] mb-6">Legal & Company</h4>
           <ul className="space-y-3 text-slate-800 text-sm font-bold">
             <li><Link href="/about" className="hover:text-blue-600 transition-colors">About Us</Link></li>
-            <li><Link href="/contact" className="hover:text-blue-600 transition-colors">Contact</Link></li>
-            <li><Link href="/privacy" className="hover:text-blue-600 transition-colors">Privacy Policy</Link></li>
+            <li><Link href="/contact" className="hover:text-blue-600 transition-colors">Contact Us</Link></li>
+            <li><Link href="/privacy-policy" className="hover:text-blue-600 transition-colors">Privacy Policy</Link></li>
             <li><Link href="/terms" className="hover:text-blue-600 transition-colors">Terms of Service</Link></li>
+            <li><Link href="/refund-policy" className="hover:text-blue-600 transition-colors">Refund & Cancellation</Link></li>
           </ul>
         </div>
 
-        {/* Newsletter / Lead Capture - "Viral" hone ke liye data chahiye */}
+        {/* Newsletter / Lead Capture */}
         <div className="bg-blue-50 p-6 rounded-[2rem] border border-blue-100">
           <h4 className="font-black text-blue-900 text-xs uppercase tracking-widest mb-4">Tax Updates & Offers</h4>
-          <div className="flex flex-col gap-2  text-black">
+          <div className="flex flex-col gap-2 text-black">
             <input 
               type="email" 
               placeholder="Email address" 
@@ -67,7 +68,7 @@ export default function Footer() {
           <p className="text-slate-800 text-[9px] mt-1 font-bold">POWERED BY RAZORPAY SECURE ENGINE</p>
         </div>
 
-        {/* Trust Badges - Mandatory for Razorpay & Security */}
+        {/* Trust Badges */}
         <div className="flex flex-wrap justify-center gap-6 items-center grayscale opacity-60 hover:opacity-100 transition-opacity text-black">
           <div className="flex flex-col items-center">
             <span className="text-[8px] font-black mb-1">PAYMENT PARTNER</span>
