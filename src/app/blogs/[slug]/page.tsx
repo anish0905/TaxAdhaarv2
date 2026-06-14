@@ -7,54 +7,78 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-// 1. POWERFUL SEO IMPLEMENTATION
+// Internal server-side safe path resolution helper
+const getSiteUrl = () => {
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL;
+  }
+  // Fallback domain selector production server build ke liye
+  return "https://taxadhaar.com";
+};
+
+// 1. DYNAMIC METADATA GENERATOR (WITH CRASH SAFEGUARDS)
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  
+  const baseUrl = getSiteUrl();
+
   try {
-    const res = await fetch(`${siteUrl}/api/blogs/${slug}`, { next: { revalidate: 1800 } });
+    // Cache revalidate runtime optimization layer set kiya hai
+    const res = await fetch(`${baseUrl}/api/blogs/${slug}`, { 
+      next: { revalidate: 1800 },
+      headers: { "Content-Type": "application/json" }
+    });
+    
+    if (!res.ok) return { title: "Tax Update | TaxAdhaar" };
     const json = await res.json();
     
-    if (!json || !json.success || !json.data) return { title: "TaxAdhaar Blog" };
+    if (!json || !json.success || !json.data) {
+      return { title: "Tax Update | TaxAdhaar" };
+    }
     
     const blog = json.data;
     return {
       title: `${blog.metaTitle || blog.title} | TaxAdhaar`,
       description: blog.metaDesc || blog.excerpt,
-      keywords: blog.keywords || "tax updates, gst, income tax news",
+      keywords: blog.keywords || "tax news, mutual funds 2026",
       openGraph: {
         title: blog.metaTitle || blog.title,
         description: blog.metaDesc || blog.excerpt,
-        url: `${siteUrl}/blogs/${slug}`,
-        images: [{ url: blog.mainImage, width: 1200, height: 630, alt: blog.title }],
+        url: `${baseUrl}/blogs/${slug}`,
+        images: [{ url: blog.mainImage, width: 1200, height: 630 }],
         type: "article",
-        publishedTime: blog.createdAt,
-      },
-      twitter: {
-        card: "summary_large_image",
-        title: blog.metaTitle || blog.title,
-        description: blog.metaDesc || blog.excerpt,
-        images: [blog.mainImage],
       },
     };
-  } catch {
-    return { title: "TaxAdhaar Updates" };
+  } catch (err) {
+    console.error("Metadata generation crash bypass:", err);
+    return { title: "Tax News Bulletin | TaxAdhaar" };
   }
 }
 
-// 2. SERVER CONTROLLER PASSING INITIAL DATA
+// 2. MAIN SERVER COMPONENT CONTROLLER
 export default async function BlogPage({ params }: Props) {
   const { slug } = await params;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const baseUrl = getSiteUrl();
+  
+  let blogData = null;
 
-  // Initial blog details on server for first paint performance
-  const res = await fetch(`${siteUrl}/api/blogs/${slug}`, { next: { revalidate: 1800 } });
-  const json = await res.json();
+  try {
+    const res = await fetch(`${baseUrl}/api/blogs/${slug}`, { 
+      next: { revalidate: 1800 },
+      headers: { "Content-Type": "application/json" }
+    });
+    
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success) blogData = json.data;
+    }
+  } catch (err) {
+    console.error("Server component context fetch logic crash:", err);
+  }
 
-  if (!json || !json.success || !json.data) {
+  // Agar database call completely down hai ya blog nahi mila, toh notFound safe trigger karo
+  if (!blogData) {
     notFound();
   }
 
-  return <InfiniteBlogFeed initialBlog={json.data} currentSlug={slug} />;
+  return <InfiniteBlogFeed initialBlog={blogData} currentSlug={slug} />;
 }
