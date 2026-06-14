@@ -23,7 +23,7 @@ export default function PublicNavbar() {
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Services", href: "/services" },
-    { name: "Process", href: "/#process" },
+    { name: "Blogs", href: "/blogs" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
     {name:"Tax Planner" , href:"/calculator"}
