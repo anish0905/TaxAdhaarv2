@@ -12,8 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        {/* 🚨 अल्टीमेट फिक्स: प्योर HTML डेंजरसली इन्जेक्टेड टैग */}
-        {/* यह Next.js को कोड बदलने से रोकेगा और Google Bot को सीधा साफ़ कोड दिखेगा */}
+        {/* AdSense Code */}
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2178056672186074"
@@ -21,6 +20,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         ></script>
       </head>
       <body className="antialiased">
+        {/* Google Analytics (GA4) Scripts */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-R7JHCV8X1Z"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-XXXXXXXXXX');
+          `}
+        </Script>
+
         {/* Razorpay Script */}
         <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
         
