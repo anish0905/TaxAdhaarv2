@@ -6,6 +6,8 @@ import ServiceGrid from "@/components/home/ServiceGrid";
 import Stats from "@/components/home/Stats";
 import TrustSlider from "@/components/home/TrustSlider";
 import PublicNavbar from "@/components/Navbar";
+import Link from "next/link";
+import Image from "next/image";
 
 // 1. NATIONAL SEO METADATA
 export const metadata = {
@@ -33,7 +35,27 @@ export const metadata = {
   },
 };
 
-export default function HomePage() {
+// 💡 FIX 1: Corrected API endpoint and data extraction logic
+async function getLatestUpdates() {
+  try {
+    // Hamne path badalkar '/api/blogs' kiya hai jo aapne bataya
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/blogs?limit=3`, {
+      next: { revalidate: 3600 } 
+    });
+    if (!res.ok) return [];
+    
+    const json = await res.json();
+    // Aapka response object hai jisme 'data' key ke andar array hai
+    return json.success && Array.isArray(json.data) ? json.data : [];
+  } catch (error) {
+    console.error("Error fetching homepage blogs:", error);
+    return [];
+  }
+}
+
+export default async function HomePage() {
+  const latestBlogs = await getLatestUpdates();
+
   // 2. NATIONAL ORGANIZATION SCHEMA
   const organizationSchema = {
     "@context": "https://schema.org",
@@ -45,9 +67,9 @@ export default function HomePage() {
     "logo": "https://www.taxadhaar.com/logo.png",
     "address": {
       "@type": "PostalAddress",
-      "addressCountry": "IN" // Focus on Country level
+      "addressCountry": "IN"
     },
-    "areaServed": "IN", // Tells Google you serve the whole country
+    "areaServed": "IN",
     "serviceArea": {
       "@type": "Country",
       "name": "India"
@@ -72,7 +94,6 @@ export default function HomePage() {
 
       {/* --- HERO SECTION: NATIONAL IDENTITY --- */}
       <header className="relative px-6 pt-32 pb-20 md:pt-48 md:pb-32 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16 overflow-hidden">
-        {/* Dynamic Background Blobs */}
         <div className="absolute top-20 -left-20 w-96 h-96 bg-blue-500 rounded-full filter blur-[120px] opacity-10 animate-pulse"></div>
         <div className="absolute bottom-0 right-0 w-80 h-80 bg-indigo-500 rounded-full filter blur-[100px] opacity-10"></div>
 
@@ -109,29 +130,26 @@ export default function HomePage() {
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-1">Operational Coverage</p>
             </div>
           </div>
-                {/* Hero Section ke paragraph ke theek niche ye add karein */}
-<div className="pt-10 flex flex-wrap gap-4 items-center justify-center md:justify-start">
-   {/* Badge 1 */}
-   <div className="flex items-center gap-2 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-lg shadow-sm group hover:bg-blue-600 transition-all duration-300">
-     <span className="text-[10px] font-black uppercase tracking-widest text-blue-700 group-hover:text-white">
-       MCA Verified
-     </span>
-   </div>
 
-   {/* Badge 2 */}
-   <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg shadow-sm group hover:bg-slate-900 transition-all duration-300">
-     <span className="text-[10px] font-black uppercase tracking-widest text-slate-600 group-hover:text-white">
-       256-Bit SSL Secure
-     </span>
-   </div>
+          <div className="pt-10 flex flex-wrap gap-4 items-center justify-center md:justify-start">
+             <div className="flex items-center gap-2 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-lg shadow-sm group hover:bg-blue-600 transition-all duration-300">
+               <span className="text-[10px] font-black uppercase tracking-widest text-blue-700 group-hover:text-white">
+                 MCA Verified
+               </span>
+             </div>
 
-   {/* Badge 3 */}
-   <div className="flex items-center gap-2 bg-green-50 border border-green-100 px-3 py-1.5 rounded-lg shadow-sm group hover:bg-green-600 transition-all duration-300">
-     <span className="text-[10px] font-black uppercase tracking-widest text-green-700 group-hover:text-white">
-       Pan-India Service
-     </span>
-   </div>
-</div>
+             <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg shadow-sm group hover:bg-slate-900 transition-all duration-300">
+               <span className="text-[10px] font-black uppercase tracking-widest text-slate-600 group-hover:text-white">
+                 256-Bit SSL Secure
+               </span>
+             </div>
+
+             <div className="flex items-center gap-2 bg-green-50 border border-green-100 px-3 py-1.5 rounded-lg shadow-sm group hover:bg-green-600 transition-all duration-300">
+               <span className="text-[10px] font-black uppercase tracking-widest text-green-700 group-hover:text-white">
+                 Pan-India Service
+               </span>
+             </div>
+          </div>
         </div>
 
         {/* --- HERO FORM --- */}
@@ -139,9 +157,7 @@ export default function HomePage() {
           <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-[3.5rem] blur opacity-10 group-hover:opacity-25 transition duration-1000"></div>
           <HeroForm />
         </div>
-        
       </header>
-
 
       {/* --- PAN-INDIA REACH SECTION --- */}
       <section className="py-20 border-y border-slate-100 bg-slate-50/50">
@@ -156,13 +172,98 @@ export default function HomePage() {
           <ServiceGrid />
         </div>
         
-        {/* Stats Section with National Data */}
         <Stats />
 
-        {/* Optimized Workflow */}
         <Process />
 
-        {/* FAQ - General Indian Tax Questions */}
+        {/* 🚀 SECTION: DYNAMIC LATEST TAX UPDATES & NEWS 🚀 */}
+        <section className="py-28 bg-slate-50 border-y border-slate-100">
+          <div className="max-w-7xl mx-auto px-6">
+            
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+              <div>
+                <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] bg-blue-50 px-4 py-2 rounded-xl border border-blue-100">
+                  Knowledge Hub
+                </span>
+                <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mt-4">
+                  Latest Tax & GST Bulletins
+                </h2>
+                <p className="text-slate-500 font-medium mt-2">
+                  Stay updated with live insights curated by national Chartered Accountants.
+                </p>
+              </div>
+              <Link 
+                href="/blogs" 
+                className="inline-flex items-center gap-2 bg-white border border-slate-200 text-[#020617] font-black text-xs uppercase tracking-widest px-6 py-4 rounded-2xl shadow-sm hover:bg-[#020617] hover:text-white transition-all group shrink-0"
+              >
+                View All Bulletins
+                <span className="group-hover:translate-x-1 transition-transform">→</span>
+              </Link>
+            </div>
+
+            {/* Blogs Display Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {latestBlogs.length > 0 ? (
+                latestBlogs.map((blog: any) => (
+                  <article key={blog._id} className="group bg-white border border-slate-100 rounded-[2.5rem] p-6 shadow-sm hover:shadow-2xl hover:border-blue-100/50 transition-all duration-500 flex flex-col justify-between">
+                    <div>
+                      {/* Blog Cover Image */}
+                      <div className="w-full h-56 relative rounded-[1.8rem] overflow-hidden bg-slate-100 mb-6">
+                        {/* 💡 FIX 2: Changed blog.imageUrl to blog.mainImage */}
+                        <img
+                          src={blog.mainImage || "/placeholder-tax.jpg"} 
+                          alt={blog.title}
+                          
+                          className="object-cover group-hover:scale-105 transition-transform duration-700"
+                        />
+                      </div>
+                      
+                      <div className="flex items-center gap-3 mb-4">
+                        <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest bg-blue-50 px-2.5 py-1 rounded-lg">
+                          {/* 💡 FIX 3: Object category hone ke karan blog.category.name kiya */}
+                          {blog.category?.name || "Taxation"}
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-bold">
+                          {new Date(blog.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        </span>
+                      </div>
+
+                      <h3 className="text-xl font-black text-slate-900 leading-snug group-hover:text-blue-600 transition-colors line-clamp-2">
+                        {blog.title}
+                      </h3>
+                      
+                      {/* 💡 FIX 4: Changed blog.metaDescription to blog.metaDesc */}
+                      <p className="text-sm text-slate-500 font-medium mt-3 line-clamp-3 leading-relaxed">
+                        {blog.metaDesc}
+                      </p>
+                    </div>
+
+                    <div className="pt-6 mt-6 border-t border-slate-50 flex items-center justify-between">
+                      <Link 
+                        href={`/blogs/${blog.slug}`} 
+                        className="text-xs font-black uppercase tracking-wider text-[#020617] hover:text-blue-600 flex items-center gap-1.5 transition-colors"
+                      >
+                        Read Full Article <span>→</span>
+                      </Link>
+                    </div>
+                  </article>
+                ))
+              ) : (
+                // Fallback Loaders if data is missing or empty
+                [1, 2, 3].map((num) => (
+                  <div key={num} className="bg-white border border-slate-100 rounded-[2.5rem] p-6 shadow-sm animate-pulse">
+                    <div className="w-full h-56 bg-slate-200 rounded-[1.8rem] mb-6"></div>
+                    <div className="w-24 h-4 bg-slate-200 rounded mb-4"></div>
+                    <div className="w-full h-6 bg-slate-200 rounded mb-2"></div>
+                    <div className="w-3/4 h-6 bg-slate-200 rounded"></div>
+                  </div>
+                ))
+              )}
+            </div>
+
+          </div>
+        </section>
+
         <FAQ />
       </main>
 

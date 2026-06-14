@@ -29,16 +29,14 @@ export async function GET(request: Request) {
     // ========================================================================
     // 1. REDIS CACHE KEY GENERATION
     // ========================================================================
-    // Ek unique key banayenge unique parameters ke base par
     const cacheKey = `blogs:stream:admin-${isAdmin}:cat-${categoryId}:limit-${limit}:exclude-[${excludeString}]`;
 
-    // Admin queries ko cache nahi karenge taaki draft updates instantly dikhein
     if (!isAdmin) {
       try {
         const cachedBlogs = await redis.get(cacheKey);
         if (cachedBlogs) {
-          // Agar Redis me data mil jata hai, toh MongoDB ko chhue bina return kar do (0.1ms)
-          return NextResponse.json({ success: true, data: cachedBlogs, fromCache: true });
+          const parsedData = typeof cachedBlogs === "string" ? JSON.parse(cachedBlogs) : cachedBlogs;
+          return NextResponse.json({ success: true, data: parsedData, fromCache: true });
         }
       } catch (redisError) {
         console.error("Redis Read Error (Falling back to DB):", redisError);
@@ -61,18 +59,24 @@ export async function GET(request: Request) {
       filter.category = categoryId;
     }
 
+    // 💡 FIX 1: Main query me 'views' aur 'content' dono ko select kiya taaki frontend crash na ho!
     let blogs = await Blog.find(filter)
-      .populate("category")
+      .select("title slug mainImage metaDesc views content category createdAt") 
+      .populate("category", "name slug") 
       .sort({ createdAt: -1 })
-      .limit(limit);
+      .limit(limit)
+      .lean(); 
 
     // Fallback Stream Engine
     if (blogs.length === 0 && categoryId) {
       delete filter.category;
+      // 💡 FIX 2: Fallback query me bhi 'content' field ensure ki gayi hai
       blogs = await Blog.find(filter)
-        .populate("category")
+        .select("title slug mainImage metaDesc views content category createdAt")
+        .populate("category", "name slug")
         .sort({ createdAt: -1 })
-        .limit(limit);
+        .limit(limit)
+        .lean();
     }
 
     // ========================================================================
@@ -80,9 +84,7 @@ export async function GET(request: Request) {
     // ========================================================================
     if (!isAdmin && blogs.length > 0) {
       try {
-        // Data ko 5 minutes (300 seconds) ke liye cache me set kar rahe hain
-        // Puraane '.setex' code ko is standard set configuration se replace kijiye
-await redis.set(cacheKey, JSON.stringify(blogs), { ex: 300 });
+        await redis.set(cacheKey, JSON.stringify(blogs), { ex: 300 });
       } catch (redisWriteError) {
         console.error("Redis Write Error:", redisWriteError);
       }

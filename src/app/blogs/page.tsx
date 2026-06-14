@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, memo } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -47,7 +47,9 @@ const formatNewsDate = (dateString: string): string => {
   }
 };
 
-const truncateText = (text: string, maxLength: number): string => {
+// 💡 FIX 1: Safe Truncate Check (Ab khali values par crash nahi hoga)
+const truncateText = (text: string | null | undefined, maxLength: number): string => {
+  if (!text) return ""; 
   if (text.length <= maxLength) return text;
   return text.slice(0, maxLength).trim() + "...";
 };
@@ -56,7 +58,6 @@ const truncateText = (text: string, maxLength: number): string => {
 // MEMOIZED COMPONENTS
 // ============================================================================
 
-// Loading Spinner Component
 const LoadingSpinner = memo(() => (
   <div className="flex justify-center items-center h-screen bg-slate-50">
     <div className="relative flex items-center justify-center">
@@ -69,7 +70,6 @@ const LoadingSpinner = memo(() => (
 ));
 LoadingSpinner.displayName = "LoadingSpinner";
 
-// Category Filter Button Component
 const CategoryButton = memo(
   ({
     name,
@@ -98,7 +98,6 @@ const CategoryButton = memo(
 );
 CategoryButton.displayName = "CategoryButton";
 
-// Notification Item Component
 const NotificationItem = memo(({ notification }: { notification: TaxNotification }) => (
   <div
     className={`p-3.5 rounded-xl transition-all border ${
@@ -129,7 +128,6 @@ const NotificationItem = memo(({ notification }: { notification: TaxNotification
 ));
 NotificationItem.displayName = "NotificationItem";
 
-// Ad Banner Component
 const AdBanner = memo(({ className = "" }: { className?: string }) => (
   <div
     className={`w-full bg-white border border-slate-200 rounded-xl p-2 shadow-sm flex items-center justify-center ${className}`}
@@ -142,7 +140,7 @@ const AdBanner = memo(({ className = "" }: { className?: string }) => (
 ));
 AdBanner.displayName = "AdBanner";
 
-// Featured Blog Component - FIXED VERSION
+// Featured Blog Component - FIXED COPT WITH NEXT/IMAGE
 const FeaturedBlog = memo(({ blog }: { blog: Blog }) => (
   <article className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-100 transition-all duration-300 group flex flex-col h-full">
     <Link
@@ -150,15 +148,15 @@ const FeaturedBlog = memo(({ blog }: { blog: Blog }) => (
       className="block relative h-[380px] md:h-[440px] w-full bg-slate-900 overflow-hidden"
     >
       <div className="relative w-full h-full">
-        <img
-          src={blog.mainImage}
-          alt={blog.title}
-          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700"
-          loading="eager"
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.src = "/fallback-image.jpg";
-          }}
+        {/* 💡 FIX 2: Replaced <img> with Next.js <Image /> component */}
+        <Image
+          src={typeof blog.mainImage === "string" && blog.mainImage.startsWith("http") ? blog.mainImage : "/placeholder-tax.jpg"}
+          alt={blog.title || "Featured Blog"}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-700"
+          sizes="(max-width: 1024px) 100vw, 66vw"
+          priority
+          unoptimized={process.env.NODE_ENV === "development"}
         />
       </div>
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
@@ -171,7 +169,7 @@ const FeaturedBlog = memo(({ blog }: { blog: Blog }) => (
         <Link href={`/blogs/${blog.slug}`}>{blog.title}</Link>
       </h2>
       <p className="text-slate-600 text-sm md:text-base line-clamp-3 mb-6 leading-relaxed">
-        {truncateText(blog.excerpt, 160)}
+        {truncateText(blog.excerpt || "", 160)}
       </p>
       <div className="flex items-center justify-between text-xs font-semibold text-slate-400 mt-auto pt-4 border-t border-slate-100">
         <div className="flex items-center space-x-3">
@@ -181,7 +179,7 @@ const FeaturedBlog = memo(({ blog }: { blog: Blog }) => (
           <span>{formatNewsDate(blog.createdAt)}</span>
         </div>
         <span className="flex items-center text-slate-500 bg-slate-50 px-2 py-1 rounded-md">
-          👁️&nbsp;{blog.views.toLocaleString()} Views
+          👁️&nbsp;{(blog.views ?? 0).toLocaleString()} Views
         </span>
       </div>
     </div>
@@ -189,7 +187,7 @@ const FeaturedBlog = memo(({ blog }: { blog: Blog }) => (
 ));
 FeaturedBlog.displayName = "FeaturedBlog";
 
-// Blog Card Component - FIXED VERSION
+// Blog Card Component - FIXED COPY WITH NEXT/IMAGE
 const BlogCard = memo(({ blog }: { blog: Blog }) => (
   <article className="flex flex-col group h-full">
     <Link
@@ -197,15 +195,14 @@ const BlogCard = memo(({ blog }: { blog: Blog }) => (
       className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-100 transition-all duration-300 flex flex-col h-full"
     >
       <div className="h-52 w-full bg-slate-100 relative overflow-hidden">
-        <img
-          src={blog.mainImage}
-          alt={blog.title}
-          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
-          loading="lazy"
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.src = "/fallback-image.jpg";
-          }}
+        {/* 💡 FIX 3: Replaced <img> with Next.js <Image /> component */}
+        <Image
+          src={typeof blog.mainImage === "string" && blog.mainImage.startsWith("http") ? blog.mainImage : "/placeholder-tax.jpg"}
+          alt={blog.title || "Blog Image"}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          unoptimized={process.env.NODE_ENV === "development"}
         />
         <span className="absolute top-3 left-3 bg-brand-dark/90 text-white text-[9px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md backdrop-blur-sm z-10">
           {blog.category?.name || "Tax Audit"}
@@ -217,11 +214,11 @@ const BlogCard = memo(({ blog }: { blog: Blog }) => (
           {blog.title}
         </h4>
         <p className="text-slate-500 text-xs line-clamp-2 mb-5 leading-relaxed flex-grow">
-          {truncateText(blog.excerpt, 100)}
+          {truncateText(blog.excerpt || "", 100)}
         </p>
         <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 mt-auto pt-3 border-t border-slate-100">
           <span>📅 {formatNewsDate(blog.createdAt)}</span>
-          <span className="text-slate-500 font-medium">👁️ {blog.views.toLocaleString()}</span>
+          <span className="text-slate-500 font-medium">👁️ {(blog.views ?? 0).toLocaleString()}</span>
         </div>
       </div>
     </Link>
@@ -233,7 +230,6 @@ BlogCard.displayName = "BlogCard";
 // MAIN COMPONENT
 // ============================================================================
 export default function PremiumNewsPortal() {
-  // State Management
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [notifications, setNotifications] = useState<TaxNotification[]>([]);
@@ -241,11 +237,9 @@ export default function PremiumNewsPortal() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [isSticky, setIsSticky] = useState(false);
 
-  // Fetch Data
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Parallel fetch for better performance
         const [blogRes, catRes, notiRes] = await Promise.all([
           fetch("/api/blogs"),
           fetch("/api/categories"),
@@ -271,7 +265,6 @@ export default function PremiumNewsPortal() {
     fetchData();
   }, []);
 
-  // Sticky header effect
   useEffect(() => {
     const handleScroll = () => {
       setIsSticky(window.scrollY > 100);
@@ -280,7 +273,6 @@ export default function PremiumNewsPortal() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Memoized filtered blogs
   const filteredBlogs = useMemo(() => {
     if (selectedCategory === "all") return blogs;
     return blogs.filter(
@@ -289,7 +281,6 @@ export default function PremiumNewsPortal() {
     );
   }, [blogs, selectedCategory]);
 
-  // Memoized featured and remaining blogs
   const { featuredBlog, remainingBlogs } = useMemo(
     () => ({
       featuredBlog: filteredBlogs[0],
@@ -298,14 +289,13 @@ export default function PremiumNewsPortal() {
     [filteredBlogs]
   );
 
-  // Check if any blog has ads enabled
   const hasAds = useMemo(() => blogs.some((b) => b.showAds), [blogs]);
 
   if (loading) return <LoadingSpinner />;
 
   return (
     <div className="bg-[#f8fafc] min-h-screen font-sans text-slate-900 selection:bg-brand-red selection:text-white">
-      {/* ===== BREAKING TICKER ===== */}
+      {/* BREAKING TICKER */}
       <div className="bg-brand-red text-white flex items-center h-11 overflow-hidden shadow-inner sticky top-0 z-50 border-b border-red-700">
         <div className="bg-brand-dark text-[11px] font-black uppercase tracking-widest px-5 h-full flex items-center z-20 whitespace-nowrap shadow-lg">
           <span className="w-2 h-2 rounded-full bg-red-500 mr-2 inline-block animate-ping" />
@@ -328,17 +318,15 @@ export default function PremiumNewsPortal() {
               ))
             ) : (
               <span>
-                Welcome to AimGrit Tax Portal: Real-time Income Tax, GST, and
-                Corporate Law Circulars Live.
+                Welcome to TaxAdhaar Portal: Real-time Income Tax, GST, and Corporate Law Circulars Live.
               </span>
             )}
           </div>
         </div>
       </div>
 
-      {/* ===== MAIN CONTAINER ===== */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
-        {/* ===== CATEGORY FILTER BAR (Sticky on scroll) ===== */}
+        {/* CATEGORY FILTER BAR */}
         <div
           className={`bg-white border border-slate-200 p-3 rounded-2xl shadow-sm mb-6 transition-all duration-300 z-40 ${
             isSticky ? "sticky top-11 backdrop-blur-md bg-white/95 shadow-md" : ""
@@ -367,12 +355,10 @@ export default function PremiumNewsPortal() {
           </div>
         </div>
 
-        {/* ===== TOP AD BANNER ===== */}
         {hasAds && <AdBanner className="mb-8" />}
 
-        {/* ===== HERO SECTION + SIDEBAR ===== */}
+        {/* HERO SECTION + SIDEBAR */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Featured News */}
           <section className="lg:col-span-2">
             {featuredBlog ? (
               <FeaturedBlog blog={featuredBlog} />
@@ -383,7 +369,6 @@ export default function PremiumNewsPortal() {
             )}
           </section>
 
-          {/* Right Column - Notifications Sidebar */}
           <aside className="bg-brand-dark text-white rounded-2xl shadow-xl p-6 border border-slate-800 h-fit flex flex-col relative overflow-hidden">
             <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
               <h3 className="text-base font-black uppercase tracking-wider flex items-center text-white">
@@ -409,7 +394,7 @@ export default function PremiumNewsPortal() {
           </aside>
         </div>
 
-        {/* ===== REMAINING NEWS GRID ===== */}
+        {/* REMAINING NEWS GRID */}
         {remainingBlogs.length > 0 && (
           <section className="mt-16">
             <div className="flex items-center justify-between border-b-2 border-slate-900 pb-3 mb-8">
@@ -429,7 +414,6 @@ export default function PremiumNewsPortal() {
                 <div key={blog._id} className="flex flex-col">
                   <BlogCard blog={blog} />
 
-                  {/* In-feed Ad every 3rd item */}
                   {(index + 1) % 3 === 0 && blog.showAds && (
                     <div className="mt-6">
                       <AdBanner />
@@ -442,15 +426,10 @@ export default function PremiumNewsPortal() {
         )}
       </main>
 
-      {/* ===== GLOBAL STYLES ===== */}
       <style jsx global>{`
         @keyframes marquee {
-          0% {
-            transform: translateX(0%);
-          }
-          100% {
-            transform: translateX(-100%);
-          }
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(-100%); }
         }
         .animate-marquee {
           animation: marquee 25s linear infinite;
@@ -475,9 +454,7 @@ export default function PremiumNewsPortal() {
           border-radius: 10px;
         }
         @media (prefers-reduced-motion: reduce) {
-          .animate-marquee {
-            animation: none;
-          }
+          .animate-marquee { animation: none; }
         }
       `}</style>
     </div>
