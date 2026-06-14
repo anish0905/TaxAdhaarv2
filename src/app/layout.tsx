@@ -22,7 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="antialiased">
         {/* Google Analytics (GA4) Scripts */}
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-R7JHCV8X1Z"
+          src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
           strategy="afterInteractive"
         />
         <Script id="google-analytics" strategy="afterInteractive">
