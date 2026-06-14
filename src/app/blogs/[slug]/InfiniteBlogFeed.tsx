@@ -39,15 +39,15 @@ export default function InfiniteBlogFeed({
   
   const observerRef = useRef<IntersectionObserver | null>(null);
   
-  // Strict reference stack duplication checks ke liye
   const fetchedIds = useRef<Set<string>>(new Set([initialBlog._id]));
   const fetchedSlugs = useRef<Set<string>>(new Set([currentSlug]));
 
-  // 1. Fetch Sidebar Updates
+  // 1. Fetch Sidebar Updates Safely
   useEffect(() => {
     async function fetchSidebarAlerts() {
       try {
         const res = await fetch("/api/notifications");
+        if (!res.ok) throw new Error("Notifications HTTP error");
         const json = await res.json();
         if (json.success) setNotifications(json.data);
       } catch (err) {
@@ -57,21 +57,25 @@ export default function InfiniteBlogFeed({
     fetchSidebarAlerts();
   }, []);
 
-  // 2. SMART FEED STREAMER (Pehle same category ka maal load karega)
+  // 2. SMART FEED STREAMER (With Production Error Handlers)
   const fetchNextArticle = useCallback(async () => {
     if (loadingMore || !hasMore) return;
     setLoadingMore(true);
 
     try {
       const excludeString = Array.from(fetchedIds.current).join(",");
-      // Hum initial blog ki category string ID pass kar rahe hain dynamic filtering ke liye
       const currentCategory = initialBlog.category?._id || "";
 
-      // Fetch request hitting endpoint with contextual priorities
+      // Path handlers explicitly absolute parameters check targets
       let response = await fetch(`/api/blogs?limit=1&category=${currentCategory}&exclude=${excludeString}`);
+      
+      if (!response.ok) {
+        // Fallback directly to generic fetch if category fails
+        response = await fetch(`/api/blogs?limit=1&exclude=${excludeString}`);
+      }
+      
       let result = await response.json();
 
-      // Fallback Engine: Agar same category me koi unique blog nahi bacha, toh ALL section se uthao
       if (!result.success || !result.data || result.data.length === 0) {
         response = await fetch(`/api/blogs?limit=1&exclude=${excludeString}`);
         result = await response.json();
@@ -80,7 +84,6 @@ export default function InfiniteBlogFeed({
       if (result.success && result.data && result.data.length > 0) {
         const nextBlog = result.data[0];
 
-        // Safeguard integrity validation
         if (fetchedIds.current.has(nextBlog._id) || fetchedSlugs.current.has(nextBlog.slug)) {
           setHasMore(false);
           setLoadingMore(false);
@@ -99,6 +102,7 @@ export default function InfiniteBlogFeed({
       }
     } catch (err) {
       console.error("Failed to load infinite post stream:", err);
+      setHasMore(false); // UI fallback crash block loops
     } finally {
       setLoadingMore(false);
     }
@@ -114,14 +118,14 @@ export default function InfiniteBlogFeed({
         if (entries[0].isIntersecting && hasMore) {
           fetchNextArticle();
         }
-      }, { threshold: 0.05, rootMargin: "300px" }); // 300px pehle prefetch start karega smoothly
+      }, { threshold: 0.05, rootMargin: "300px" });
 
       if (node) observerRef.current.observe(node);
     },
     [loadingMore, hasMore, fetchNextArticle]
   );
 
-  // 4. Client Viewport URL dynamic replacement tracking updates
+  // 4. Client Viewport URL & Page Tab Title Dynamic Updates
   useEffect(() => {
     const handleUrlTracking = () => {
       const articles = document.querySelectorAll("[data-blog-slug]");
@@ -136,6 +140,13 @@ export default function InfiniteBlogFeed({
 
       if (currentVisibleSlug && window.location.pathname !== `/blogs/${currentVisibleSlug}`) {
         window.history.pushState(null, "", `/blogs/${currentVisibleSlug}`);
+        
+        // 🔥 IMPROVEMENT: Browser tab title also matches live active scroll blog
+        const currentBlogElement = document.querySelector(`[data-blog-slug="${currentVisibleSlug}"]`);
+        if (currentBlogElement) {
+          const newTitle = currentBlogElement.querySelector("h2")?.innerText;
+          if (newTitle) document.title = `${newTitle} | TaxAdhaar`;
+        }
       }
     };
 
@@ -144,15 +155,19 @@ export default function InfiniteBlogFeed({
   }, []);
 
   const formatBlogDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString("en-IN", {
-      dateStyle: "long",
-      timeStyle: "short",
-    });
+    try {
+      return new Date(dateString).toLocaleString("en-IN", {
+        dateStyle: "long",
+        timeStyle: "short",
+      });
+    } catch {
+      return "Live Update";
+    }
   };
 
   return (
     <div className="bg-gray-50 min-h-screen text-black font-sans">
-      {/* GLOBAL NOTIFICATION TOP CONTROL NAVBAR */}
+      {/* GLOBAL NAVBAR / BREADCRUMB */}
       <div className="bg-brand-dark text-white py-4 border-b border-gray-800 shadow-sm sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between text-xs font-semibold uppercase tracking-wider">
           <div className="flex items-center space-x-2 text-gray-400">
@@ -182,7 +197,7 @@ export default function InfiniteBlogFeed({
                   data-blog-slug={blog.slug}
                   className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 transition-all relative"
                 >
-                  {/* Smart Label Indicator for UI UX validation */}
+                  {/* Smart Label Indicator */}
                   {index > 0 && (
                     <div className={`absolute -top-7 left-1/2 transform -translate-x-1/2 text-white text-[10px] font-black tracking-widest px-5 py-1.5 rounded-full uppercase shadow-lg border ${
                       isRelated 
@@ -258,7 +273,7 @@ export default function InfiniteBlogFeed({
               );
             })}
 
-            {/* PROCESS PROGRESS LOADER BAR STATUS */}
+            {/* PROCESS PROGRESS LOADER BAR */}
             {loadingMore && (
               <div className="flex justify-center items-center py-8 bg-white rounded-xl border border-dashed border-slate-200 shadow-sm animate-pulse">
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-brand-red"></div>
