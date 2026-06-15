@@ -20,7 +20,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     if (result.success && result.data) {
       dynamicRoutes = result.data.map((blog: any) => ({
-        url: `${baseUrl}/updates/${blog.slug}`,
+        url: `${baseUrl}/blogs/${blog.slug}`,
         lastModified: new Date(blog.updatedAt || blog.createdAt),
         changeFrequency: 'daily',
         priority: 0.8,
