@@ -25,10 +25,10 @@ export default function Footer() {
         <div>
           <h4 className="font-black text-slate-900 uppercase text-xs tracking-[0.2em] mb-6">Services</h4>
           <ul className="space-y-3 text-slate-800 text-sm font-bold">
-            <li><Link href="/itr" className="hover:text-blue-600 transition-colors">Income Tax Filing</Link></li>
-            <li><Link href="/gst" className="hover:text-blue-600 transition-colors">GST Registration</Link></li>
-            <li><Link href="/setup" className="hover:text-blue-600 transition-colors">Business Setup</Link></li>
-            <li><Link href="/audit" className="hover:text-blue-600 transition-colors">Tax Audit</Link></li>
+            <li><Link href="#" className="hover:text-blue-600 transition-colors">Income Tax Filing</Link></li>
+            <li><Link href="#" className="hover:text-blue-600 transition-colors">GST Registration</Link></li>
+            <li><Link href="#" className="hover:text-blue-600 transition-colors">Business Setup</Link></li>
+            <li><Link href="#" className="hover:text-blue-600 transition-colors">Tax Audit</Link></li>
           </ul>
         </div>
 

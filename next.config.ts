@@ -29,6 +29,32 @@ const nextConfig: NextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
+
+  // ⚡ 3. बिंग 404 परमानेंट फिक्स: पुराने अपराधियों को सीधे होमपेज पर 301 रीडायरेक्ट करें
+  async redirects() {
+    return [
+      {
+        source: '/itr',
+        destination: '/',
+        permanent: true, // बिंग को बताएगा कि ये पेजेस हमेशा के लिए होमपेज पर शिफ्ट हो गए हैं
+      },
+      {
+        source: '/gst',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/audit',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/setup',
+        destination: '/',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
