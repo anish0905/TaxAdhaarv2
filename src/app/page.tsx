@@ -9,7 +9,6 @@ import PublicNavbar from "@/components/Navbar";
 import Link from "next/link";
 import Image from "next/image";
 
-// 1. NATIONAL SEO METADATA
 export const metadata = {
   title: "TaxAdhaar | India's Premier Digital Tax & Business Compliance Platform",
   description: "Official TaxAdhaar portal for Pan-India ITR filing, GST compliance, and Company Incorporation. Secure CA-assisted financial services for individuals and startups across India.",
@@ -35,17 +34,23 @@ export const metadata = {
   },
 };
 
-// 💡 FIX 1: Corrected API endpoint and data extraction logic
+// API Fetch Function
 async function getLatestUpdates() {
   try {
-    // Hamne path badalkar '/api/blogs' kiya hai jo aapne bataya
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/blogs?limit=3`, {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+    // Double slash remove karne ke liye sanitize kiya
+    const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+    
+    const res = await fetch(`${cleanBaseUrl}/api/blogs?limit=3`, {
       next: { revalidate: 3600 } 
     });
-    if (!res.ok) return [];
+    
+    if (!res.ok) {
+      console.error(`API response failed with status: ${res.status}`);
+      return [];
+    }
     
     const json = await res.json();
-    // Aapka response object hai jisme 'data' key ke andar array hai
     return json.success && Array.isArray(json.data) ? json.data : [];
   } catch (error) {
     console.error("Error fetching homepage blogs:", error);
@@ -56,7 +61,6 @@ async function getLatestUpdates() {
 export default async function HomePage() {
   const latestBlogs = await getLatestUpdates();
 
-  // 2. NATIONAL ORGANIZATION SCHEMA
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "FinancialService",
@@ -92,7 +96,7 @@ export default async function HomePage() {
       
       <PublicNavbar />
 
-      {/* --- HERO SECTION: NATIONAL IDENTITY --- */}
+      {/* --- HERO SECTION --- */}
       <header className="relative px-6 pt-32 pb-20 md:pt-48 md:pb-32 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16 overflow-hidden">
         <div className="absolute top-20 -left-20 w-96 h-96 bg-blue-500 rounded-full filter blur-[120px] opacity-10 animate-pulse"></div>
         <div className="absolute bottom-0 right-0 w-80 h-80 bg-indigo-500 rounded-full filter blur-[100px] opacity-10"></div>
@@ -108,7 +112,7 @@ export default async function HomePage() {
             </span>
           </div>
 
-          <h1 className=" text-6xl md:text-[7rem] font-black text-slate-900 leading-[0.85] tracking-tighter italic">
+          <h1 className="text-6xl md:text-[7rem] font-black text-slate-900 leading-[0.85] tracking-tighter italic">
             Taxation <br />
             <span className="text-blue-600 not-italic">Universal.</span>
           </h1>
@@ -173,10 +177,9 @@ export default async function HomePage() {
         </div>
         
         <Stats />
-
         <Process />
 
-        {/* 🚀 SECTION: DYNAMIC LATEST TAX UPDATES & NEWS 🚀 */}
+        {/* --- DYNAMIC LATEST TAX UPDATES & NEWS --- */}
         <section className="py-28 bg-slate-50 border-y border-slate-100">
           <div className="max-w-7xl mx-auto px-6">
             
@@ -203,28 +206,27 @@ export default async function HomePage() {
 
             {/* Blogs Display Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {latestBlogs.length > 0 ? (
+              {latestBlogs && latestBlogs.length > 0 ? (
                 latestBlogs.map((blog: any) => (
                   <article key={blog._id} className="group bg-white border border-slate-100 rounded-[2.5rem] p-6 shadow-sm hover:shadow-2xl hover:border-blue-100/50 transition-all duration-500 flex flex-col justify-between">
                     <div>
-                      {/* Blog Cover Image */}
+                      {/* Blog Cover Image Container */}
                       <div className="w-full h-56 relative rounded-[1.8rem] overflow-hidden bg-slate-100 mb-6">
-                        {/* 💡 FIX 2: Changed blog.imageUrl to blog.mainImage */}
-                        <img
+                        <Image
                           src={blog.mainImage || "/placeholder-tax.jpg"} 
-                          alt={blog.title}
-                          
+                          alt={blog.title || "Tax Bulletin"}
+                          fill
+                          sizes="(max-w-7xl) 33vw, 100vw"
                           className="object-cover group-hover:scale-105 transition-transform duration-700"
                         />
                       </div>
                       
                       <div className="flex items-center gap-3 mb-4">
                         <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest bg-blue-50 px-2.5 py-1 rounded-lg">
-                          {/* 💡 FIX 3: Object category hone ke karan blog.category.name kiya */}
                           {blog.category?.name || "Taxation"}
                         </span>
                         <span className="text-[10px] text-slate-400 font-bold">
-                          {new Date(blog.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                          {blog.createdAt ? new Date(blog.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : ""}
                         </span>
                       </div>
 
@@ -232,9 +234,8 @@ export default async function HomePage() {
                         {blog.title}
                       </h3>
                       
-                      {/* 💡 FIX 4: Changed blog.metaDescription to blog.metaDesc */}
                       <p className="text-sm text-slate-500 font-medium mt-3 line-clamp-3 leading-relaxed">
-                        {blog.metaDesc}
+                        {blog.metaDesc || "Read the latest compliance updates on TaxAdhaar."}
                       </p>
                     </div>
 
@@ -249,7 +250,7 @@ export default async function HomePage() {
                   </article>
                 ))
               ) : (
-                // Fallback Loaders if data is missing or empty
+                // Fallback Shimmer/Loaders
                 [1, 2, 3].map((num) => (
                   <div key={num} className="bg-white border border-slate-100 rounded-[2.5rem] p-6 shadow-sm animate-pulse">
                     <div className="w-full h-56 bg-slate-200 rounded-[1.8rem] mb-6"></div>
