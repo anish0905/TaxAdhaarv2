@@ -9,6 +9,9 @@ import PublicNavbar from "@/components/Navbar";
 import Link from "next/link";
 import Image from "next/image";
 
+// Production build caching issues ko resolve karne ke liye force-dynamic forcing
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "TaxAdhaar | India's Premier Digital Tax & Business Compliance Platform",
   description: "Official TaxAdhaar portal for Pan-India ITR filing, GST compliance, and Company Incorporation. Secure CA-assisted financial services for individuals and startups across India.",
@@ -34,26 +37,27 @@ export const metadata = {
   },
 };
 
-// API Fetch Function
+// API Fetch Function Optimized for Production
 async function getLatestUpdates() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-    // Double slash remove karne ke liye sanitize kiya
+    // Agar production env domain variable missing hai, toh live canonical domain fallback lagaya
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://www.taxadhaar.com";
     const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
     
+    // Cache fresh rakhne ke liye aur server level warnings se bachne ke liye no-store ya cache settings runtime par apply ki
     const res = await fetch(`${cleanBaseUrl}/api/blogs?limit=3`, {
-      next: { revalidate: 3600 } 
+      cache: 'no-store' // Live production updates ke liye sabse safe option
     });
     
     if (!res.ok) {
-      console.error(`API response failed with status: ${res.status}`);
+      console.error(`API response failed in production with status: ${res.status}`);
       return [];
     }
     
     const json = await res.json();
     return json.success && Array.isArray(json.data) ? json.data : [];
   } catch (error) {
-    console.error("Error fetching homepage blogs:", error);
+    console.error("Error fetching homepage blogs in production:", error);
     return [];
   }
 }
@@ -210,14 +214,13 @@ export default async function HomePage() {
                 latestBlogs.map((blog: any) => (
                   <article key={blog._id} className="group bg-white border border-slate-100 rounded-[2.5rem] p-6 shadow-sm hover:shadow-2xl hover:border-blue-100/50 transition-all duration-500 flex flex-col justify-between">
                     <div>
-                      {/* Blog Cover Image Container */}
+                      {/* Blog Cover Image */}
                       <div className="w-full h-56 relative rounded-[1.8rem] overflow-hidden bg-slate-100 mb-6">
-                        <Image
+                        <img
                           src={blog.mainImage || "/placeholder-tax.jpg"} 
-                          alt={blog.title || "Tax Bulletin"}
-                          fill
-                          sizes="(max-w-7xl) 33vw, 100vw"
-                          className="object-cover group-hover:scale-105 transition-transform duration-700"
+                          alt={blog.title || "Tax Update"}
+                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                          loading="lazy"
                         />
                       </div>
                       
@@ -250,7 +253,7 @@ export default async function HomePage() {
                   </article>
                 ))
               ) : (
-                // Fallback Shimmer/Loaders
+                // Shimmer Fallbacks
                 [1, 2, 3].map((num) => (
                   <div key={num} className="bg-white border border-slate-100 rounded-[2.5rem] p-6 shadow-sm animate-pulse">
                     <div className="w-full h-56 bg-slate-200 rounded-[1.8rem] mb-6"></div>
