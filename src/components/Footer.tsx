@@ -41,6 +41,8 @@ export default function Footer() {
             <li><Link href="/privacy-policy" className="hover:text-blue-600 transition-colors">Privacy Policy</Link></li>
             <li><Link href="/terms" className="hover:text-blue-600 transition-colors">Terms of Service</Link></li>
             <li><Link href="/refund-policy" className="hover:text-blue-600 transition-colors">Refund & Cancellation</Link></li>
+            {/* 🚨 FIXED: Added Disclaimer Link for 100% AdSense Transparency */}
+            <li><Link href="/disclaimer" className="hover:text-blue-600 transition-colors text-red-600">Disclaimer</Link></li>
           </ul>
         </div>
 
