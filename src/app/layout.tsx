@@ -3,10 +3,15 @@ import Script from "next/script";
 import "./globals.css";
 import ClientLayoutWrapper from "@/components/ClientLayoutWrapper";
 
+// ⚡ FIXED: Next.js standard के हिसाब से verification object को यहाँ सेट कर दिया है
 export const metadata: Metadata = {
   title: "TaxAadhaar | India's Premier Digital Tax Platform",
   description: "Official TaxAadhaar portal for Pan-India ITR filing...",
+  verification: {
+    google: "0PwH2Yg50tfdTY-l3BOQAeRXRNs_9dXpv-_vvSWbX90",
+  },
 };
+
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
