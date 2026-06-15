@@ -217,9 +217,9 @@ export default function InfiniteBlogFeed({
                     </span>
                   </div>
 
-                  <h2 className="text-2xl md:text-4xl font-black text-gray-900 leading-tight mb-4">
+                  <h1 className="text-2xl md:text-4xl font-black text-gray-900 leading-tight mb-4 tracking-tight">
                     {blog.title}
-                  </h2>
+                  </h1>
 
                   <div className="text-xs text-gray-400 border-b pb-4 mb-6 flex items-center space-x-2">
                     <span className="font-bold text-gray-700">Tax Portal Desk</span>
