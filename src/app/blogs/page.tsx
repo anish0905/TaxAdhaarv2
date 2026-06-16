@@ -1,16 +1,26 @@
 "use client";
 
-import { useState, useEffect, useMemo, memo } from "react";
+import { useState, useEffect, useMemo, memo, Fragment } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
 // ============================================================================
-// TYPES
+// TYPES & INTERFACES
 // ============================================================================
 interface Category {
   _id: string;
   name: string;
   slug: string;
+}
+
+interface Partner {
+  _id: string;
+  name: string;
+  description: string;
+  badgeText: string;
+  affiliateLink: string;
+  themeColor: string;
+  isActive: boolean;
 }
 
 interface Blog {
@@ -47,7 +57,6 @@ const formatNewsDate = (dateString: string): string => {
   }
 };
 
-// 💡 FIX 1: Safe Truncate Check (Ab khali values par crash nahi hoga)
 const truncateText = (text: string | null | undefined, maxLength: number): string => {
   if (!text) return ""; 
   if (text.length <= maxLength) return text;
@@ -55,7 +64,7 @@ const truncateText = (text: string | null | undefined, maxLength: number): strin
 };
 
 // ============================================================================
-// MEMOIZED COMPONENTS
+// MEMOIZED SUB-COMPONENTS
 // ============================================================================
 
 const LoadingSpinner = memo(() => (
@@ -108,7 +117,7 @@ const NotificationItem = memo(({ notification }: { notification: TaxNotification
   >
     <a href={notification.link || "#"} target="_blank" rel="noreferrer" className="block group">
       <h4
-        className={`text-xs font-bold leading-snug mb-2 ${
+        className={`text-xs font-bold leading-snug mb-2 text-left ${
           notification.isUrgent
             ? "text-red-400 group-hover:text-red-300"
             : "text-slate-200 group-hover:text-white"
@@ -128,6 +137,62 @@ const NotificationItem = memo(({ notification }: { notification: TaxNotification
 ));
 NotificationItem.displayName = "NotificationItem";
 
+// 🤝 PREMIUM COMPACT PARTNER SLOT CARD (⚠️ FIX: सुपर छोटा, प्रीमियम और हॉरिजॉन्टल स्टाइल)
+const PremiumMiniPartnerCard = memo(({ partner }: { partner: Partner }) => {
+  const getBadgeColor = (color: string) => {
+    switch (color) {
+      case "blue": return "bg-blue-600 text-white";
+      case "emerald": return "bg-emerald-600 text-white";
+      case "orange": return "bg-orange-600 text-white";
+      default: return "bg-brand-red text-white";
+    }
+  };
+
+  const getBorderColor = (color: string) => {
+    switch (color) {
+      case "blue": return "border-blue-500/20 hover:border-blue-500/60 hover:bg-slate-900/40";
+      case "emerald": return "border-emerald-500/20 hover:border-emerald-500/60 hover:bg-slate-900/40";
+      case "orange": return "border-orange-500/20 hover:border-orange-500/60 hover:bg-slate-900/40";
+      default: return "border-slate-800 hover:border-slate-700 hover:bg-slate-900/40";
+    }
+  };
+
+  return (
+    <a 
+      href={partner.affiliateLink}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`group block p-3.5 bg-slate-950 text-white rounded-xl border ${getBorderColor(partner.themeColor)} transition-all duration-200 text-left relative overflow-hidden`}
+    >
+      {/* टॉप रो: नाम और छोटा सा स्पॉन्सर्ड बैज */}
+      <div className="flex items-center justify-between mb-1.5">
+        <h5 className="font-black text-white text-[13px] tracking-tight group-hover:text-brand-accent transition-colors truncate pr-2">
+          {partner.name}
+        </h5>
+        <span className="bg-white/5 text-white/40 text-[7px] font-mono uppercase px-1 py-0.5 rounded tracking-widest shrink-0">
+          AD
+        </span>
+      </div>
+
+      {/* छोटा सा डिस्क्रिप्शन */}
+      <p className="text-slate-400 text-[11px] line-clamp-2 leading-relaxed mb-2.5">
+        {partner.description}
+      </p>
+
+      {/* बॉटम एक्शन रो */}
+      <div className="flex items-center justify-between pt-2 border-t border-slate-900/60 text-[9px] font-bold uppercase tracking-wider">
+        <span className={`px-1.5 py-0.5 rounded text-[8px] font-black tracking-widest ${getBadgeColor(partner.themeColor)}`}>
+          {partner.badgeText || "Premium"}
+        </span>
+        <span className="text-slate-400 group-hover:text-white transition-colors flex items-center">
+          Claim Link <span className="ml-1 group-hover:translate-x-0.5 transition-transform">↗</span>
+        </span>
+      </div>
+    </a>
+  );
+});
+PremiumMiniPartnerCard.displayName = "PremiumMiniPartnerCard";
+
 const AdBanner = memo(({ className = "" }: { className?: string }) => (
   <div
     className={`w-full bg-white border border-slate-200 rounded-xl p-2 shadow-sm flex items-center justify-center ${className}`}
@@ -140,15 +205,13 @@ const AdBanner = memo(({ className = "" }: { className?: string }) => (
 ));
 AdBanner.displayName = "AdBanner";
 
-// Featured Blog Component - FIXED COPT WITH NEXT/IMAGE
 const FeaturedBlog = memo(({ blog }: { blog: Blog }) => (
-  <article className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-100 transition-all duration-300 group flex flex-col h-full">
+  <article className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-100 transition-all duration-300 group flex flex-col h-full text-left">
     <Link
       href={`/blogs/${blog.slug}`}
       className="block relative h-[380px] md:h-[440px] w-full bg-slate-900 overflow-hidden"
     >
       <div className="relative w-full h-full">
-        {/* 💡 FIX 2: Replaced <img> with Next.js <Image /> component */}
         <Image
           src={typeof blog.mainImage === "string" && blog.mainImage.startsWith("http") ? blog.mainImage : "/placeholder-tax.jpg"}
           alt={blog.title || "Featured Blog"}
@@ -187,15 +250,13 @@ const FeaturedBlog = memo(({ blog }: { blog: Blog }) => (
 ));
 FeaturedBlog.displayName = "FeaturedBlog";
 
-// Blog Card Component - FIXED COPY WITH NEXT/IMAGE
 const BlogCard = memo(({ blog }: { blog: Blog }) => (
-  <article className="flex flex-col group h-full">
+  <article className="flex flex-col group h-full text-left">
     <Link
       href={`/blogs/${blog.slug}`}
       className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-100 transition-all duration-300 flex flex-col h-full"
     >
       <div className="h-52 w-full bg-slate-100 relative overflow-hidden">
-        {/* 💡 FIX 3: Replaced <img> with Next.js <Image /> component */}
         <Image
           src={typeof blog.mainImage === "string" && blog.mainImage.startsWith("http") ? blog.mainImage : "/placeholder-tax.jpg"}
           alt={blog.title || "Blog Image"}
@@ -227,12 +288,13 @@ const BlogCard = memo(({ blog }: { blog: Blog }) => (
 BlogCard.displayName = "BlogCard";
 
 // ============================================================================
-// MAIN COMPONENT
+// MAIN PORTAL HOMEPAGE COMPONENT
 // ============================================================================
 export default function PremiumNewsPortal() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [notifications, setNotifications] = useState<TaxNotification[]>([]);
+  const [partners, setPartners] = useState<Partner[]>([]); 
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [isSticky, setIsSticky] = useState(false);
@@ -240,21 +302,24 @@ export default function PremiumNewsPortal() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [blogRes, catRes, notiRes] = await Promise.all([
+        const [blogRes, catRes, notiRes, partnerRes] = await Promise.all([
           fetch("/api/blogs"),
           fetch("/api/categories"),
           fetch("/api/notifications"),
+          fetch("/api/partners?active=true") 
         ]);
 
-        const [blogData, catData, notiData] = await Promise.all([
+        const [blogData, catData, notiData, partnerData] = await Promise.all([
           blogRes.json(),
           catRes.json(),
           notiRes.json(),
+          partnerRes.json(),
         ]);
 
         if (blogData.success) setBlogs(blogData.data);
         if (catData.success) setCategories(catData.data);
         if (notiData.success) setNotifications(notiData.data);
+        if (partnerData.success) setPartners(partnerData.data); 
       } catch (err) {
         console.error("Error fetching portal data:", err);
       } finally {
@@ -357,7 +422,7 @@ export default function PremiumNewsPortal() {
 
         {hasAds && <AdBanner className="mb-8" />}
 
-        {/* HERO SECTION + SIDEBAR */}
+        {/* HERO SECTION + LAYOUT GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <section className="lg:col-span-2">
             {featuredBlog ? (
@@ -369,32 +434,38 @@ export default function PremiumNewsPortal() {
             )}
           </section>
 
-          <aside className="bg-brand-dark text-white rounded-2xl shadow-xl p-6 border border-slate-800 h-fit flex flex-col relative overflow-hidden">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
-              <h3 className="text-base font-black uppercase tracking-wider flex items-center text-white">
-                <span className="w-2.5 h-2.5 bg-brand-red rounded-full mr-2.5 animate-pulse" />
-                Official Bulletins
-              </h3>
-              <span className="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded-full">
-                {notifications.length} New
-              </span>
-            </div>
+          {/* RIGHT SIDEBAR ZONE */}
+          <div className="space-y-6 relative z-10">
+            {/* WIDGET 1: Official Circular Bulletins */}
+            <aside className="bg-slate-950 text-white rounded-2xl shadow-xl p-6 border border-slate-800 h-fit flex flex-col relative overflow-hidden">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
+                <h3 className="text-base font-black uppercase tracking-wider flex items-center text-white text-left">
+                  <span className="w-2.5 h-2.5 bg-brand-red rounded-full mr-2.5 animate-pulse" />
+                  Official Bulletins
+                </h3>
+                <span className="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded-full">
+                  {notifications.length} New
+                </span>
+              </div>
 
-            <div className="space-y-3 max-h-[460px] overflow-y-auto pr-1 custom-scrollbar">
-              {notifications.length > 0 ? (
-                notifications.map((noti) => (
-                  <NotificationItem key={noti._id} notification={noti} />
-                ))
-              ) : (
-                <div className="text-center text-slate-400 py-8 text-sm">
-                  No new notifications
-                </div>
-              )}
-            </div>
-          </aside>
+              <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1 custom-scrollbar">
+                {notifications.length > 0 ? (
+                  notifications.map((noti) => (
+                    <NotificationItem key={noti._id} notification={noti} />
+                  ))
+                ) : (
+                  <div className="text-center text-slate-400 py-8 text-sm">
+                    No new notifications
+                  </div>
+                )}
+              </div>
+            </aside>
+
+            {hasAds && <AdBanner />}
+          </div>
         </div>
 
-        {/* REMAINING NEWS GRID */}
+        {/* REMAINING NEWS GRID WITH INTEGRATED MINI PARTNER SLOTS */}
         {remainingBlogs.length > 0 && (
           <section className="mt-16">
             <div className="flex items-center justify-between border-b-2 border-slate-900 pb-3 mb-8">
@@ -409,18 +480,60 @@ export default function PremiumNewsPortal() {
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {remainingBlogs.map((blog, index) => (
-                <div key={blog._id} className="flex flex-col">
-                  <BlogCard blog={blog} />
+            {/* 🌟 1 लाइन में 3 ब्लॉक्स का लेआउट */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
+              {remainingBlogs.map((blog, index) => {
+                // 🔥 LOGIC: प्रत्येक 3 ब्लॉग्स के बाद (यानी एक रो पूरी होने पर) एक स्पेशल स्लॉट आएगा
+                const shouldInjectPartnerSlot = (index + 1) % 3 === 0 && partners.length > 0;
+                
+                // 🎯 स्लॉट के लिए दो अलग-अलग पार्टनर्स का इंडेक्स निकालें (ताकि 2 पार्टनर एक साथ दिखें)
+                const basePartnerIdx = Math.floor(index / 3) * 2;
+                const partner1 = partners[basePartnerIdx % partners.length];
+                const partner2 = partners[(basePartnerIdx + 1) % partners.length];
 
-                  {(index + 1) % 3 === 0 && blog.showAds && (
-                    <div className="mt-6">
-                      <AdBanner />
+                return (
+                  <Fragment key={blog._id}>
+                    {/* ब्लॉग कार्ड */}
+                    <div className="flex flex-col">
+                      <BlogCard blog={blog} />
+
+                      {/* रेगुलर फुल-विड्थ एड बैनर */}
+                      {(index + 1) % 6 === 0 && blog.showAds && (
+                        <div className="mt-6">
+                          <AdBanner />
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              ))}
+
+                    {/* 🎯 स्पेशल पार्टनर स्लॉट: यह 1 ब्लॉग कार्ड जितनी ही स्पेस लेगा, लेकिन इसके अंदर 2 छोटे प्रीमियम कार्ड्स फिट होंगे */}
+                    {shouldInjectPartnerSlot && partner1 && (
+                      <div className="flex flex-col justify-between space-y-4 h-full bg-slate-50 p-4 border border-slate-200/60 rounded-2xl shadow-xs">
+                        {/* स्लॉट का हेडर */}
+                        <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                          <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
+                            ✨ Sponsored Links
+                          </span>
+                          <span className="text-[8px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded font-bold uppercase">
+                            Verified
+                          </span>
+                        </div>
+
+                        {/* पार्टनर कार्ड 1 */}
+                        <div className="flex-1">
+                          <PremiumMiniPartnerCard partner={partner1} />
+                        </div>
+
+                        {/* पार्टनर कार्ड 2 (अगर दूसरा पार्टनर भी अवेलेबल है) */}
+                        {partner2 && (
+                          <div className="flex-1">
+                            <PremiumMiniPartnerCard partner={partner2} />
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </Fragment>
+                );
+              })}
             </div>
           </section>
         )}
