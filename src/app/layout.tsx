@@ -6,6 +6,9 @@ import ClientLayoutWrapper from "@/components/ClientLayoutWrapper";
 // ⚡ FIXED: Next.js standard के हिसाब से verification object को यहाँ सेट कर दिया है
 export const metadata: Metadata = {
   title: "TaxAadhaar | India's Premier Digital Tax Platform",
+  icons: {
+    icon: "/icon.png", 
+  },
   description: "Official TaxAadhaar portal for Pan-India ITR filing...",
 verification: {
     google: "0PwH2Yg50tfdTY-l3BOQAeRXRNs_9dXpv-_vvSWcX90",
