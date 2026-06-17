@@ -2,11 +2,12 @@ import Footer from "@/components/Footer";
 import ServiceGrid from "@/components/home/ServiceGrid";
 import PublicNavbar from "@/components/Navbar";
 import Link from "next/link";
+import { ArrowRight, Shield, ShieldCheck, Sparkles, Zap } from "lucide-react";
+
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-// 1. ADVANCED SEO METADATA
-// Using your full service range to capture long-tail search traffic
+// 1. ADVANCED SEO METADATA (Perfected For Indexing)
 export const metadata = {
   title: "Professional Tax & Compliance Services | TaxAdhaar India",
   description: "India's leading digital platform for ITR Filing, GST Compliance, Company Incorporation, Trademark Registration, and Export/Import (IEC) licenses. Secure CA-assisted solutions.",
@@ -25,8 +26,7 @@ export const metadata = {
 };
 
 export default function ServicesPage() {
-  // 2. COMPREHENSIVE JSON-LD (Dynamic Mapping)
-  // This tells Google you are a high-authority Financial Service provider
+  // 2. COMPREHENSIVE JSON-LD STRUCTURED DATA
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "FinancialService",
@@ -54,151 +54,167 @@ export default function ServicesPage() {
   };
 
   return (
-    <main className="bg-white min-h-screen selection:bg-blue-600 selection:text-white">
+    <main className="bg-white min-h-screen selection:bg-blue-600 selection:text-white text-slate-950 font-sans antialiased tracking-tight">
       {/* Injecting Structured Data */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       
       <PublicNavbar />
 
-      {/* --- HERO SECTION: Premium Fintech Identity --- */}
-      <header className="relative pt-40 pb-28 bg-[#f8fafc] overflow-hidden">
-        {/* UI Accents */}
-        <div className="absolute top-0 left-0 w-full h-full opacity-[0.05] pointer-events-none bg-[grid-slate-200] [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
-        <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-blue-100/50 rounded-full blur-[120px]"></div>
+      {/* --- 🏛️ HERO SECTION: Premium Micro-Text Elite Aesthetics --- */}
+      <header className="relative pt-36 pb-20 bg-[#F8FAFC] overflow-hidden border-b border-slate-200/50">
+        {/* Background Grids and Accents */}
+        <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_100%,#000_70%,transparent_100%)] opacity-70 pointer-events-none" />
+        <div className="absolute -top-40 -right-40 w-[500px] h-[500px] bg-blue-50 rounded-full blur-[100px] pointer-events-none" />
         
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="flex justify-center mb-8">
-            <div className="inline-flex items-center gap-3 bg-white border border-slate-200 px-5 py-2.5 rounded-2xl shadow-sm">
-              <span className="relative flex h-2.5 w-2.5">
+        <div className="max-w-5xl mx-auto px-6 relative z-10 space-y-6">
+          <div className="flex justify-center">
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 bg-white border border-slate-200/80 rounded-md text-slate-500 text-[9px] font-black uppercase tracking-widest shadow-sm">
+              <span className="relative flex h-1.5 w-1.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-600"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-600"></span>
               </span>
-              <span className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-500">
-                FY 2025-26 Compliance Portal Live
-              </span>
+              FY 2026-27 COMPLIANCE ARCHITECTURE LIVE
             </div>
           </div>
 
-          <div className="text-center">
-            <h1 className="text-6xl md:text-[9rem] font-black text-slate-900 tracking-tighter leading-[0.8] mb-10">
-              Tax <span className="text-blue-600 italic">Redefined.</span>
+          <div className="text-center space-y-4">
+            <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-[0.95] max-w-3xl mx-auto">
+              Tax Infrastructure <br /><span className="text-blue-600 font-black">Engineered For Growth.</span>
             </h1>
             
-            <p className="max-w-3xl mx-auto text-slate-500 text-lg md:text-2xl font-medium leading-relaxed mb-14">
-              TaxAdhaar bridges the gap between complex Indian statutes and 
-              modern business agility through AI-driven CA expertise.
+            <p className="max-w-xl mx-auto text-slate-500 text-[13px] font-medium leading-relaxed">
+              TaxAdhaar bridges the structural gap between complex Indian corporate statutes and modern business agility through audited workflow protocols.
             </p>
+          </div>
 
-            {/* Verification Badges */}
-            <div className="flex flex-wrap justify-center gap-12 opacity-40 grayscale hover:grayscale-0 transition-all duration-700">
-              <div className="flex flex-col items-center">
-                <span className="text-[10px] font-black uppercase tracking-widest border-b-2 border-blue-600 mb-1">DATA ENCRYPTION</span>
-                <span className="text-[9px] font-bold">AES-256 BIT</span>
+          {/* Verification Badges with Micro-Typography */}
+          <div className="flex justify-center gap-8 pt-4">
+            <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200/60 shadow-sm">
+              <Shield size={12} className="text-blue-600" />
+              <div className="text-left leading-none">
+                <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider">DATA MATRIX</p>
+                <p className="text-[9px] font-black text-slate-800">AES-256 BIT</p>
               </div>
-              <div className="flex flex-col items-center">
-                <span className="text-[10px] font-black uppercase tracking-widest border-b-2 border-blue-600 mb-1">GOVT PARTNER</span>
-                <span className="text-[9px] font-bold">GSTN & MCA</span>
+            </div>
+            <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200/60 shadow-sm">
+              <ShieldCheck size={12} className="text-emerald-600" />
+              <div className="text-left leading-none">
+                <p className="text-[8px] font-black text-slate-400 uppercase tracking-wider">GOVT ENDPOINT</p>
+                <p className="text-[9px] font-black text-slate-800">GSTN & MCA</p>
               </div>
             </div>
           </div>
         </div>
       </header>
 
-      {/* --- STRATEGIC SERVICES: The Grid --- */}
-      <section id="services" className="py-32">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-24">
-            <div className="max-w-2xl">
-              <h2 className="text-5xl font-black text-slate-900 tracking-tighter mb-6">
-                Our Strategic <br /> Service Portfolio
+      {/* --- 🛠️ STRATEGIC SERVICES PORTFOLIO --- */}
+      <section id="services" className="py-20 bg-white">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-slate-100 pb-8 mb-12 gap-4">
+            <div className="space-y-2">
+              <div className="flex items-center gap-1.5">
+                <span className="h-1 w-3 bg-blue-600 rounded-full" />
+                <h4 className="text-[9px] font-black uppercase text-blue-600 tracking-widest">OFFICIAL CATALOG</h4>
+              </div>
+              <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">
+                Corporate Service Matrix
               </h2>
-              <div className="h-1.5 w-32 bg-blue-600 rounded-full mb-8"></div>
-              <p className="text-slate-500 text-lg font-medium leading-relaxed">
-                From intellectual property protection to global export compliance, 
-                our specialists handle the regulatory burden while you scale.
+              <p className="text-slate-400 text-xs font-medium max-w-md">
+                From intellectual property registration to integrated cross-border trade legalities, our automated pipelines handle the compliance footprint.
               </p>
             </div>
-            {/* SEO Tagline */}
-            <div className="hidden md:block text-right">
-              <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] rotate-90 origin-right translate-y-12">
-                Certified CA Support
-              </p>
+            
+            <div className="text-right">
+              <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.3em] inline-block border-l-2 border-slate-200 pl-3">
+                SECURE COUNSEL SUPPORT
+              </span>
             </div>
           </div>
 
-          {/* Your dynamic ServiceGrid goes here */}
-          <ServiceGrid />
+          {/* Dynamic Grid Container */}
+          <div className="p-1.5 bg-slate-50 border border-slate-200/60 rounded-[2rem] overflow-hidden shadow-inner">
+            <ServiceGrid />
+          </div>
         </div>
       </section>
 
-      {/* --- DATA SECURITY & ACCURACY --- */}
-      <section className="py-24 bg-slate-50 border-y border-slate-100 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-24 items-center">
-          <div className="relative">
-            <div className="absolute -left-10 -top-10 text-[15rem] font-black text-slate-200/50 select-none pointer-events-none">
-              &
+      {/* --- 📈 TRUST PARAMETERS & CONVERSIONS --- */}
+      <section className="py-16 bg-slate-50 border-y border-slate-200/60 relative overflow-hidden">
+        <div className="max-w-5xl mx-auto px-6 grid md:grid-cols-12 gap-10 items-center">
+          
+          <div className="md:col-span-7 space-y-6">
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5">
+                <Zap size={10} className="text-blue-600" />
+                <h4 className="text-[9px] font-black uppercase text-slate-400 tracking-widest">WHY TAXADHAAR</h4>
+              </div>
+              <h3 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">
+                Algorithmic Data Integrity.
+              </h3>
             </div>
-            <h3 className="text-4xl font-black text-slate-900 mb-8 relative z-10 leading-tight">
-              Why leading startups <br /> choose TaxAdhaar?
-            </h3>
-            <div className="space-y-10">
+
+            <div className="space-y-4">
               {[
-                { t: "Automated Data Ingestion", d: "Direct API integration with ITD & GSTN for 100% data fidelity." },
-                { t: "CA-Verified Accuracy", d: "Multi-point check by seasoned Chartered Accountants before every submission." },
-                { t: "IPR & Export Specialist", d: "Dedicated legal desk for Trademarks, Copyrights, and IEC licensing." }
+                { t: "Automated Data Ingestion", d: "Direct API pipelines interfacing with ITD and GSTN nodes for flawless ledger fidelity." },
+                { t: "CA-Verified Audits", d: "Multi-point checklist protocols verified by senior legal counsels prior to transmission." },
+                { t: "IPR & Export Frameworks", d: "Dedicated trade desks optimizing configurations for Trademarks, Copyrights, and IEC logs." }
               ].map((item, idx) => (
-                <div key={idx} className="flex gap-6 group">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all">
-                    <span className="font-black text-xs italic">0{idx+1}</span>
+                <div key={idx} className="flex gap-4 p-4 bg-white border border-slate-200/50 rounded-xl shadow-sm transition-all duration-300 hover:shadow-md">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-900">
+                    <span className="font-black text-[10px] italic">0{idx+1}</span>
                   </div>
-                  <div>
-                    <h4 className="font-black text-slate-900 text-sm uppercase tracking-wider mb-1">{item.t}</h4>
-                    <p className="text-slate-500 text-sm leading-relaxed">{item.d}</p>
+                  <div className="space-y-0.5">
+                    <h4 className="font-black text-slate-900 text-xs uppercase tracking-wider">{item.t}</h4>
+                    <p className="text-slate-500 text-[11px] font-medium leading-relaxed">{item.d}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
           
-          <div className="bg-white p-12 rounded-[4rem] shadow-2xl shadow-blue-900/5 border border-slate-50 relative group">
-             <div className="absolute inset-0 bg-blue-600 opacity-0 group-hover:opacity-[0.02] transition-opacity rounded-[4rem]"></div>
-             <div className="text-center relative z-10">
-                <div className="inline-block p-4 bg-blue-50 rounded-3xl mb-6">
-                  <span className="text-5xl">🛡️</span>
-                </div>
-                <p className="text-blue-600 font-black text-7xl mb-2 tracking-tighter">99.9%</p>
-                <p className="text-slate-900 font-black uppercase tracking-[0.3em] text-[10px] mb-8">System Compliance Accuracy</p>
-                <hr className="mb-8 border-slate-100" />
-                <p className="text-slate-600 font-medium italic text-lg leading-relaxed">
-                  "TaxAdhaar turned our messy compliance into a streamlined asset. It's not just a filing service; it's our financial backbone."
-                </p>
-                <div className="mt-8">
-                  <p className="font-black text-slate-900 uppercase text-xs">Anish Kumar</p>
-                  <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Founder, TaxAdhaar</p>
-                </div>
-             </div>
+          {/* Dashboard Metric Card (Right Panel) */}
+          <div className="md:col-span-5 bg-white p-8 rounded-[2rem] border border-slate-200/80 shadow-xl shadow-slate-200/30 flex flex-col justify-between h-full relative overflow-hidden group">
+            <div className="absolute top-0 left-0 w-full h-1 bg-blue-600" />
+            <div className="text-center space-y-4 relative z-10">
+              <div className="inline-flex p-2 bg-blue-50 text-blue-600 rounded-xl text-xs">
+                <Sparkles size={14} />
+              </div>
+              <div>
+                <p className="text-blue-600 font-black text-5xl tracking-tighter">99.9%</p>
+                <p className="text-slate-400 font-black uppercase tracking-widest text-[8px] mt-1">System Compliance Threshold</p>
+              </div>
+              <div className="w-full h-px bg-slate-100" />
+              <p className="text-slate-600 font-semibold italic text-xs leading-relaxed px-2">
+                "TaxAdhaar optimized our legacy compliance records into clean automated assets. It operates seamlessly as our remote legal backbone."
+              </p>
+              <div className="pt-2">
+                <p className="font-black text-slate-900 uppercase text-[10px] tracking-wider">Anish Kumar</p>
+                <p className="text-slate-400 text-[8px] font-black uppercase tracking-widest">Founder, TaxAdhaar Architecture</p>
+              </div>
+            </div>
           </div>
+
         </div>
       </section>
 
-      {/* --- CONVERSION ENGINE --- */}
-      <section className="py-32 px-6">
-        <div className="max-w-7xl mx-auto bg-[#020617] rounded-[5rem] p-16 md:p-32 text-center relative overflow-hidden group shadow-[0_50px_100px_-20px_rgba(2,6,23,0.4)]">
-          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-600/10 blur-[150px] rounded-full -translate-y-1/2 translate-x-1/2"></div>
+      {/* --- 🚀 ULTRA-CONVERSION CTA FOOTPRINT --- */}
+      <section className="py-20 px-6">
+        <div className="max-w-5xl mx-auto bg-slate-950 rounded-[2.5rem] p-10 md:p-16 text-center relative overflow-hidden shadow-2xl border border-slate-800">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-l from-blue-600/10 to-transparent rounded-full pointer-events-none" />
           
-          <div className="relative z-10">
-            <h2 className="text-5xl md:text-8xl font-black text-white tracking-tighter mb-10 italic leading-[0.9]">
-              Ready to automate <br /> your taxes?
+          <div className="relative z-10 space-y-6">
+            <h2 className="text-3xl md:text-5xl font-black text-white tracking-tighter max-w-xl mx-auto leading-none">
+              Automate Your System Compliance Parameters.
             </h2>
-            <p className="text-slate-400 text-lg md:text-xl mb-14 max-w-2xl mx-auto font-medium">
-              Join 15,000+ Indians who have simplified their financial life with TaxAdhaar.
+            <p className="text-slate-400 text-xs max-w-sm mx-auto font-medium leading-normal uppercase tracking-wider">
+              Join 15,000+ Enterprises and Professionals Scaling Safely with TaxAdhaar Networks.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-6">
-              <Link href="/login" className="bg-blue-600 text-white px-14 py-6 rounded-3xl font-black hover:bg-white hover:text-blue-600 transition-all shadow-xl shadow-blue-600/20 text-sm uppercase tracking-widest">
+            <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
+              <Link href="/login" className="bg-blue-600 text-white px-8 py-3.5 rounded-lg font-black text-[10px] uppercase tracking-widest hover:bg-blue-700 transition-all shadow-md shadow-blue-500/10 flex items-center justify-center gap-1.5">
                 Get Started
               </Link>
-              <Link href="/contact" className="bg-white/5 backdrop-blur-xl text-white border border-white/10 px-14 py-6 rounded-3xl font-black hover:bg-white/10 transition-all text-sm uppercase tracking-widest">
-                Talk to a Specialist
+              <Link href="/contact" className="bg-white/5 border border-white/10 text-white px-8 py-3.5 rounded-lg font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all flex items-center justify-center gap-1.5">
+                Talk to a Specialist <ArrowRight size={10} />
               </Link>
             </div>
           </div>
