@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef, useCallback, memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { ArrowUpRight, ShoppingBag, BookOpen, CreditCard, Laptop, ShoppingCart } from "lucide-react";
 
 // ============================================================================
 // TYPES & INTERFACES
@@ -15,6 +17,18 @@ interface Partner {
   affiliateLink: string;
   themeColor: string;
   isActive: boolean;
+}
+
+interface ToolkitProduct {
+  _id: string;
+  title: string;
+  slug: string;
+  description: string;
+  badgeText: string;
+  affiliateLink: string;
+  image: string;
+  category: any;
+  displayOrder: number;
 }
 
 interface Blog {
@@ -49,7 +63,115 @@ const LoadingSpinner = memo(() => (
 ));
 LoadingSpinner.displayName = "LoadingSpinner";
 
-// 🤝 REUSABLE NETIV MONETIZATION BANNER CARD
+// ============================================================================
+// 🚀 COMPONENT: IN-FEED TOOLKIT CONNECTOR WIDGET (Interlinked Ecosystem)
+// ============================================================================
+const ToolkitInFeedWidget = memo(({ categoryId, categoryName }: { categoryId: string; categoryName: string }) => {
+  const router = useRouter();
+  const [toolkitProducts, setToolkitProducts] = useState<ToolkitProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchRelatedToolkit() {
+      try {
+        const res = await fetch("/api/toolkit");
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data)) {
+            // ब्लॉग कैटेगरी के हिसाब से रिलेवेंट प्रोडक्ट्स फ़िल्टर करो भाई
+            const filtered = data.filter((p: any) => {
+              const pCatId = p.category?._id || p.category;
+              return pCatId === categoryId;
+            }).slice(0, 2); 
+            
+            // फ़ॉलबैक: अगर उस कैटेगरी का स्पेसिफिक प्रोडक्ट नहीं है, तो कोई भी दो लेटेस्ट प्रोडक्ट दिखाओ
+            setToolkitProducts(filtered.length > 0 ? filtered : data.slice(0, 2));
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load in-feed toolkit nodes:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    if (categoryId) fetchRelatedToolkit();
+  }, [categoryId]);
+
+  if (loading || toolkitProducts.length === 0) return null;
+
+  return (
+    <div className="my-8 bg-slate-50 border border-slate-200/80 rounded-[2rem] p-5 sm:p-6 text-left shadow-xs">
+      <div className="flex items-center justify-between border-b border-slate-200/60 pb-3 mb-4">
+        <div className="space-y-0.5">
+          <span className="inline-flex items-center gap-1 text-[8px] font-black uppercase tracking-widest text-blue-600 bg-blue-50 px-2 py-0.5 border border-blue-100 rounded">
+            🧰 TaxAdhaar Premium Toolkit
+          </span>
+          <h4 className="text-xs font-black text-slate-900 uppercase tracking-tight mt-1">
+            Recommended Reference Manuals for {categoryName || "This Topic"}
+          </h4>
+        </div>
+      </div>
+
+      {/* 📱 2-Column Compact Card Grid Layout */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {toolkitProducts.map((product) => (
+          <div 
+            key={product._id}
+            // 🎯 ऐक्शन 1: पूरे कार्ड पर क्लिक करने से हमारी ही वेबसाइट का स्लग पेज खुलेगा
+            onClick={() => router.push(`/toolkit/${product.slug}`)}
+            className="bg-white border border-slate-200/70 rounded-2xl p-3 flex gap-3 items-center hover:border-slate-950/20 hover:shadow-md transition-all duration-300 cursor-pointer group relative"
+          >
+            {/* Small Product Cover Box */}
+            <div className="w-14 h-14 rounded-xl bg-slate-50 overflow-hidden border border-slate-100 shrink-0 relative">
+              <img 
+                src={product.image} 
+                alt={product.title} 
+                className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?q=80&w=150";
+                }}
+              />
+            </div>
+
+            {/* Meta Text details */}
+            <div className="flex-1 min-w-0 flex flex-col justify-between h-full py-0.5">
+              <div className="space-y-0.5">
+                <span className="inline-block text-[7px] font-black tracking-widest uppercase text-amber-700 bg-amber-50 px-1 py-0.2 rounded font-mono border border-amber-100">
+                  {product.badgeText || "Vetted Node"}
+                </span>
+                <h5 className="font-black text-[11px] sm:text-xs text-slate-950 tracking-tight truncate leading-snug group-hover:text-blue-600 transition-colors">
+                  {product.title}
+                </h5>
+              </div>
+
+              {/* Action Buttons Hub */}
+              <div className="flex items-center justify-between gap-2 mt-1.5 pt-1.5 border-t border-slate-100">
+                <span className="text-[9px] font-bold text-blue-600 inline-flex items-center gap-0.5">
+                  Blueprint <ArrowUpRight size={10} />
+                </span>
+
+                {/* 💸 AFFILIATE ACTION GATEWAY: बटन पर क्लिक करने से डायरेक्ट अमेज़न साइटस्ट्राइप हॉप होगा */}
+                <a 
+                  href={product.affiliateLink || "#"}
+                  target="_blank"
+                  rel="sponsored nofollow"
+                  // 🎯 stopPropagation मस्ट है ताकि पूरा पेरेंट कार्ड क्लिक न हो भाई!
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-[8px] font-black uppercase tracking-wider bg-slate-900 text-white hover:bg-amber-600 hover:text-white px-2.5 py-1.5 rounded-lg transition-all flex items-center gap-1"
+                >
+                  <ShoppingCart size={10} className="text-amber-400" /> Get Asset
+                </a>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+});
+ToolkitInFeedWidget.displayName = "ToolkitInFeedWidget";
+
+// 🤝 REUSABLE BANNER CARD
 const PartnerCard = memo(({ partner, variant = "sidebar" }: { partner: Partner; variant?: "sidebar" | "feed" }) => {
   if (!partner || !partner.name) return null;
 
@@ -340,7 +462,6 @@ export default function InfiniteBlogFeed({
               const isLastItem = index === blogList.length - 1;
               const isRelated = blog.category?._id === initialBlog.category?._id;
               
-              // 🎯 STRICT MONETIZATION LOCK: नो बैकअप मिक्सिंग, नो एक्स्ट्रा पार्टनर
               const rawPartners = blog.relatedPartners || [];
               const feedPartners = (rawPartners || [])
                 .map((p: any) => {
@@ -400,7 +521,15 @@ export default function InfiniteBlogFeed({
                     dangerouslySetInnerHTML={{ __html: blog.content }}
                   />
 
-                  {/* 🎯 IN-FEED PARTNER PLACEMENT (सिर्फ और सिर्फ खबर से लॉक्ड पार्टनर ही आएगा) */}
+                  {/* ======================================================= */}
+                  {/* 🎯 RELATED ECOSYSTEM TOOLKIT PRODUCTS INJECTION        */}
+                  {/* ======================================================= */}
+                  <ToolkitInFeedWidget 
+                    categoryId={blog.category?._id} 
+                    categoryName={blog.category?.name} 
+                  />
+
+                  {/* IN-FEED PARTNER PLACEMENT */}
                   {feedPartners && feedPartners.length > 0 && (
                     <div className="my-8 space-y-3">
                       <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest">Sponsored Financial Partner</p>
@@ -421,7 +550,7 @@ export default function InfiniteBlogFeed({
                     </div>
                   )}
 
-                  {/* 📱 MOBILE VIEW INJECTION: मोबाइल पर भी 100% रिस्ट्रिक्टेड पार्टनर फ्लो पास किया */}
+                  {/* MOBILE VIEW INJECTION */}
                   <div className="block lg:hidden space-y-6 my-6">
                     <BulletinsWidget />
                     {feedPartners && feedPartners.length > 0 && (
