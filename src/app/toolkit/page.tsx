@@ -1,13 +1,15 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react"; // 👈 Suspense इम्पोर्ट किया
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowUpRight, ArrowLeft, Search, ShoppingBag, BookOpen, CreditCard, Laptop } from "lucide-react";
 import PublicNavbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
+// ==========================================
 // 🔄 1. INTERNAL CAROUSEL CARD COMPONENT
+// ==========================================
 function CategoryCard({ cat, itemQuantity, getCategoryIcon, onClick }: { cat: any; itemQuantity: number; getCategoryIcon: any; onClick: () => void }) {
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
   
@@ -82,10 +84,12 @@ function CategoryCard({ cat, itemQuantity, getCategoryIcon, onClick }: { cat: an
   );
 }
 
+// ==========================================
 // 🏛️ 2. CORE TOOLKIT CONTENT INNER LAYOUT
+// ==========================================
 function ToolkitContent() {
   const router = useRouter();
-  const searchParams = useSearchParams(); // 👈 useSearchParams अब सेफ़ एनवायरनमेंट में है
+  const searchParams = useSearchParams();
   const categoryQuery = searchParams.get("category");
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -152,6 +156,12 @@ function ToolkitContent() {
     router.push("/toolkit", { scroll: false });
   };
 
+  // 📝 HTML टैग्स को साफ करके प्लेन टेक्स्ट डिस्क्रिप्शन रेंडर करने के लिए हेल्पर नोड
+  const stripHtmlTags = (htmlString: string) => {
+    if (!htmlString) return "";
+    return htmlString.replace(/<\/?[^>]+(>|$)/g, "");
+  };
+
   return (
     <div className="max-w-5xl mx-auto px-6 pt-32 pb-20 space-y-8">
       {/* PREMIUM DYNAMIC HEADER */}
@@ -199,6 +209,7 @@ function ToolkitContent() {
         </div>
       ) : (
         <>
+          {/* Categories Grid (Only shows if no category filter query is active) */}
           {!activeCategoryData && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
               {categories.map((cat) => {
@@ -220,6 +231,7 @@ function ToolkitContent() {
             </div>
           )}
 
+          {/* Products View List Inside Selected Category */}
           {activeCategoryData && (
             <div className="space-y-6 animate-in fade-in duration-300">
               <div className="relative max-w-md shadow-sm rounded-xl overflow-hidden">
@@ -234,46 +246,69 @@ function ToolkitContent() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {displayedProducts.map((p) => (
-                  <div 
-                    key={p._id || p.id} 
-                    className="bg-white border border-slate-200/80 rounded-[2rem] p-4 shadow-sm flex gap-4 items-center hover:border-slate-950/20 hover:shadow-md transition-all duration-300 relative group min-h-32"
-                  >
-                    <div className="w-24 h-24 rounded-2xl bg-slate-50 overflow-hidden border border-slate-100 flex-shrink-0 relative">
-                      <img 
-                        src={p.image} 
-                        alt={p.title} 
-                        className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?q=80&w=200";
-                        }}
-                      />
-                    </div>
+                {displayedProducts.map((p) => {
+                  const isTaxmannGST = p.title?.toLowerCase().includes("taxmann") && p.title?.toLowerCase().includes("gst");
+                  
+                  const displayBadge = isTaxmannGST ? "🔥 Best Seller | Real-Time" : (p.badgeText || "Ecosystem");
+                  
+                  // 🛡️ Safe HTML Filtering Zone
+                  const rawDescription = isTaxmannGST 
+                    ? "For Chartered Accountants, Tax Practitioners, corporate financial directors, and e-commerce business owners navigating India's dynamic indirect tax system, guesswork is a massive liability. Vetted reference engine."
+                    : p.description;
+                  const displayDescription = stripHtmlTags(rawDescription);
 
-                    <div className="flex-1 flex flex-col justify-between h-full min-h-[6rem] py-0.5">
-                      <div className="space-y-1">
-                        <span className="text-[7px] font-black tracking-widest uppercase px-1.5 py-0.5 bg-slate-50 text-slate-800 rounded border border-slate-200/60 font-mono">
-                          {p.badgeText || "Ecosystem"}
-                        </span>
-                        <h3 className="font-black text-xs md:text-sm text-slate-950 tracking-tight leading-snug group-hover:text-blue-600 transition-colors">
-                          {p.title}
-                        </h3>
-                        <p className="text-slate-400 text-[10px] font-medium leading-relaxed line-clamp-2">
-                          {p.description}
-                        </p>
+                  return (
+                    <div 
+                      key={p._id || p.id} 
+                      // 🎯 1. पूरे कार्ड पर क्लिक करने से यूजर इंटरनल डायनेमिक स्लग पेज पर रूट करेगा
+                      onClick={() => router.push(`/toolkit/${p.slug}`)}
+                      className="bg-white border border-slate-200/80 rounded-[2rem] p-5 shadow-sm flex flex-col sm:flex-row gap-5 items-center hover:border-slate-950/20 hover:shadow-xl transition-all duration-500 cursor-pointer group relative min-h-36"
+                    >
+                      {/* Product Image Node */}
+                      <div className="w-24 h-24 rounded-2xl bg-slate-50 overflow-hidden border border-slate-100 flex-shrink-0 relative">
+                        <img 
+                          src={p.image} 
+                          alt={p.title} 
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?q=80&w=200";
+                          }}
+                        />
                       </div>
 
-                      <Link 
-                        href={p.affiliateLink || "#"} 
-                        target="_blank" 
-                        rel="sponsored nofollow" 
-                        className="inline-flex w-fit mt-2 items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-blue-600 hover:text-blue-700 transition-all hover:translate-x-0.5"
-                      >
-                        Access Resource <ArrowUpRight size={11} />
-                      </Link>
+                      {/* Content Meta Area */}
+                      <div className="flex-1 flex flex-col justify-between h-full w-full min-h-[6.5rem] py-0.5">
+                        <div className="space-y-1.5">
+                          <span className={`inline-block text-[7px] font-black tracking-widest uppercase px-1.5 py-0.5 rounded border font-mono ${
+                            isTaxmannGST ? "bg-amber-50 border-amber-200 text-amber-700 font-bold animate-pulse" : "bg-slate-50 text-slate-800 border-slate-200/60"
+                          }`}>
+                            {displayBadge}
+                          </span>
+                          
+                          {/* 🎯 2. टाइटल पर भी होवर इफ़ेक्ट एक्टिव रहेगा */}
+                          <h3 className="font-black text-xs md:text-sm text-slate-950 tracking-tight leading-snug group-hover:text-blue-600 transition-colors">
+                            {p.title}
+                          </h3>
+                          
+                          <p className="text-slate-500 text-[11px] font-medium leading-relaxed line-clamp-2">
+                            {displayDescription}
+                          </p>
+                        </div>
+
+                        {/* 🎯 3. ACTIONS BUTTON BAR: अब यहाँ अमेज़न लिंक की जगह "View Details" का प्रीमियम लूप है */}
+                        <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-50 w-full">
+                          <span className="inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-blue-600 group-hover:translate-x-0.5 transition-transform">
+                            View Blueprint Detail <ArrowUpRight size={11} />
+                          </span>
+                          
+                          <span className="text-[9px] font-black uppercase tracking-wider bg-slate-100 group-hover:bg-slate-950 group-hover:text-white px-3 py-1.5 rounded-xl text-slate-600 transition-all duration-300">
+                            Open Node
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {displayedProducts.length === 0 && (
@@ -289,13 +324,13 @@ function ToolkitContent() {
   );
 }
 
-// 🏛️ 3. MAIN WRAPPER WITH SUSPENSE BOUNDARY (बिल्ड एरर को रोकने के लिए)
+// ==========================================
+// 🏛️ 3. MAIN WRAPPER WITH SUSPENSE BOUNDARY
+// ==========================================
 export default function AdvancedToolkit() {
   return (
     <main className="bg-[#F8FAFC] min-h-screen text-slate-950 font-sans antialiased tracking-tight">
       <PublicNavbar />
-      
-      {/* 🔥 यहाँ हमने सस्पेंस शिनर लगा दिया ताकि स्टेट लोडिंग के समय नेक्स्ट-जेएस का बिल्ड वर्कर क्रैश न हो */}
       <Suspense fallback={
         <div className="max-w-5xl mx-auto px-6 pt-32 pb-20 text-center text-xs font-bold text-slate-400">
           Hydrating Ecosystem Layout...
@@ -303,7 +338,6 @@ export default function AdvancedToolkit() {
       }>
         <ToolkitContent />
       </Suspense>
-      
       <Footer />
     </main>
   );

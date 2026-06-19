@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Trash2, Edit2, Plus, Upload, Layers, RefreshCw, Search, ListPlus, Link2 } from "lucide-react";
+import { Trash2, Edit2, Plus, Upload, Layers, RefreshCw, Search, ListPlus, Link2, Globe } from "lucide-react";
 
 export default function AdminToolkitPage() {
   const [products, setProducts] = useState<any[]>([]);
@@ -14,7 +14,7 @@ export default function AdminToolkitPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [imageUrlInput, setImageUrlInput] = useState(""); // लाइव यूआरएल पेस्ट करने के लिए स्टेट
 
-  // Form Initial State
+  // Form Initial State — Updated with Advanced SEO Payload Node
   const [formData, setFormData] = useState({
     title: "",
     slug: "",
@@ -24,7 +24,10 @@ export default function AdminToolkitPage() {
     image: "",
     category: "",
     displayOrder: 0,
-    isActive: true
+    isActive: true,
+    metaTitle: "", // 🚀 SEO Matrix Field
+    metaDesc: "",  // 🚀 SEO Matrix Field
+    keywords: ""   // 🚀 SEO Matrix Field
   });
 
   // 🔄 FETCH ALL PRODUCTS FROM UPSTASH REDIS / MONGODB
@@ -76,8 +79,8 @@ export default function AdminToolkitPage() {
     setImageLoading(true);
     const data = new FormData();
     data.append("file", file);
-    data.append("upload_preset", "toolkit_images"); // तुम्हारा Unsigned Preset नाम
-    data.append("folder", "toolkit_images"); // Target Cloud Folder
+    data.append("upload_preset", "toolkit_images"); 
+    data.append("folder", "toolkit_images"); 
 
     try {
       const res = await fetch(
@@ -87,7 +90,7 @@ export default function AdminToolkitPage() {
       const fileData = await res.json();
       if (fileData.secure_url) {
         setFormData(prev => ({ ...prev, image: fileData.secure_url }));
-        setImageUrlInput(""); // Clear URL input if a file is uploaded
+        setImageUrlInput(""); 
       } else {
         console.error("Upload error logs:", fileData);
         alert(fileData.error?.message || "Local upload validation failed.");
@@ -106,8 +109,8 @@ export default function AdminToolkitPage() {
     setImageLoading(true);
     const data = new FormData();
     data.append("file", imageUrlInput); 
-    data.append("upload_preset", "toolkit_images"); // तुम्हारा Unsigned Preset नाम
-    data.append("folder", "toolkit_images"); // Target Cloud Folder
+    data.append("upload_preset", "toolkit_images"); 
+    data.append("folder", "toolkit_images"); 
 
     try {
       const res = await fetch(
@@ -150,6 +153,9 @@ export default function AdminToolkitPage() {
         resetForm();
         fetchProducts();
         setActiveTab("manage");
+      } else {
+        const errData = await res.json();
+        alert(errData.error || "Something went wrong during deployment node routine.");
       }
     } catch (err) {
       console.error("Submission Failure:", err);
@@ -182,7 +188,10 @@ export default function AdminToolkitPage() {
       image: product.image,
       category: product.category?._id || product.category,
       displayOrder: product.displayOrder || 0,
-      isActive: product.isActive
+      isActive: product.isActive,
+      metaTitle: product.metaTitle || "",
+      metaDesc: product.metaDesc || "",
+      keywords: product.keywords || ""
     });
     setImageUrlInput("");
     setActiveTab("add");
@@ -200,7 +209,10 @@ export default function AdminToolkitPage() {
       image: "",
       category: "",
       displayOrder: 0,
-      isActive: true
+      isActive: true,
+      metaTitle: "",
+      metaDesc: "",
+      keywords: ""
     });
   };
 
@@ -313,11 +325,11 @@ export default function AdminToolkitPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <label className="text-[8px] font-black uppercase text-slate-400 tracking-wider">Product Name</label>
-                    <input required type="text" placeholder="e.g., Keychron K2 Keyboard" value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold outline-none focus:border-slate-950 text-slate-900" />
+                    <input required type="text" placeholder="e.g., Taxmann GST Ready Reckoner" value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold outline-none focus:border-slate-950 text-slate-900" />
                   </div>
                   <div className="space-y-1">
                     <label className="text-[8px] font-black uppercase text-slate-400 tracking-wider">SEO Router Slug</label>
-                    <input required type="text" placeholder="best-developer-keyboard" value={formData.slug} onChange={(e) => setFormData({...formData, slug: e.target.value})} className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold outline-none focus:border-slate-950 text-slate-900" />
+                    <input required type="text" placeholder="taxmann-gst-ready-reckoner" value={formData.slug} onChange={(e) => setFormData({...formData, slug: e.target.value})} className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold outline-none focus:border-slate-950 text-slate-900" />
                   </div>
                 </div>
 
@@ -338,7 +350,7 @@ export default function AdminToolkitPage() {
 
                 <div className="space-y-1">
                   <label className="text-[8px] font-black uppercase text-slate-400 tracking-wider">Product Description</label>
-                  <textarea required rows={3} placeholder="Write precise copy optimized for indexing..." value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold outline-none focus:border-slate-950 text-slate-900 resize-none" />
+                  <textarea required rows={5} placeholder="Write precise copy optimized for indexing (HTML supported)..." value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold outline-none focus:border-slate-950 text-slate-900 resize-y min-h-[100px]" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -357,7 +369,50 @@ export default function AdminToolkitPage() {
                   <input required type="url" placeholder="https://amzn.to/..." value={formData.affiliateLink} onChange={(e) => setFormData({...formData, affiliateLink: e.target.value})} className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold outline-none focus:border-slate-950 text-slate-900" />
                 </div>
 
-                {/* ☁️ DUAL-METHOD IMAGE ASSET PIPELINE (FIXED & SYNCED) */}
+                {/* ======================================================= */}
+                {/* 🚀 ADVANCED PROGRAMMATIC SEO SUB-ZONE (NEW INNER BOX)  */}
+                {/* ======================================================= */}
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-4">
+                  <div className="flex items-center gap-2 border-b border-slate-200 pb-1.5">
+                    <Globe size={11} className="text-slate-600" />
+                    <label className="text-[8px] font-black uppercase text-slate-600 tracking-wider">Advanced Search Engine Indexing Payload</label>
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <label className="text-[8px] font-black uppercase text-slate-400 tracking-wider">Meta Title Tag</label>
+                    <input 
+                      type="text" 
+                      placeholder="Custom Title for Google Tabs (Defaults to Product Name if left blank)" 
+                      value={formData.metaTitle} 
+                      onChange={(e) => setFormData({...formData, metaTitle: e.target.value})} 
+                      className="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-xs font-semibold outline-none focus:border-slate-950 text-slate-900" 
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[8px] font-black uppercase text-slate-400 tracking-wider">Meta Description Snip</label>
+                    <textarea 
+                      rows={2} 
+                      placeholder="Google Snippet summary (Highly optimal under 160 characters)..." 
+                      value={formData.metaDesc} 
+                      onChange={(e) => setFormData({...formData, metaDesc: e.target.value})} 
+                      className="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-xs font-semibold outline-none focus:border-slate-950 text-slate-900 resize-none" 
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[8px] font-black uppercase text-slate-400 tracking-wider">Long-Tail Targeting Keywords</label>
+                    <input 
+                      type="text" 
+                      placeholder="gst book, taxmann 2026, ecommerce tax compliance (Comma-separated nodes)" 
+                      value={formData.keywords} 
+                      onChange={(e) => setFormData({...formData, keywords: e.target.value})} 
+                      className="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-xs font-semibold outline-none focus:border-slate-950 text-slate-900" 
+                    />
+                  </div>
+                </div>
+
+                {/* ☁️ DUAL-METHOD IMAGE ASSET PIPELINE */}
                 <div className="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
                   <label className="text-[8px] font-black uppercase text-slate-400 tracking-wider block">Image Asset Pipeline (Cloudinary)</label>
                   

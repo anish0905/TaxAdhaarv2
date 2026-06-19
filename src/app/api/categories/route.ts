@@ -1,9 +1,16 @@
 import { NextResponse } from "next/server";
-import connectDB  from "@/lib/db";
+import connectDB from "@/lib/db";
 import { Category } from "../../../models/blogs";
 
+// 🛠️ तुम्हारा कस्टम स्लग जनरेटर फ़ंक्शन (यह केवल 1 आर्गुमेंट स्वीकार करता है)
 const slugify = (text: string) => {
-  return text.toString().toLowerCase().trim().replace(/\s+/g, "-").replace(/[^\w\-]+/g, "").replace(/\-\-+/g, "-");
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")       // स्पेस को हाइफन में बदलें
+    .replace(/[^\w\-]+/g, "")   // स्पेशल कैरेक्टर साफ करें
+    .replace(/\-\-+/g, "-");    // डबल हाइफन हटाएँ
 };
 
 export async function GET() {
@@ -20,7 +27,7 @@ export async function POST(request: Request) {
   try {
     await connectDB();
     
-    // 💥 फ़िक्स: फ्रंटएंड पेलोड से images एरे को भी यहाँ गेट करो भाई
+    // फ्रंटएंड पेलोड से डेटा डिस्ट्रक्चर करें
     const { name, description, images } = await request.json();
 
     // बेसिक नेम वैलीडेशन
@@ -31,7 +38,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 🔒 सेफ़्टी चेक: अगर फ्रंटएंड से images न आए या खाली हो, तो मोंगोज़ एरर से बचने के लिए एरे चेक करो
+    // इमेज वैलीडेशन सेफ़्गार्ड
     if (!images || !Array.isArray(images) || images.length === 0) {
       return NextResponse.json(
         { success: false, message: "Category validation failed: At least one image node is required matrix!" }, 
@@ -39,15 +46,15 @@ export async function POST(request: Request) {
       );
     }
 
-    // स्लग जेनरेट करो (lower: true रखना बेस्ट रहता है एसईओ के लिए)
-    const slug = slugify(name, { lower: true, strict: true });
+    // 🎯 फ़िक्स: यहाँ से दूसरा आर्गुमेंट हटा दिया भाई, क्योंकि तुम्हारा कस्टम फ़ंक्शन पहले से ही सब लोअरकेस कर देता है!
+    const slug = slugify(name);
 
-    // 🚀 अब images भी डेटाबेस क्रिएशन मैट्रिक्स में पास हो जाएगा
+    // डेटाबेस क्रिएशन मैट्रिक्स
     const newCategory = await Category.create({ 
       name, 
       slug, 
       description: description || "", 
-      images // 👈 क्लाउडिनरी यूआरएल का एरे यहाँ स्टोर होगा
+      images 
     });
 
     return NextResponse.json({ success: true, data: newCategory }, { status: 201 });
