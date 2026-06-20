@@ -3,15 +3,13 @@ import Script from "next/script";
 import "./globals.css";
 import ClientLayoutWrapper from "@/components/ClientLayoutWrapper";
 
-
-// ⚡ FIXED: Next.js standard के हिसाब से verification object को यहाँ सेट कर दिया है
 export const metadata: Metadata = {
   title: "TaxAadhaar | India's Premier Digital Tax Platform",
   icons: {
     icon: "/icon.png", 
   },
   description: "Official TaxAadhaar portal for Pan-India ITR filing...",
-verification: {
+  verification: {
     google: "0PwH2Yg50tfdTY-l3BOQAeRXRNs_9dXpv-_vvSWbX90",
     other: {
       "msvalidate.01": "1E3C84D08C1CE48FBDB6982BC14202D1",
@@ -19,23 +17,19 @@ verification: {
   },
 };
 
-
-
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
-        {/* AdSense ko ab <Script> tag se handle karenge, aur <head> mein rakhne ki zarurat nahi */}
-      </head>
-      <body className="antialiased">
-        {/* Google AdSense Script (Next.js Optimized) */}
-        <Script
+        {/* ⚡ FIXED: Standard HTML script tag standard execution ke sath. 
+            Isse Next.js ka data-nscript inject nahi hoga aur AdSense khush rahega. */}
+        <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2178056672186074"
           crossOrigin="anonymous"
-          strategy="afterInteractive" // Content ke baad load karega
         />
+      </head>
+      <body className="antialiased">
 
         {/* Google Analytics (GA4) Scripts */}
         <Script
@@ -47,7 +41,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-
             gtag('config', 'G-R7JHCV8X1Z');
           `}
         </Script>
