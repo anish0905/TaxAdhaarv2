@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 // ============================================================================
-// 🛰️ SERVER-SIDE DATA ACQUISITION PIPELINE (With Parallel Fetch)
+// 🛰️ SERVER-SIDE DATA ACQUISITION PIPELINE
 // ============================================================================
 async function getPortalData() {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
