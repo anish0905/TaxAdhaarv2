@@ -1,8 +1,10 @@
 import { NextResponse,NextRequest } from "next/server";
 import connectDB  from "@/lib/db";
-import { Blog } from "../../../models/blogs";
+
+import { Blog, Category } from "../../../models/blogs";
 import { redis } from "@/lib/redis";
 import { Types } from "mongoose";      // 👈 1. यह इम्पोर्ट होना ज़रूरी है!
+
 // Helper function ka naam uniquely badal diya taaki import crash na ho
 const generateSafeSlug = (text: string): string => {
   return text
@@ -22,53 +24,116 @@ const generateSafeSlug = (text: string): string => {
 
 
 
+
+
+
+
 export async function GET(req: NextRequest) {
   try {
     await connectDB();
 
     const url = new URL(req.url);
-    const limit = parseInt(url.searchParams.get("limit") || "10");
-    const category = url.searchParams.get("category");
+    const limitParam = url.searchParams.get("limit");
+    const categoryParam = url.searchParams.get("category"); // फ्रंटएंड से सिलेक्टेड स्लग
     const exclude = url.searchParams.get("exclude");
     const isAdmin = url.searchParams.get("admin") === "true";
 
-    // फ़िल्टर कंडीशन बिल्ड करें
-    const filter: any = { isPublished: true };
-    if (isAdmin) delete filter.isPublished;
-
-    if (category && category !== "all") {
-      filter.category = category;
+    const filter: Record<string, any> = {};
+    if (!isAdmin) {
+      filter.isPublished = true;
     }
 
-    // 🔍 इनफ़िनिट स्क्रॉल एक्सक्लूजन ज़ोन (अब सच में एरर फ्री)
+    // 🔍 इनफ़िनिट स्क्रॉल एक्सक्लूजन ज़ोन 
     if (exclude) {
       const excludeIds = exclude
         .split(",")
         .filter((id) => Types.ObjectId.isValid(id))
-        .map((id) => new Types.ObjectId(id)); // 👈 2. स्ट्रिंग को असली ObjectId में बदलना ज़रूरी है
+        .map((id) => new Types.ObjectId(id));
 
       if (excludeIds.length > 0) {
         filter._id = { $nin: excludeIds };
       }
     }
 
-    // 🔥 CRITICAL ENGINE: FORCE POPULATE RELATED PARTNERS IN STREAM
-    const data = await Blog.find(filter)
+    // ============================================================================
+    // 🛰️ STEP 1: डेटाबेस से रॉ डेटा खींचें (बिना फ़िल्टर के ताकि कोई मिस न हो भाई)
+    // ============================================================================
+    const rawBlogs = await Blog.find(filter)
       .sort({ createdAt: -1 })
-      .limit(limit)
-      .populate({
-        path: "category",
-        model: "Category",
-        select: "name slug"
-      })
       .populate({
         path: "relatedPartners",
-        model: "Partner" 
-      });
+        model: "Partner"
+      })
+      .lean(); // .lean() लगाने से मोंगोज़ ऑब्जेक्ट्स जावास्क्रिप्ट के लाइटवेट ऑब्जेक्ट्स बन जाते हैं
 
-    return NextResponse.json({ success: true, data }, { status: 200 });
+    // ============================================================================
+    // 🧬 STEP 2: HYBRID NORMALIZER ENGINE (दोनो स्ट्रक्चर्स को एक फ़ॉर्मेट में सिंक करेगा)
+    // ============================================================================
+    // डेटाबेस में जो श्रेणियाँ पहले से पूरी ऑब्जेक्ट हैं, उन्हें वैसे ही रहने देगा; 
+    // जो सिर्फ आईडी हैं, उन्हें कैटेगरी कलेक्शन से रीयल-टाइम डेटा लाकर ऑब्जेक्ट बना देगा!
+  // ============================================================================
+    // 🧬 STEP 2: HYBRID NORMALIZER ENGINE (दोनो स्ट्रक्चर्स को एक फ़ॉर्मेट में सिंक करेगा)
+    // ============================================================================
+    const allCategories = await Category.find({}).lean();
+    
+    // फ़ास्ट मैपिंग के लिए एक डिक्शनरी बना लो भाई
+    const categoryMap = new Map();
+    allCategories.forEach((cat: any) => {
+      categoryMap.set(cat._id.toString(), cat);
+    }); // 🎯 यहाँ अब बिल्कुल क्लीन क्लोजिंग है भाई, कोई टैग नहीं!
+
+    const normalizedBlogs = rawBlogs.map((blog: any) => {
+
+      let resolvedCategory = { _id: "", name: "Uncategorized", slug: "uncategorized" };
+
+      if (blog.category) {
+        // केस ए: अगर कैटेगरी पहले से ही ऑब्जेक्ट है और उसमें नाम/स्लग है भाई (जैसे क्रिप्टो)
+        if (typeof blog.category === "object" && blog.category.slug) {
+          resolvedCategory = {
+            _id: (blog.category._id?.$oid || blog.category._id || "").toString(),
+            name: blog.category.name,
+            slug: blog.category.slug
+          };
+        } else {
+          // केस बी: अगर कैटेगरी सिर्फ एक आईडी या $oid के रूप में दबी है (जैसे एडवांस टैक्स)
+          const targetId = (blog.category.$oid || blog.category || "").toString();
+          const dbCategory = categoryMap.get(targetId);
+          if (dbCategory) {
+            resolvedCategory = {
+              _id: dbCategory._id.toString(),
+              name: dbCategory.name,
+              slug: dbCategory.slug
+            };
+          }
+        }
+      }
+
+      return {
+        ...blog,
+        category: resolvedCategory // अब फ्रंटएंड को हमेशा क्लीन और सिंक ऑब्जेक्ट मिलेगा!
+      };
+    });
+
+    // ============================================================================
+    // 🎯 STEP 3: ऑन-द-फ्लाई रनटाइम फ़िल्टरिंग (मैंडेटरी रिज़ॉल्यूशन)
+    // ============================================================================
+    let finalBlogs = normalizedBlogs;
+    if (categoryParam && categoryParam !== "all") {
+      finalBlogs = normalizedBlogs.filter((blog: any) => {
+        return blog.category.slug.toLowerCase().trim() === categoryParam.toLowerCase().trim();
+      });
+    }
+
+    // 🎯 लिमिट हैंडलर
+    if (limitParam) {
+      const parsedLimit = parseInt(limitParam, 10);
+      if (!isNaN(parsedLimit) && parsedLimit > 0) {
+        finalBlogs = finalBlogs.slice(0, parsedLimit);
+      }
+    }
+
+    return NextResponse.json({ success: true, data: finalBlogs }, { status: 200 });
   } catch (error: any) {
-    // 💡 आपके टर्मिनल/कंसोल में असली एरर यहाँ दिखेगा
     console.error("❌ GET ALL BLOGS ROUTE CRASH:", error); 
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
