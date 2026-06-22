@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 // 🛰️ SERVER-SIDE DATA ACQUISITION PIPELINE (With Parallel Fetch)
 // ============================================================================
 async function getPortalData() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   try {
     // ⚡ सभी बैकएंड एंडपॉइंट्स को पैरेलल में फ़ेच करो भाई (Next.js Optimization)
