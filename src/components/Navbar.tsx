@@ -71,12 +71,14 @@ export default function PublicNavbar() {
           {/* --- MOBILE & DESKTOP ACTIONS --- */}
           <div className="flex items-center gap-2 md:gap-4">
             {!session ? (
-              <Link 
-                href="/login" 
-                className="hidden lg:block text-[11px] font-black uppercase tracking-[0.2em] text-[#020617] hover:bg-slate-100 px-5 py-3 rounded-2xl transition-all"
-              >
-                Log In
-              </Link>
+           
+            <Link 
+              href={session ? "/dashboard-redirect" : "/login"} 
+              className="bg-[#020617] text-white px-4 py-2.5 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs uppercase tracking-widest hover:bg-blue-600 transition-all active:scale-95 shadow-md flex items-center gap-1.5"
+            >
+              {session ? <LayoutDashboard size={12} /> : null}
+              {session ? <span>Dashboard</span> : <span>Get Started</span>}
+            </Link>
             ) : (
               <button 
                 onClick={() => signOut()}
@@ -86,13 +88,13 @@ export default function PublicNavbar() {
               </button>
             )}
 
-            <Link 
+            {/* <Link 
               href={session ? "/dashboard-redirect" : "/login"} 
               className="bg-[#020617] text-white px-4 py-2.5 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs uppercase tracking-widest hover:bg-blue-600 transition-all active:scale-95 shadow-md flex items-center gap-1.5"
             >
               {session ? <LayoutDashboard size={12} /> : null}
               {session ? <span>Dashboard</span> : <span>Get Started</span>}
-            </Link>
+            </Link> */}
 
             {/* प्रीमियम मोबाइल हैमबर्गर बटन */}
             <button 

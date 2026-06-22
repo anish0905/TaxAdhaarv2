@@ -9,8 +9,8 @@ interface Props {
 
 // Internal server-side safe path resolution helper
 const getSiteUrl = () => {
-  if (process.env.NEXT_PUBLIC_SITE_URL) {
-    return process.env.NEXT_PUBLIC_SITE_URL;
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
   }
   // Fallback domain selector production server build ke liye
   return "https://taxadhaar.com";
