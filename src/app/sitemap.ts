@@ -6,9 +6,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // 1. स्टेटिक रूट्स (Static Routes)
   const staticRoutes: MetadataRoute.Sitemap = [
-    { url: baseUrl, lastModified: new Date() },
-    { url: `${baseUrl}/blogs`, lastModified: new Date() },
-  ];
+  { 
+    url: baseUrl, 
+    lastModified: new Date(),
+    changeFrequency: 'daily',
+    priority: 1.0 // होमपेज को सबसे ज्यादा प्रायोरिटी दें
+  },
+  { 
+    url: `${baseUrl}/blogs`, 
+    lastModified: new Date(),
+    changeFrequency: 'weekly',
+    priority: 0.9 
+  },
+];
 
   // 2. डायनेमिक ब्लॉग रूट्स (Dynamic Mongo Outlets)
   let dynamicRoutes: MetadataRoute.Sitemap = [];

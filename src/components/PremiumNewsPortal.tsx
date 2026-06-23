@@ -117,10 +117,7 @@ PremiumMiniPartnerCard.displayName = "PremiumMiniPartnerCard";
 
 const AdBanner = memo(({ className = "" }: { className?: string }) => (
   <div className={`w-full bg-white border border-slate-200 rounded-xl p-2 shadow-sm flex items-center justify-center ${className}`}>
-    <div className="w-full bg-gradient-to-br from-slate-50 to-slate-100 h-24 flex flex-col items-center justify-center text-[10px] text-slate-400 font-mono tracking-widest uppercase rounded-lg border border-dashed border-slate-300">
-      <span className="text-slate-500 text-xs mb-1">Advertisement</span>
-      <span>-- Google AdSense Placement --</span>
-    </div>
+    
   </div>
 ));
 AdBanner.displayName = "AdBanner";

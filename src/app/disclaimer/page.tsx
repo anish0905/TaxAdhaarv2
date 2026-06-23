@@ -32,58 +32,58 @@ export default function DisclaimerPage() {
           <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 text-amber-900 flex items-start gap-4">
             <span className="text-2xl mt-0.5">⚠️</span>
             <div className="text-sm md:text-base font-medium">
-              <strong className="font-bold text-amber-950">महत्वपूर्ण सूचना (Non-Government Affiliation):</strong> <br />
-              TaxAdhaar (<a href="https://www.taxadhaar.com" className="underline font-bold text-blue-600">taxadhaar.com</a>) एक स्वतंत्र निजी डिजिटल न्यूज़, ब्लॉग और एजुकेशनल पोर्टल है। **हमारा भारत सरकार, आयकर विभाग (Income Tax Department), जीएसटी काउंसिल (GST Council), या किसी भी अन्य प्रांतीय या केंद्रीय सरकारी संगठन से कोई सीधा, अप्रत्यक्ष या आधिकारिक संबंध नहीं है।**
+              <strong className="font-bold text-amber-950">Important Notice (Non-Government Affiliation):</strong> <br />
+              TaxAdhaar (<a href="https://www.taxadhaar.com" className="underline font-bold text-blue-600">taxadhaar.com</a>) operates strictly as an independent, privately-owned digital resource, news, and educational platform. **We do not hold any official affiliation, association, direct connection, or authorization with the Government of India, the Income Tax Department, the GST Council, or any other state or central sovereign administrative body.**
             </div>
           </div>
 
           <section className="space-y-3">
             <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight border-b pb-2">
-              1. सूचना का उद्देश्य (Educational Purpose Only)
+              1. Educational & Informational Purpose Only
             </h2>
             <p className="text-slate-600 text-sm md:text-base">
-              इस वेबसाइट पर प्रकाशित सभी आर्टिकल्स, समाचार, गाइड्स, टेबल्स और कैलकुलेशन केवल सामान्य सूचनात्मक और शैक्षिक उद्देश्यों (Educational and Informational purposes) के लिए हैं। टैक्स कानून और वित्तीय नियम अत्यंत जटिल होते हैं और लगातार बदलते रहते हैं, इसलिए इस साइट पर दी गई जानकारी को किसी भी प्रकार की आधिकारिक वित्तीय, कानूनी या व्यावसायिक सलाह (Professional Financial Advice) न माना जाए।
+              All articles, analytical news, user guides, computation tables, and interactive calculations published across this platform are curated strictly for general informational and educational purposes. Financial regulations and tax codes are highly complex and subject to frequent modifications; therefore, the contents herein should not be construed as statutory, legal, or professional financial advice.
             </p>
           </section>
 
           <section className="space-y-3">
             <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight border-b pb-2">
-              2. सटीकता और गारंटी (Accuracy of Information)
+              2. Accuracy & Limitation of Liability
             </h2>
             <p className="text-slate-600 text-sm md:text-base">
-              यद्यपि हमारी टीम (Chartered Accountants और वित्तीय विश्लेषकों) द्वारा सभी वित्तीय डेटा, जैसे कि आयकर अधिनियम 2025, जीएसटी सर्कुलर्स और मार्केट एनालिसिस को पूरी तरह से जांच-परख कर और सटीक रूप से प्रस्तुत करने का हरसंभव प्रयास किया जाता है; फिर भी, TaxAdhaar इस बात की कोई पूर्ण गारंटी या वारंटी नहीं देता है कि यहाँ दी गई सामग्री 100% त्रुटिहीन, पूर्ण या पूरी तरह से अप-टू-डेट है। 
+              While our editorial team, computational tools, and analytical experts execute reasonable verification practices to evaluate regulatory metrics—including provisions under relevant tax legislation and official circulars—TaxAdhaar provides no implicit or explicit warranty regarding the absolute completeness, accuracy, or real-time precision of the published materials. 
             </p>
           </section>
 
           <section className="space-y-3">
             <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight border-b pb-2">
-              3. व्यावसायिक परामर्श की अनिवार्यता (Consult a Professional)
+              3. Mandate for Professional Consultation
             </h2>
             <p className="text-slate-600 text-sm md:text-base">
-              इस वेबसाइट से प्राप्त जानकारी के आधार पर कोई भी वित्तीय निवेश करने, आईटीआर (ITR) दाखिल करने, टैक्स लायबिलिटी की गणना करने या व्यापारिक निर्णय लेने से पहले, आपको एक योग्य और प्रमाणित पेशेवर जैसे कि पंजीकृत **Chartered Accountant (CA)** या वित्तीय सलाहकार से व्यक्तिगत परामर्श लेने की सख्त सलाह दी जाती है। इस साइट की सामग्री पर भरोसा करके किए गए किसी भी निर्णय से होने वाले सीधे या अप्रत्यक्ष नुकसान (Loss or Damage) के लिए TaxAdhaar या इसके प्रमोटर्स कानूनी रूप से उत्तरदायी नहीं होंगे।
+              Users are strongly advised to seek independent counsel from a certified professional, such as a registered **Chartered Accountant (CA)** or qualified financial consultant, prior to executing investment strategies, filing tax compliance documentation, or managing financial liabilities based on our content. TaxAdhaar and its promoters accept no legal or fiscal liability for direct, indirect, consequential, or incidental losses or damages resulting from reliance on platform data.
             </p>
           </section>
 
           <section className="space-y-3">
             <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight border-b pb-2">
-              4. बाहरी लिंक्स (External Links Disclaimer)
+              4. External Links & Third-Party Platforms
             </h2>
             <p className="text-slate-600 text-sm md:text-base">
-              हमारी वेबसाइट पर पाठकों की सुविधा के लिए आधिकारिक सरकारी पोर्टल्स (जैसे कि <em>incometax.gov.in</em> या <em>gst.gov.in</em>) के हाइपरलिंक्स दिए जा सकते हैं। ये बाहरी वेबसाइटें पूरी तरह से स्वतंत्र तीसरे पक्षों (Third Parties) द्वारा संचालित की जाती हैं। TaxAdhaar इन बाहरी वेबसाइटों की सामग्री, नीतियों, या उनके द्वारा प्रदान की जाने वाली सेवाओं की प्रामाणिकता पर कोई नियंत्रण नहीं रखता है और न ही उनकी ज़िम्मेदारी लेता है।
+              For informational convenience, hyperlinked routing to official regulatory architecture (such as <em>incometax.gov.in</em> or <em>gst.gov.in</em>) is integrated within our materials. These external domains are managed entirely by sovereign or separate third-party operations. TaxAdhaar maintains no computational control over, and assumes no systemic liability for, the verification, tracking, or practices of external digital infrastructures.
             </p>
           </section>
 
           <section className="space-y-3">
             <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight border-b pb-2">
-              5. आधिकारिक वेबसाइटों की जानकारी (Official Portals Reference)
+              5. Verification via Official Portals
             </h2>
             <p className="text-slate-600 text-sm md:text-base">
-              करदाताओं और व्यापारियों को दृढ़ता से सलाह दी जाती है कि वे किसी भी नियम, सर्कुलर, या नोटिफिकेशन की प्रामाणिकता की पुष्टि के लिए केवल और केवल सरकार के आधिकारिक सरकारी चैनलों का ही उपयोग करें:
+              Taxpayers, individual users, and corporate entities are urged to validate any policy updates, compliance rules, statutory notifications, or amendments exclusively through the official government documentation pipelines:
             </p>
-            <ul className="list-disc pl-6 text-sm text-slate-600 space-y-1">
-              <li>इनकम टैक्स ई-फाइलिंग के लिए: <a href="https://www.incometax.gov.in" target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">www.incometax.gov.in</a></li>
-              <li>जीएसटी पोर्टल के लिए: <a href="https://www.gst.gov.in" target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">www.gst.gov.in</a></li>
-              <li>कॉर्पोरेट मामलों (MCA) के लिए: <a href="https://www.mca.gov.in" target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">www.mca.gov.in</a></li>
+            <ul className="list-disc pl-6 text-sm text-slate-600 space-y-1 font-medium">
+              <li>Income Tax E-Filing System: <a href="https://www.incometax.gov.in" target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">www.incometax.gov.in</a></li>
+              <li>Official GST Portal Architecture: <a href="https://www.gst.gov.in" target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">www.gst.gov.in</a></li>
+              <li>Ministry of Corporate Affairs (MCA): <a href="https://www.mca.gov.in" target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">www.mca.gov.in</a></li>
             </ul>
           </section>
 

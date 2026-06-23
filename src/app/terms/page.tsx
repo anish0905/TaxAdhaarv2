@@ -6,25 +6,25 @@ export default function TermsOfService() {
   const terms = [
     {
       title: "Services Provided",
-      content: "TaxAdhaar digital platform ke madhyam se ITR filing, GST registration, aur tax consultation services provide karta hai. Hum technology ka use karke aapke tax process ko simplify karte hain."
+      content: "TaxAdhaar provides digital technology solutions and programmatic infrastructure to facilitate income tax return (ITR) filing, GST compliance registration, and automated corporate tax consultation. We leverage secure software systems to simplify and streamline your overall accounting workflows."
     },
     {
-      title: "User Responsibility",
-      content: "Aap jo bhi documents (PAN, Aadhaar, Form 16) provide karenge, unki accuracy ki zimmedari aapki hogi. Galat jankari se hone wali kisi bhi penalty ke liye TaxAdhaar responsible nahi hoga."
+      title: "User Responsibility & Document Accuracy",
+      content: "You assume absolute accountability for the precision, integrity, and legitimacy of all credentials, certificates, and financial documentation provided (including PAN, identifiers, and income tax statements). TaxAdhaar rejects all liability for penalties, legal updates, or compliance interest arising from incorrect or fraudulent disclosures."
     },
     {
-      title: "Payment & Refunds",
-      content: "Services ke liye payment advance mein li jati hai. Ek baar jab CA review process shuru ho jata hai, toh refund process nahi kiya ja sakta. Halaki, service failure ke case mein hum full refund provide karte hain."
+      title: "Payment, Terms & Refund Framework",
+      content: "All transactional billing for cloud software access or professional curation is managed through upfront payments. Once our verification experts or computational tools begin evaluating your specific tax data parameters, refunds cannot be initialized, except in verified cases of internal software delivery failure."
     },
     {
-      title: "Data Confidentiality",
-      content: "Hum aapka data sirf Tax filing purposes ke liye use karte hain. Aapka data government authorities ke alawa kisi aur third-party ke saath share nahi kiya jata."
+      title: "Data Confidentiality & Legal Compliance",
+      content: "Your uploaded database records are processed strictly for execution of your chosen tax filing procedures. We adhere to rigid privacy constraints, and your information is never shared, bartered, or transmitted to any third-party entity except authorized government portals."
     }
   ];
 
   return (
     <main className="bg-white py-24">
-         <PublicNavbar/>
+      <PublicNavbar />
       <div className="max-w-4xl mx-auto px-6">
         {/* Header Section */}
         <div className="mb-16 border-b border-slate-100 pb-10">
@@ -39,7 +39,7 @@ export default function TermsOfService() {
         {/* Introduction */}
         <div className="prose prose-slate max-w-none">
           <p className="text-lg text-slate-600 leading-relaxed mb-10">
-            TaxAdhaar website use karne se pehle kripya in terms ko dhyan se padhein. Hamari services use karne ka matlab hai ki aap in terms se sehmat hain.
+            Please read these Terms of Service carefully before utilizing the systems, tools, and digital platform hosted by **TaxAdhaar**. By accessing or interacting with our applications, you explicitly acknowledge compliance and consent to these binding legal provisions.
           </p>
 
           {/* Terms Grid/List */}
@@ -65,14 +65,14 @@ export default function TermsOfService() {
               <span>⚠️</span> Important Disclaimer
             </h3>
             <p className="text-blue-700/80 text-sm leading-relaxed font-medium">
-              TaxAdhaar ek facilitator hai. Hum Income Tax Department ya kisi government body ka hissa nahi hain. Hum sirf aapki taraf se filing process ko asaan banate hain. Final assessment department ke rules ke mutabik hi hota hai.
+              TaxAdhaar operates strictly as an independent financial technology facilitator and cloud platform. We are not an official branch, subsidiary, or direct representative of the Income Tax Department or any sovereign government authority. Computational finality and official assessments are subject to independent government verification.
             </p>
           </div>
 
           {/* Contact for Legal */}
           <div className="mt-12 text-center border-t border-slate-100 pt-12">
             <p className="text-slate-400 text-sm font-medium italic">
-              Agar aapko in terms se koi problem hai, toh humein contact karein:
+              Have questions or inquiries regarding our legal frameworks? Contact our compliance division:
               <br />
               <span className="text-blue-600 font-black not-italic">legal@taxadhaar.com</span>
             </p>
@@ -86,7 +86,7 @@ export default function TermsOfService() {
           </Link>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </main>
   );
 }

@@ -315,12 +315,7 @@ export default function InfiniteBlogFeed({ initialBlog, currentSlug }: { initial
           <div className="hidden lg:block h-fit lg:sticky lg:top-24 space-y-6">
             <BulletinsWidget />
             <SidebarPartnerWidget />
-            <div className="w-full bg-white border border-gray-200 rounded-2xl p-4 flex flex-col items-center justify-center">
-              <div className="w-full bg-slate-50 border border-dashed border-slate-200 h-[250px] flex flex-col items-center justify-center text-xs text-gray-400 tracking-widest uppercase rounded-xl">
-                <span className="text-slate-500 font-bold mb-1 text-[11px]">Advertisement</span>
-                <span>-- Google AdSense --</span>
-              </div>
-            </div>
+           
           </div>
         </div>
 
