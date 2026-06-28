@@ -2,9 +2,11 @@
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation"; // बेहतर रीडायरेक्शन के लिए
 import PublicNavbar from "@/components/Navbar";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -23,10 +25,11 @@ export default function LoginPage() {
       });
 
       if (res?.error) {
-     setError("Your email or password is incorrect.");
+        setError("Your email or password is incorrect.");
         setLoading(false);
       } else {
-        window.location.href = "/dashboard-redirect";
+        // क्लाइंट-साइड राउटिंग का उपयोग करें
+        router.push("/dashboard-redirect");
       }
     } catch (err) {
       setError("System error. Please try again later.");
@@ -35,10 +38,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white min-h-screen flex flex-col">
       <PublicNavbar />
       
-      <div className="flex min-h-screen lg:h-screen pt-20 lg:pt-0 selection:bg-blue-100 overflow-hidden">
+      <div className="flex flex-1 pt-16 lg:pt-0 selection:bg-blue-100 overflow-hidden">
         
         {/* --- LEFT SIDE: BRANDING --- */}
         <div className="hidden lg:flex lg:w-1/2 bg-[#020617] p-16 flex-col justify-between text-white relative overflow-hidden">
@@ -70,7 +73,6 @@ export default function LoginPage() {
 
         {/* --- RIGHT SIDE: LOGIN FORM --- */}
         <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-6 md:p-12 bg-white relative">
-          
           <div className="max-w-md w-full relative">
             <div className="mb-10 text-center lg:text-left">
               <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4 lg:mt-8">Welcome back.</h1>
@@ -126,12 +128,12 @@ export default function LoginPage() {
             </form>
 
             <div className="mt-10 md:mt-12 text-center">
-              <p className="text-slate-800 font-bold text-sm">
+              <div className="text-slate-800 font-bold text-sm">
                 Don&apos;t have a secure account? <br/>
                 <Link href="/register" className="text-blue-600 hover:text-blue-700 transition-all uppercase tracking-[0.2em] text-[10px] mt-4 inline-block border-b-2 border-blue-50 pb-1">
                   Establish New Account
                 </Link>
-              </p>
+              </div>
             </div>
           </div>
         </div>
