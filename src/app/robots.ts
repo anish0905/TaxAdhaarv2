@@ -7,15 +7,15 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: '*',
         allow: '/',
         disallow: [
-          '/_next',     // Next.js की इंटरनल बिल्ड फाइल्स और चंक्स को छुपाएगा
-          '/api',       // सभी बैकएंड API रूट्स और टोकन एंडपॉइंट्स को ब्लॉक करेगा
-          '/admin',     // एडमिन पैनल और उसके सभी सब-रूट्स को रोकेगा
+          '/_next/',     // Safeguards Next.js chunks, state manifests, and assets data
+          '/api/',       // Restricts backend service routines and authentication end-points
+          '/admin/',     // Secures internal administrative panel layouts from parsing bots
           
-          // --- ADSENSE LOW VALUE FIX: ऐप्लिकेशन रूट्स ब्लॉक किए गए ---
-          '/login',     // लॉगिन पेज (यहाँ क्रॉलर को थिन कंटेंट मिलता है)
-          '/register',  // रजिस्ट्रेशन / साइन-अप पेज
-          '/dashboard', // यूज़र डैशबोर्ड और रीडायरेक्शन पाथ्स
-          '/profile',   // यूज़र प्रोफाइल और सेटिंग्स पेजों को ब्लॉक करने के लिए
+          // --- ADSENSE COMPLIANCE: Restricts empty application layout scopes ---
+          '/login',      // Bypass authentication screen crawl bounds
+          '/register',   // Restricts blank sign-up wizard interface crawls
+          '/dashboard/', // Blocks internal user console portals and transactional paths
+          '/profile/',   // Restricts user metadata workspace configurations from index engine
         ],
       },
     ],
