@@ -63,7 +63,14 @@ export default function Contact() {
                  <p className="text-slate-500 font-medium mt-2">Professional response guaranteed within one business day.</p>
               </div>
               
-              <form action={createEnquiry} className="grid md:grid-cols-2 gap-8">
+              {/* FIXED: The form action is now wrapped to correctly handle the promise return type mismatch */}
+              <form 
+                action={async (formData) => {
+                  "use server";
+                  await createEnquiry(formData);
+                }} 
+                className="grid md:grid-cols-2 gap-8"
+              >
                 <div className="flex flex-col gap-3">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2 text-left">Full Name</label>
                   <input name="name" type="text" required placeholder="Your name" className="bg-slate-50 border-none p-5 rounded-2xl outline-none focus:ring-2 ring-blue-500/20 transition-all font-medium text-slate-900" />

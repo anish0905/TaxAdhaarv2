@@ -3,6 +3,10 @@ import connectDB from "@/lib/db";
 import { DigitalAsset } from "@/models/DigitalAsset";
 import ToolsListClient from "./ToolsListClient";
 
+// FIXED: Forces Next.js to skip pre-rendering this page during "npm run build" 
+// when the local environment might not have access to MongoDB Atlas.
+export const dynamic = 'force-dynamic';
+
 // ============================================================================
 // 🌐 1. PROGRAMMATIC SEO MATRIX FOR DIGITAL STORE
 // ============================================================================
