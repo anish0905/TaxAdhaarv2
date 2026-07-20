@@ -1,44 +1,30 @@
-import { MetadataRoute } from 'next';
+import { MetadataRoute } from "next";
+import { publicSitePaths, site } from "@/lib/site";
 
-// ⚡ FIXED: रिटर्न टाइप को Promise<MetadataRoute.Sitemap> कर दिया है
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://www.taxadhaar.com';
-
-  // 1. स्टेटिक रूट्स (Static Routes)
-  const staticRoutes: MetadataRoute.Sitemap = [
-  { 
-    url: baseUrl, 
+  const staticRoutes: MetadataRoute.Sitemap = publicSitePaths.map((path) => ({
+    url: new URL(path, site.url).toString(),
     lastModified: new Date(),
-    changeFrequency: 'daily',
-    priority: 1.0 // होमपेज को सबसे ज्यादा प्रायोरिटी दें
-  },
-  { 
-    url: `${baseUrl}/blogs`, 
-    lastModified: new Date(),
-    changeFrequency: 'weekly',
-    priority: 0.9 
-  },
-];
+    changeFrequency: path === "/" ? "weekly" : "monthly",
+    priority: path === "/" ? 1 : path === "/blogs" || path === "/services" ? 0.9 : 0.7,
+  }));
 
-  // 2. डायनेमिक ब्लॉग रूट्स (Dynamic Mongo Outlets)
-  let dynamicRoutes: MetadataRoute.Sitemap = [];
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/blogs?limit=100`, {
-      next: { revalidate: 600 } // हर 10 मिनट में सैटमैप डेटा रिफ्रेश होगा
+    const response = await fetch(`${site.url}/api/blogs?limit=100`, {
+      next: { revalidate: 600 },
     });
-    const result = await res.json();
+    const result = await response.json();
+    if (!response.ok || !result.success || !Array.isArray(result.data)) return staticRoutes;
 
-    if (result.success && result.data) {
-      dynamicRoutes = result.data.map((blog: any) => ({
-        url: `${baseUrl}/blogs/${blog.slug}`,
-        lastModified: new Date(blog.updatedAt || blog.createdAt),
-        changeFrequency: 'daily',
-        priority: 0.8,
-      }));
-    }
-  } catch (error) {
-    console.error("Sitemap compilation error:", error);
+    const blogRoutes: MetadataRoute.Sitemap = result.data.map((blog: { slug: string; updatedAt?: string; createdAt?: string }) => ({
+      url: `${site.url}/blogs/${blog.slug}`,
+      lastModified: new Date(blog.updatedAt || blog.createdAt || Date.now()),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    }));
+
+    return [...staticRoutes, ...blogRoutes];
+  } catch {
+    return staticRoutes;
   }
-
-  return [...staticRoutes, ...dynamicRoutes];
 }

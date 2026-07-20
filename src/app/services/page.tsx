@@ -15,13 +15,13 @@ export const metadata = {
     "ITR Filing India", "GST Registration Sasaram", "Trademark Application", 
     "Pvt Ltd Incorporation", "IEC Code Online", "LUT Filing GST", "MSME Registration"
   ],
-  alternates: { canonical: "https://www.taxadhaar.com/services" },
+  alternates: { canonical: "https://taxadhaar.com/services" },
   openGraph: {
     title: "TaxAdhaar | Full-Stack Compliance for Businesses & Individuals",
     description: "Expert Tax Architecture for Bharat. Fast, Secure, and 100% Digital.",
-    url: "https://www.taxadhaar.com/services",
+    url: "https://taxadhaar.com/services",
     type: "website",
-    images: [{ url: "https://www.taxadhaar.com/og-services.jpg" }],
+    images: [{ url: "https://taxadhaar.com/og-services.jpg" }],
   },
 };
 
@@ -32,7 +32,7 @@ export default function ServicesPage() {
     "@type": "FinancialService",
     "name": "TaxAdhaar",
     "description": "Premium Digital Tax and Business Compliance Firm in India.",
-    "url": "https://www.taxadhaar.com",
+    "url": "https://taxadhaar.com",
     "telephone": "+91-7557721426",
     "address": {
       "@type": "PostalAddress",
@@ -155,9 +155,9 @@ export default function ServicesPage() {
 
             <div className="space-y-4">
               {[
-                { t: "Automated Data Ingestion", d: "Direct API pipelines interfacing with ITD and GSTN nodes for flawless ledger fidelity." },
-                { t: "CA-Verified Audits", d: "Multi-point checklist protocols verified by senior legal counsels prior to transmission." },
-                { t: "IPR & Export Frameworks", d: "Dedicated trade desks optimizing configurations for Trademarks, Copyrights, and IEC logs." }
+                { t: "Clear document checklists", d: "Review the documents commonly needed before you request a service." },
+                { t: "Service-specific support", d: "Use the enquiry form to describe your requirement and receive a response from the service team." },
+                { t: "Official-source verification", d: "Rules and requirements should be confirmed with the relevant official portal before filing." }
               ].map((item, idx) => (
                 <div key={idx} className="flex gap-4 p-4 bg-white border border-slate-200/50 rounded-xl shadow-sm transition-all duration-300 hover:shadow-md">
                   <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-900">
@@ -180,17 +180,11 @@ export default function ServicesPage() {
                 <Sparkles size={14} />
               </div>
               <div>
-                <p className="text-blue-600 font-black text-5xl tracking-tighter">99.9%</p>
-                <p className="text-slate-400 font-black uppercase tracking-widest text-[8px] mt-1">System Compliance Threshold</p>
+                <p className="text-blue-600 font-black text-3xl tracking-tighter">Important</p>
+                <p className="text-slate-400 font-black uppercase tracking-widest text-[8px] mt-1">Verify current rules before filing</p>
               </div>
               <div className="w-full h-px bg-slate-100" />
-              <p className="text-slate-600 font-semibold italic text-xs leading-relaxed px-2">
-                "TaxAdhaar optimized our legacy compliance records into clean automated assets. It operates seamlessly as our remote legal backbone."
-              </p>
-              <div className="pt-2">
-                <p className="font-black text-slate-900 uppercase text-[10px] tracking-wider">Anish Kumar</p>
-                <p className="text-slate-400 text-[8px] font-black uppercase tracking-widest">Founder, TaxAdhaar Architecture</p>
-              </div>
+              <p className="text-slate-600 font-semibold italic text-xs leading-relaxed px-2">Tax and compliance requirements can change. Check the latest official guidance and seek qualified advice where needed.</p>
             </div>
           </div>
 
@@ -207,7 +201,7 @@ export default function ServicesPage() {
               Automate Your System Compliance Parameters.
             </h2>
             <p className="text-slate-400 text-xs max-w-sm mx-auto font-medium leading-normal uppercase tracking-wider">
-              Join 15,000+ Enterprises and Professionals Scaling Safely with TaxAdhaar Networks.
+              Explore the service information, prepare your documents, and contact support when you need help.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
               <Link href="/login" className="bg-blue-600 text-white px-8 py-3.5 rounded-lg font-black text-[10px] uppercase tracking-widest hover:bg-blue-700 transition-all shadow-md shadow-blue-500/10 flex items-center justify-center gap-1.5">

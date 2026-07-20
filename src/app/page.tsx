@@ -25,12 +25,12 @@ export const metadata = {
     "Startup India Registration"
   ],
   alternates: {
-    canonical: "https://www.taxadhaar.com",
+    canonical: "https://taxadhaar.com",
   },
   openGraph: {
     title: "TaxAdhaar - Empowering Bharat's Taxpayers Digitally",
     description: "Join millions across India filing with the smartest CA-assisted platform.",
-    url: "https://www.taxadhaar.com",
+    url: "https://taxadhaar.com",
     siteName: "TaxAdhaar",
     locale: "en_IN",
     type: "website",
@@ -40,7 +40,7 @@ export const metadata = {
 // 📝 1. API Fetch Function for Blogs
 async function getLatestUpdates() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://www.taxadhaar.com";
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://taxadhaar.com";
     const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
     const res = await fetch(`${cleanBaseUrl}/api/blogs?limit=3`, { cache: 'no-store' });
     if (!res.ok) return [];
@@ -55,7 +55,7 @@ async function getLatestUpdates() {
 // ⚡ 2. API Fetch Function for Categories (Direct Endpoint Sync)
 async function getLatestCategories() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://www.taxadhaar.com";
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://taxadhaar.com";
     const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
     
     const res = await fetch(`${cleanBaseUrl}/api/categories`, { cache: 'no-store' });
@@ -81,8 +81,8 @@ export default async function HomePage() {
     "@context": "https://schema.org",
     "@type": "FinancialService",
     "name": "TaxAdhaar",
-    "url": "https://www.taxadhaar.com",
-    "logo": "https://www.taxadhaar.com/logo.png",
+    "url": "https://taxadhaar.com",
+    "logo": "https://taxadhaar.com/icon.png",
     "address": { "@type": "PostalAddress", "addressCountry": "IN" },
     "areaServed": "IN",
     "contactPoint": {
@@ -128,7 +128,7 @@ export default async function HomePage() {
           </h1>
           
           <p className="text-lg md:text-xl text-slate-400 max-w-xl leading-relaxed font-medium tracking-tight">
-            Simplifying complex fiscal regulations for <span className="text-slate-900 font-bold underline decoration-blue-500/30 decoration-4 underline-offset-4">1.4 Billion citizens</span>. National footprint driven by high-speed execution.
+            Clear tax and business-compliance information, practical tools, and a simple way to request professional support.
           </p>
 
           <div className="flex flex-wrap justify-center md:justify-start gap-8 pt-4 border-t border-slate-100 max-w-md">

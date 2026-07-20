@@ -1,12 +1,13 @@
 import Footer from '@/components/Footer';
 import PublicNavbar from '@/components/Navbar';
 import { Metadata } from 'next';
+import { createEnquiry } from '@/app/actions/createEnquiry';
 
 export const metadata: Metadata = {
   title: "Contact TaxAdhaar | Get Expert Tax & Business Consultation",
   description: "Have questions about ITR, GST, or Company Registration? Contact TaxAdhaar for professional CA-assisted support. Reach us via WhatsApp, Email, or visit our Sasaram and Mumbai offices.",
   keywords: ["TaxAdhaar contact", "Tax consultant WhatsApp", "GST registration help", "ITR filing support India", "Sasaram tax office"],
-  alternates: { canonical: "https://www.taxadhaar.com/contact" },   
+  alternates: { canonical: "https://taxadhaar.com/contact" },
 };
 
 export default function Contact() {
@@ -62,28 +63,32 @@ export default function Contact() {
                  <p className="text-slate-500 font-medium mt-2">Professional response guaranteed within one business day.</p>
               </div>
               
-              <form className="grid md:grid-cols-2 gap-8">
+              <form action={createEnquiry} className="grid md:grid-cols-2 gap-8">
                 <div className="flex flex-col gap-3">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2 text-left">Full Name</label>
-                  <input type="text" placeholder="Anish Kumar" className="bg-slate-50 border-none p-5 rounded-2xl outline-none focus:ring-2 ring-blue-500/20 transition-all font-medium text-slate-900" />
+                  <input name="name" type="text" required placeholder="Your name" className="bg-slate-50 border-none p-5 rounded-2xl outline-none focus:ring-2 ring-blue-500/20 transition-all font-medium text-slate-900" />
                 </div>
                 <div className="flex flex-col gap-3">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2 text-left">Email Address</label>
-                  <input type="email" placeholder="name@example.com" className="bg-slate-50 border-none p-5 rounded-2xl outline-none focus:ring-2 ring-blue-500/20 transition-all font-medium text-slate-900" />
+                  <input name="email" type="email" required placeholder="name@example.com" className="bg-slate-50 border-none p-5 rounded-2xl outline-none focus:ring-2 ring-blue-500/20 transition-all font-medium text-slate-900" />
+                </div>
+                <div className="flex flex-col gap-3">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2 text-left">Mobile Number</label>
+                  <input name="phone" type="tel" required placeholder="Your mobile number" className="bg-slate-50 border-none p-5 rounded-2xl outline-none focus:ring-2 ring-blue-500/20 transition-all font-medium text-slate-900" />
                 </div>
                 <div className="flex flex-col gap-3 md:col-span-2 text-left">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Service Required</label>
-                  <select className="bg-slate-50 border-none p-5 rounded-2xl outline-none focus:ring-2 ring-blue-500/20 transition-all appearance-none cursor-pointer font-medium text-slate-900">
-                    <option>Income Tax Filing (ITR)</option>
-                    <option>GST Registration/Return</option>
-                    <option>Company Incorporation</option>
-                    <option>Trademark & Legal</option>
-                    <option>Export Compliance (IEC/LUT)</option>
+                  <select name="service" required className="bg-slate-50 border-none p-5 rounded-2xl outline-none focus:ring-2 ring-blue-500/20 transition-all appearance-none cursor-pointer font-medium text-slate-900">
+                    <option value="Income Tax (ITR) Filing">Income Tax Filing (ITR)</option>
+                    <option value="GST Registration & Returns">GST Registration/Return</option>
+                    <option value="Company Incorporation">Company Incorporation</option>
+                    <option value="Trademark & Legal">Trademark & Legal</option>
+                    <option value="Export Compliance (IEC/LUT)">Export Compliance (IEC/LUT)</option>
                   </select>
                 </div>
                 <div className="flex flex-col gap-3 md:col-span-2 text-left">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Message</label>
-                  <textarea rows={4} placeholder="How can we help you today?" className="bg-slate-50 border-none p-5 rounded-2xl outline-none focus:ring-2 ring-blue-500/20 transition-all resize-none font-medium text-slate-900" />
+                  <textarea name="message" rows={4} placeholder="How can we help you today?" className="bg-slate-50 border-none p-5 rounded-2xl outline-none focus:ring-2 ring-blue-500/20 transition-all resize-none font-medium text-slate-900" />
                 </div>
                 <button type="submit" className="md:col-span-2 bg-blue-600 text-white font-black py-6 rounded-3xl hover:bg-slate-900 transition-all active:scale-95 shadow-xl shadow-blue-600/20 text-xs uppercase tracking-widest">
                   Send Enquiry

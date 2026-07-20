@@ -13,20 +13,8 @@ export default function Footer() {
             </Link>
           </div>
           <p className="text-slate-500 text-sm leading-relaxed font-medium">
-            India's automated digital tax compliance platform. Simplifying corporate fillings, ITR registration, and statutory bookkeeping for enterprises and startups.
+            India&apos;s digital tax compliance platform. Simplifying corporate filing, ITR registration, and statutory bookkeeping for enterprises and startups.
           </p>
-          {/* Social Links */}
-          <div className="flex gap-4 mt-6">
-            <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full text-black bg-slate-100 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all cursor-pointer text-xs font-bold">
-              <span>X</span>
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full text-black bg-slate-100 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all cursor-pointer text-xs font-bold">
-              <span>In</span>
-            </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full text-black bg-slate-100 flex items-center justify-center hover:bg-pink-600 hover:text-white transition-all cursor-pointer text-xs font-bold">
-              <span>Ig</span>
-            </a>
-          </div>
         </div>
         
         {/* Services - FIXED: Hardcoded actual operational routes instead of # */}
@@ -53,20 +41,11 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Newsletter / Lead Capture */}
+        {/* Contact */}
         <div className="bg-blue-50 p-6 rounded-[2rem] border border-blue-100">
-          <h4 className="font-black text-blue-900 text-xs uppercase tracking-widest mb-4">Tax Updates & Circulars</h4>
-          <div className="flex flex-col gap-2 text-black">
-            <input 
-              type="email" 
-              placeholder="Corporate email address" 
-              className="bg-white border border-blue-200 px-4 py-3 rounded-2xl text-sm outline-none focus:ring-2 ring-blue-500/20"
-            />
-            <button className="bg-blue-600 text-white font-bold py-3 rounded-2xl text-sm hover:bg-blue-700 transition-all active:scale-95">
-              Subscribe to Bulletin
-            </button>
-          </div>
-          <p className="text-[10px] text-blue-400 mt-3 font-bold uppercase tracking-wider text-center italic">Verified Corporate Newsletter</p>
+          <h4 className="font-black text-blue-900 text-xs uppercase tracking-widest mb-4">Need help?</h4>
+          <p className="text-sm text-slate-600 leading-relaxed mb-4">For service questions or support, send our team an enquiry.</p>
+          <Link href="/contact" className="block bg-blue-600 text-center text-white font-bold py-3 rounded-2xl text-sm hover:bg-blue-700 transition-all">Contact support</Link>
         </div>
       </div>
 

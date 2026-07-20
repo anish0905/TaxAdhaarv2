@@ -2,13 +2,18 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
 import ClientLayoutWrapper from "@/components/ClientLayoutWrapper";
+import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "TaxAadhaar | India's Premier Digital Tax Platform",
+  metadataBase: new URL(site.url),
+  title: {
+    default: "TaxAdhaar | Tax & Business Compliance Resources",
+    template: "%s | TaxAdhaar",
+  },
   icons: {
     icon: "/icon.png", 
   },
-  description: "Official TaxAadhaar portal for Pan-India ITR filing...",
+  description: "Independent tax and business-compliance resources, tools, and service information for users in India.",
   verification: {
     google: "0PwH2Yg50tfdTY-l3BOQAeRXRNs_9dXpv-_vvSWbX90",
     other: {

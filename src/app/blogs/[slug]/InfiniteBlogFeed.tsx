@@ -285,8 +285,7 @@ export default function InfiniteBlogFeed({ initialBlog, currentSlug }: { initial
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           <div className="lg:col-span-2 space-y-16">
-            {blogList.map((blog, index) => {
-              const isLastItem = index === blogList.length - 1;
+            {[initialBlog].map((blog, index) => {
               const rawPartners = blog.relatedPartners || [];
               const feedPartners = (rawPartners || []).map((p: any) => {
                 if (typeof p === "string" || (p && !p.name && p.$oid)) {
@@ -301,7 +300,7 @@ export default function InfiniteBlogFeed({ initialBlog, currentSlug }: { initial
                   key={blog._id}
                   blog={blog}
                   index={index}
-                  lastElementRef={isLastItem ? lastElementRef : null}
+                  lastElementRef={null}
                   formatBlogDate={formatBlogDate}
                   ToolkitInFeedWidget={ToolkitInFeedWidget}
                   PartnerCard={PartnerCard}

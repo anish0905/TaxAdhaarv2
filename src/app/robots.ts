@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next';
+import { site } from '@/lib/site';
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -19,6 +20,6 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    sitemap: 'https://www.taxadhaar.com/sitemap.xml',
+    sitemap: `${site.url}/sitemap.xml`,
   };
 }

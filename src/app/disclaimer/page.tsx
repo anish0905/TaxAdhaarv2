@@ -33,7 +33,7 @@ export default function DisclaimerPage() {
             <span className="text-2xl mt-0.5">⚠️</span>
             <div className="text-sm md:text-base font-medium">
               <strong className="font-bold text-amber-950">Important Notice (Non-Government Affiliation):</strong> <br />
-              TaxAdhaar (<a href="https://www.taxadhaar.com" className="underline font-bold text-blue-600">taxadhaar.com</a>) operates strictly as an independent, privately-owned digital resource, news, and educational platform. **We do not hold any official affiliation, association, direct connection, or authorization with the Government of India, the Income Tax Department, the GST Council, or any other state or central sovereign administrative body.**
+              TaxAdhaar (<a href="https://taxadhaar.com" className="underline font-bold text-blue-600">taxadhaar.com</a>) operates strictly as an independent, privately-owned digital resource, news, and educational platform. **We do not hold any official affiliation, association, direct connection, or authorization with the Government of India, the Income Tax Department, the GST Council, or any other state or central sovereign administrative body.**
             </div>
           </div>
 

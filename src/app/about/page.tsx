@@ -14,7 +14,7 @@ export default function About() {
     {
       name: "Chartered Accountant & Advisors",
       role: "Compliance Verification Panel",
-      bio: "Our panel consists of senior Chartered Accountants (CAs) and corporate legal experts registered with the ICAI, ensuring 100% precision in tax compliance, audit reporting, and regulatory adherence.",
+      bio: "TaxAdhaar publishes general compliance information and connects users with support for its listed services. Users should independently verify current requirements with official portals and a qualified professional before filing.",
       imgPlaceholder: "💼"
     }
   ];
@@ -42,7 +42,7 @@ export default function About() {
           <div className="relative">
             <div className="aspect-square bg-blue-600 rounded-[3rem] rotate-3 absolute inset-0"></div>
             <div className="aspect-square bg-slate-900 rounded-[3rem] -rotate-3 relative z-10 flex items-center justify-center p-12">
-              <h3 className="text-4xl font-black text-white italic text-center">"Simplifying compliance, empowering enterprises."</h3>
+              <h3 className="text-4xl font-black text-white italic text-center">&ldquo;Simplifying compliance, empowering enterprises.&rdquo;</h3>
             </div>
           </div>
           
@@ -57,11 +57,11 @@ export default function About() {
             <div className="grid grid-cols-2 gap-6">
               <div className="border-l-4 border-blue-600 pl-4">
                 <p className="text-2xl font-black text-slate-900">100%</p>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Automated Workflows</p>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Digital Workflows</p>
               </div>
               <div className="border-l-4 border-blue-600 pl-4">
-                <p className="text-2xl font-black text-slate-900">Professional</p>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">CA Supervision</p>
+                <p className="text-2xl font-black text-slate-900">Clear</p>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Service Information</p>
               </div>
             </div>
           </div>

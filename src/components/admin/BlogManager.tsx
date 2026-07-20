@@ -205,7 +205,7 @@ export default function BlogManager({
       {/* Title & Category */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-xs font-bold uppercase text-slate-500 mb-1">News Title (H1)</label>
+          <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Article Title (H1)</label>
           <input
             type="text" required value={title} onChange={(e) => setTitle(e.target.value)}
             placeholder="e.g., Extended Due Date Notification"
@@ -251,7 +251,7 @@ export default function BlogManager({
 
       {/* Main Content */}
       <div>
-        <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Full News Content (HTML Supported)</label>
+          <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Full Original Content (HTML Supported)</label>
         <textarea
           required rows={8} value={content} onChange={(e) => setContent(e.target.value)}
           placeholder="अपनी टैक्स न्यूज़ का पूरा आर्टिकल यहाँ लिखें..."

@@ -17,6 +17,7 @@ export async function createEnquiry(
 
     const name = formData.get("name") as string | null;
     const phone = formData.get("phone") as string | null;
+    const email = formData.get("email") as string | null;
     const service = formData.get("service") as string | null;
     const message = formData.get("message") as string | null;
 
@@ -29,6 +30,7 @@ export async function createEnquiry(
     await Enquiry.create({
       name,
       phone,
+      email,
       service,
       message: message || "No specific message provided",
       status: "pending",
@@ -41,7 +43,7 @@ export async function createEnquiry(
 
     // Replace this line in your server action:
 return { success: "Our team will contact you shortly!" };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Enquiry Error:", error);
     return { error: "Service unavailable. Please try again later." };
   }

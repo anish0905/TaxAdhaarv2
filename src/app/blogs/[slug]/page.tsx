@@ -40,6 +40,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${blog.metaTitle || blog.title} | TaxAdhaar`,
       description: blog.metaDesc || blog.excerpt,
       keywords: blog.keywords || "tax news, mutual funds 2026",
+      alternates: {
+        canonical: `${baseUrl}/blogs/${slug}`,
+      },
       openGraph: {
         title: blog.metaTitle || blog.title,
         description: blog.metaDesc || blog.excerpt,
