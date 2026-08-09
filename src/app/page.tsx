@@ -9,6 +9,7 @@ import PublicNavbar from "@/components/Navbar";
 import Link from "next/link";
 import Image from "next/image";
 import ToolkitCarousel from "@/components/home/ToolkitCarousel"; // 👈 कैरोसेल इम्पोर्ट
+import AdPlacementZone from "@/components/AdPlacementZone";
 
 export const dynamic = "force-dynamic";
 
@@ -151,6 +152,8 @@ export default async function HomePage() {
           </div>
         </div>
       </header>
+
+      <AdPlacementZone location="HOME_TOP" />
 
       {/* --- PAN-INDIA REACH SECTION --- */}
       <section className="py-20 border-y border-slate-100 bg-slate-50/50">

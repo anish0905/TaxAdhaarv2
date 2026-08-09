@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowUpRight, ShoppingCart } from "lucide-react";
 import { BlogFeedCard } from "../../../components/BlogFeedCard";
+import AdPlacementZone from "../../../components/AdPlacementZone";
 
 // ============================================================================
 // DATA PIPELINE INTERFACES
@@ -285,7 +286,7 @@ export default function InfiniteBlogFeed({ initialBlog, currentSlug }: { initial
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           <div className="lg:col-span-2 space-y-16">
-            {[initialBlog].map((blog, index) => {
+            {blogList.map((blog, index) => {
               const rawPartners = blog.relatedPartners || [];
               const feedPartners = (rawPartners || []).map((p: any) => {
                 if (typeof p === "string" || (p && !p.name && p.$oid)) {
@@ -300,7 +301,7 @@ export default function InfiniteBlogFeed({ initialBlog, currentSlug }: { initial
                   key={blog._id}
                   blog={blog}
                   index={index}
-                  lastElementRef={null}
+                  lastElementRef={index === blogList.length - 1 ? lastElementRef : null}
                   formatBlogDate={formatBlogDate}
                   ToolkitInFeedWidget={ToolkitInFeedWidget}
                   PartnerCard={PartnerCard}
@@ -313,8 +314,8 @@ export default function InfiniteBlogFeed({ initialBlog, currentSlug }: { initial
 
           <div className="hidden lg:block h-fit lg:sticky lg:top-24 space-y-6">
             <BulletinsWidget />
+            <AdPlacementZone location="BLOG_SIDEBAR" />
             <SidebarPartnerWidget />
-           
           </div>
         </div>
 

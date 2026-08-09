@@ -2,6 +2,7 @@
 
 import { memo } from "react";
 import Image from "next/image";
+import AdPlacementZone from "./AdPlacementZone";
 
 // Types derived accurately from architecture with strict null safety check nodes
 interface BlogCardProps {
@@ -119,6 +120,9 @@ export const BlogFeedCard = memo(({
           ))}
         </div>
       )}
+
+      {/* --- BLOG AD SLOT BELOW TITLE --- */}
+      <AdPlacementZone location="BELOW_TITLE" />
 
       {/* 📱 MOBILE VIEW COMPACT SLOT */}
       <div className="block lg:hidden space-y-6 my-6">
